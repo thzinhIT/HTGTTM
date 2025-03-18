@@ -6,8 +6,8 @@ import Link from "next/link";
 const Header = () => {
   return (
     <>
-      <div className="h-[10000px] ">
-        <div className="flex justify-center items-center py-5 gap-2 fixed bg-white w-full shadow-[0px_2px_4px_0px_#b6b6b680] ">
+      <div className=" ">
+        <div className="flex justify-center items-center py-5 gap-2 fixed top-0 z-50 bg-white w-full shadow-[0px_2px_4px_0px_#b6b6b680] ">
           <div>
             <Image src={logo} alt="logo" width={152} height={70} />
           </div>
