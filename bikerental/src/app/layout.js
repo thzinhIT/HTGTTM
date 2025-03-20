@@ -2,6 +2,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "./header/page";
 import Footer from "./footer/page";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -20,12 +23,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
-      >
+      <body className="min-h-screen flex flex-col">
+        {/* Header cố định trên cùng (nếu cần) */}
         <Header />
-        <main className="flex-1 pt-[110px] w-[1320px] mx-auto">{children}</main>
 
+        {/* Phần chính mở rộng tự động */}
+        <main className="flex-1 w-[full]  ">{children}</main>
+
+        {/* Footer luôn hiển thị */}
         <Footer />
       </body>
     </html>

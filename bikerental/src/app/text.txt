@@ -7,46 +7,32 @@ const Header = () => {
   return (
     <>
       <div className=" ">
-        <div className="flex justify-between items-center py-5 gap-2 sticky top-0 z-50 bg-white w-full shadow-[0px_2px_4px_0px_#b6b6b680] ">
-          <div className="flex-shirk-0 pl-5">
+        <div className="flex justify-center items-center py-5 gap-2 fixed top-0 z-50 bg-white w-full shadow-[0px_2px_4px_0px_#b6b6b680] ">
+          <div>
             <Image src={logo} alt="logo" width={152} height={70} />
           </div>
-          <div className="flex justify-end flex-wrap pl-5">
-            <ul className="flex  items-center flex-wrap justify-end ">
+          <div className="flex">
+            <ul className="flex  items-center">
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
-                <div>
-                  <Link href="#"> Hướng dẫn sử dụng</Link>
-                </div>
+                <Link href="#"> Hướng dẫn sử dụng</Link>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
-                <div>
-                  <Link href="#"> Bảng giá</Link>
-                </div>
+                <Link href="#"> Bảng giá</Link>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
-                <div>
-                  <Link href="#">Dịch vụ</Link>
-                </div>
+                <Link href="#">Dịch vụ</Link>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
-                <div>
-                  <Link href="#">Danh sách trạm</Link>
-                </div>
+                <Link href="#">Danh sách trạm</Link>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
-                <div>
-                  <Link href="#">Tin tức </Link>
-                </div>
+                <Link href="#">Tin tức </Link>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
-                <div>
-                  <Link href="#">Liên hệ</Link>
-                </div>
+                <Link href="#">Liên hệ</Link>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
-                <div>
-                  <Link href="#">Chính sách bảo mật</Link>
-                </div>
+                <Link href="#">Chính sách bảo mật</Link>
               </li>
             </ul>{" "}
             <div className="flex  gap-2">
