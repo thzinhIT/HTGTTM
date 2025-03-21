@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
         <Header />
 
         {/* Phần chính mở rộng tự động */}
-        <main className="flex-1 w-[full]  ">{children}</main>
+        <main className="flex-1 w-[full] mt-[110px]">{children}</main>
 
         {/* Footer luôn hiển thị */}
         <Footer />

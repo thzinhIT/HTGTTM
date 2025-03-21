@@ -6,6 +6,7 @@ import * as React from "react";
 
 import Howuse from "./how-to-use";
 import TransactionTable from "./transaction-table";
+import News from "./news";
 
 export default function Home() {
   return (
@@ -127,6 +128,32 @@ export default function Home() {
       <div className=" ">
         <TransactionTable />
       </div>
+      <div className="py-12 w-[1320px] mx-auto mb-12 ">
+        <div>
+          <h2 className="text-center text-5xl font-semibold mb-6">
+            Những con số biết nói
+          </h2>
+        </div>
+        <div className="flex">
+          <div className="text-center w-[33%]">
+            <div className="text-green-500 text-6xl font-semibold mb-3">06</div>
+            <div className="text-2xl text-black">Tỉnh/Thành phố</div>
+          </div>
+          <div className="text-center w-[33%]">
+            <div className="text-green-500 text-6xl font-semibold mb-3">
+              3500+
+            </div>
+            <div className="text-2xl text-black">Xe đạp trên toàn quốc</div>
+          </div>
+          <div className="text-center w-[33%]">
+            <div className="text-green-500 text-6xl font-semibold mb-3">
+              6 triệu+
+            </div>
+            <div className="text-2xl text-black">Số Km khách hàng đã đi</div>
+          </div>
+        </div>
+      </div>
+      <News />
 
       <div className="h-[1000px]"></div>
     </>

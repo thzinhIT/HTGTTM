@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <>
       <div className=" ">
-        <div className="flex justify-between items-center py-5 gap-2 sticky top-0 z-50 bg-white w-full shadow-[0px_2px_4px_0px_#b6b6b680] ">
+        <div className="flex justify-between items-center py-5 gap-2 fixed  left-0 top-0 z-50 bg-white w-full shadow-[0px_2px_4px_0px_#b6b6b680] ">
           <div className="flex-shirk-0 pl-5">
             <Image src={logo} alt="logo" width={152} height={70} />
           </div>
