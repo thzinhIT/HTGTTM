@@ -1,13 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const News = () => {
   const [data, setData] = useState([
     {
       logo: "https://tngo.vn/Data/Logo-NhanDan%20(3).png",
       img: "https://tngo.vn/Data/edit-16-16941651063501736088332.png",
-      title: "Sớm nhân rộng mô hình xe đạp công cộng",
+      title: "Sớm nhân rộng mô hình xe đạp công cộng  ",
     },
     {
       logo: "https://tngo.vn/Data/Vietnam_Television_logo_from_2013.svg.png",
@@ -49,7 +50,7 @@ const News = () => {
   ]);
   return (
     <>
-      <div className="bg-[#F4F4FA] ">
+      <div className="bg-[#F4F4FA] mb-12 ">
         <div className="w-[1320px] mx-auto py-12">
           <div>
             <h3 className="text-center text-5xl text-black font-semibold mb-12">
@@ -63,7 +64,7 @@ const News = () => {
                 data.map((item, index) => {
                   return (
                     <div
-                      className="flex flex-col w-[25%] px-3"
+                      className="flex flex-col w-[25%] px-3 gap-2s"
                       key={index + "vinh"}
                     >
                       <div>
@@ -88,9 +89,18 @@ const News = () => {
                         layout="intrinsic"
                         width={306}
                         height={204}
-                        style={{ width: "100%", height: "auto" }}
+                        style={{
+                          width: "100%",
+                          height: "auto",
+                          objectFit: "contain",
+                        }}
                       />
-                      <p className=" text-black pt-2 pb-6">{item.title}</p>
+                      <div className="min-h-20">
+                        {/* <Link hr>  {item.title}</Link> */}
+                        <p className=" text-black pt-2 pb-6 flex-shrink-0">
+                          {item.title}
+                        </p>
+                      </div>
                     </div>
                   );
                 })}

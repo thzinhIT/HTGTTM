@@ -7,7 +7,7 @@ import * as React from "react";
 import Howuse from "./how-to-use";
 import TransactionTable from "./transaction-table";
 import News from "./news";
-
+import Moment from "./moment";
 export default function Home() {
   return (
     <>
@@ -154,8 +154,7 @@ export default function Home() {
         </div>
       </div>
       <News />
-
-      <div className="h-[1000px]"></div>
+      <Moment />
     </>
   );
 }
