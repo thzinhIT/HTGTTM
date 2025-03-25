@@ -15,7 +15,7 @@ const Header = () => {
             <ul className="flex  items-center flex-wrap justify-end ">
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
                 <div>
-                  <Link href="#"> Hướng dẫn sử dụng</Link>
+                  <Link href="/usermanual"> Hướng dẫn sử dụng</Link>
                 </div>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">

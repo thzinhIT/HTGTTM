@@ -31,8 +31,8 @@ const page = () => {
             <Howuse />
           </div>
 
-          <div>
-            <h2 className="text-4xl font-semibold">Điều khoản sử dụng</h2>
+          <div className="mt-20">
+            <h2 className="text-4xl font-semibold mb-8">Điều khoản sử dụng</h2>
             <div>
               {/* vế trái */}
               <div>
