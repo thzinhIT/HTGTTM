@@ -22,7 +22,7 @@ const Header = () => {
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
                 <div>
-                  <Link href="#"> Bảng giá</Link>
+                  <Link href="price"> Bảng giá</Link>
                 </div>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
