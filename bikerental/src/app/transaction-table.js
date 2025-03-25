@@ -78,9 +78,11 @@ const TransactionTable = () => {
 
   return (
     <>
-      <div className="mt-20 p-10 ">
+      <div className=" p-10 ">
         <div className="w-[1320px] mx-auto text-center">
-          <h2 className="   text-blue-700 text-5xl my-9 ">Bảng giá dịch vụ</h2>
+          <h2 className="   text-blue-700 text-5xl my-9 font-bold ">
+            Bảng giá dịch vụ
+          </h2>
           <div className="flex gap-4 items-center justify-center my-16">
             <button
               className={`text-blue-700 w-36 h-14 flex justify-center items-center rounded-4xl border-2 border-blue-500
@@ -163,7 +165,7 @@ const TransactionTable = () => {
               );
             })}
           <div
-            className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col w-[30%] bg-white"
+            className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col w-[30%]"
             key={currentIndex + "vinh"}
           >
             <div className="px-3 py-3">

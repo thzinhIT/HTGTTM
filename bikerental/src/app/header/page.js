@@ -8,8 +8,10 @@ const Header = () => {
     <>
       <div className=" ">
         <div className="flex justify-between items-center py-5 gap-2 fixed  left-0 top-0 z-50 bg-white w-full shadow-[0px_2px_4px_0px_#b6b6b680] pr-5 ">
-          <div className="flex-shirk-0 pl-5">
-            <Image src={logo} alt="logo" width={152} height={70} />
+          <div className="flex-shirk-0 pl-7">
+            <Link href={"/"}>
+              <Image src={logo} alt="logo" width={152} height={70} />
+            </Link>
           </div>
           <div className="flex justify-end flex-wrap pl-5">
             <ul className="flex  items-center flex-wrap justify-end ">
@@ -35,17 +37,17 @@ const Header = () => {
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
                 <div>
-                  <Link href="#">Tin tức </Link>
+                  <Link href="/newspaper">Tin tức </Link>
                 </div>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
                 <div>
-                  <Link href="#">Liên hệ</Link>
+                  <Link href="/contact">Liên hệ</Link>
                 </div>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
                 <div>
-                  <Link href="#">Chính sách bảo mật</Link>
+                  <Link href="/primary-security">Chính sách bảo mật</Link>
                 </div>
               </li>
             </ul>{" "}

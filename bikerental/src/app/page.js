@@ -125,7 +125,7 @@ export default function Home() {
         <Howuse />
       </div>
 
-      <div className=" ">
+      <div className=" mt-20">
         <TransactionTable />
       </div>
       <div className="py-12 w-[1320px] mx-auto mb-12 ">

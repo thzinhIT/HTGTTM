@@ -71,10 +71,9 @@ const Footer = () => {
               {/* Cột 4: Lặp nội dung (có thể xóa hoặc chỉnh sửa) */}
               <li className="flex flex-col w-[17%] text-white gap-5">
                 <h2 className="text-lg font-semibold">Khác</h2>
-                <p className="text-sm cursor-pointer">Hướng dẫn sử dụng</p>
-                <p className="text-sm cursor-pointer">Danh sách trạm</p>
-                <p className="text-sm cursor-pointer">Tin tức</p>
-                <p className="text-sm cursor-pointer">Liên hệ</p>
+                <p className="text-sm cursor-pointer">Bảng giá</p>
+                <p className="text-sm cursor-pointer">Bảng xếp hạng</p>
+                <p className="text-sm cursor-pointer">Thẻ RIFD</p>
               </li>
 
               {/* Cột 5: Tải ứng dụng */}
