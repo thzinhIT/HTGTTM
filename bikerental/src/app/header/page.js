@@ -1,9 +1,12 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import logo from "../../../public/assets/img/logo-vn.jpg";
 import icon from "../../../public/assets/img/vi.png";
 import Link from "next/link";
+import { useState } from "react";
 const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <>
       <div className=" ">
@@ -25,11 +28,44 @@ const Header = () => {
                   <Link href="price"> Bảng giá</Link>
                 </div>
               </li>
-              <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
+              {/* <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300 relative">
+                <div>
+                  <Link href="#">dịch vụ</Link>
+                </div>
+              </li> */}
+
+              {/* Dịch vụ */}
+              <li
+                className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300 relative"
+                onMouseEnter={() => setIsOpen(true)}
+                onMouseLeave={() => setIsOpen(false)}
+              >
                 <div>
                   <Link href="#">Dịch vụ</Link>
                 </div>
+
+                {/* Menu con */}
+                {isOpen && (
+                  <ul className="absolute left-0 mt-4 w-56 bg-white  rounded-md z-50 ">
+                    <li className="px-4 py-2 hover:bg-blue-200">
+                      <Link href="rank">Bảng xếp hạng</Link>
+                    </li>
+                    <li className="px-4 py-2 hover:bg-blue-200">
+                      <Link href="#">Thẻ trả trước TapGo</Link>
+                    </li>
+                    <li className="px-4 py-2 hover:bg-blue-200">
+                      <Link href="#">Thẻ RFID</Link>
+                    </li>
+                    <li className="px-4 py-2  hover:bg-blue-200">
+                      <Link href="#">Dịch vụ - sự kiện</Link>
+                    </li>
+                    <li className="px-4 py-2 hover:bg-blue-200">
+                      <Link href="#">Bảo hiểm Trip Care</Link>
+                    </li>
+                  </ul>
+                )}
               </li>
+
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
                 <div>
                   <Link href="#">Danh sách trạm</Link>
@@ -64,8 +100,8 @@ const Header = () => {
               <Image
                 src={icon}
                 alt="icon"
-                width={35}
-                height={35}
+                width={25}
+                height={25}
                 className="self-center cursor-pointer"
               />
             </div>
