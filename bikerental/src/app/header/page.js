@@ -51,10 +51,10 @@ const Header = () => {
                       <Link href="#">Thẻ trả trước TapGo</Link>
                     </li>
                     <li className="px-4 py-2 hover:bg-blue-200">
-                      <Link href="rifd">Thẻ RFID</Link>
+                      <Link href="/rifd">Thẻ RFID</Link>
                     </li>
                     <li className="px-4 py-2  hover:bg-blue-200">
-                      <Link href="rentbike">Dịch vụ - sự kiện</Link>
+                      <Link href="/rentbike">Dịch vụ - sự kiện</Link>
                     </li>
                     <li className="px-4 py-2 hover:bg-blue-200">
                       <Link href="#">Bảo hiểm Trip Care</Link>

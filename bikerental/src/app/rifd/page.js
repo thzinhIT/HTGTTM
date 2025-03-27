@@ -67,7 +67,7 @@ const Rifd = () => {
               </div>
 
               <div className="w-full mt-2">
-                <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl">
+                <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900">
                   Đăng nhập để mua thẻ
                 </button>
               </div>
@@ -103,7 +103,7 @@ const Rifd = () => {
               </div>
 
               <div className="w-full mt-2">
-                <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl">
+                <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900">
                   Đăng nhập để mua thẻ
                 </button>
               </div>
@@ -142,7 +142,7 @@ const Rifd = () => {
               </div>
 
               <div className="w-full mt-2 relative bottom-0">
-                <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl">
+                <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900">
                   Đăng nhập để mua thẻ
                 </button>
               </div>
