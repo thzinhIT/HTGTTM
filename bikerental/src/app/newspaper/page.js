@@ -2,9 +2,10 @@
 import React from "react";
 import Image from "next/image";
 import avatar from "../../../public/assets/img/banner-news (1).jpg";
-import Data from "../../../public/assets/data/mock-data";
+import Data from "../../../public/assets/mock-data/mock-data";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -19,6 +20,25 @@ const Newspaper = () => {
   const handleOnClickItem = (item) => {
     router.push(`/newspaper/${item}`);
   };
+
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(6);
+  const [listBlog, setListBlog] = useState(Data.slice(start, end));
+  useEffect(() => {
+    setListBlog(Data.slice(start, end));
+  }, [end, start]);
+  const handleOnClickPrev = () => {
+    setStart(start - 6);
+    setEnd(end - 6);
+  };
+  const handleOnClickNext = () => {
+    setStart(start + 6);
+    setEnd(end + 6);
+  };
+
+  const totalPages =
+    Data.length % 6 === 0 ? Data.length / 6 : Data.length / 6 + 1;
+
   return (
     <>
       <div>
@@ -36,9 +56,9 @@ const Newspaper = () => {
           </div>
         </div>
         <div className="w-[1320px] mx-auto py-12 px-3">
-          {Data.length > 0 ? (
+          {listBlog.length > 0 ? (
             <div className="w-full flex gap-6 flex-wrap">
-              {Data.map((item, index) => {
+              {listBlog.map((item, index) => {
                 return (
                   <React.Fragment key={item.id}>
                     {" "}
@@ -72,19 +92,26 @@ const Newspaper = () => {
             <div> không có tin tức j hết</div>
           )}
         </div>
-        <Pagination>
+        <Pagination className="mb-10">
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious href="#" />
+              <PaginationPrevious
+                onClick={() => {
+                  if (start > 0) handleOnClickPrev();
+                }}
+                className={start === 0 ? "opacity-50 cursor-not-allowed" : ""}
+              />
             </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
+
+            <PaginationItem className="ml-16">
+              <PaginationNext
+                onClick={() => {
+                  if (end < Data.length) handleOnClickNext();
+                }}
+                className={
+                  end === Data.length ? "opacity-50 cursor-not-allowed" : ""
+                }
+              />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

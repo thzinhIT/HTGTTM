@@ -48,16 +48,13 @@ const Header = () => {
                 {isOpen && (
                   <ul className="absolute left-0 mt-4 w-56 bg-white  rounded-md z-50 ">
                     <li className="px-4 py-2 hover:bg-blue-200">
-                      <Link href="rank">Bảng xếp hạng</Link>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-blue-200">
                       <Link href="#">Thẻ trả trước TapGo</Link>
                     </li>
                     <li className="px-4 py-2 hover:bg-blue-200">
-                      <Link href="#">Thẻ RFID</Link>
+                      <Link href="rifd">Thẻ RFID</Link>
                     </li>
                     <li className="px-4 py-2  hover:bg-blue-200">
-                      <Link href="#">Dịch vụ - sự kiện</Link>
+                      <Link href="rentbike">Dịch vụ - sự kiện</Link>
                     </li>
                     <li className="px-4 py-2 hover:bg-blue-200">
                       <Link href="#">Bảo hiểm Trip Care</Link>
