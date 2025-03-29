@@ -60,6 +60,10 @@ const LeafletMap = () => {
     });
 
     locations.forEach((loc) => {
+      if (!loc.lat || !loc.lng || isNaN(loc.lat) || isNaN(loc.lng)) {
+        console.error("Invalid location data:", loc);
+        return;
+      }
       L.marker([loc.lat, loc.lng], { icon: bikeIcon })
         .addTo(map)
         .bindPopup(loc.name);

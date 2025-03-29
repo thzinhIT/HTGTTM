@@ -147,7 +147,7 @@ export default function Home() {
           </div>
           <div className="text-center w-[33%]">
             <div className="text-green-500 text-6xl font-semibold mb-3">
-              6 triệu+
+              600,000+
             </div>
             <div className="text-2xl text-black">Số Km khách hàng đã đi</div>
           </div>

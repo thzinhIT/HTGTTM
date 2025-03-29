@@ -5,8 +5,10 @@ import logo from "../../../public/assets/img/logo-vn.jpg";
 import icon from "../../../public/assets/img/vi.png";
 import Link from "next/link";
 import { useState } from "react";
+import LoginModal from "@/components/login-form";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   return (
     <>
       <div className=" ">
@@ -88,6 +90,7 @@ const Header = () => {
              border-blue-400 border-solid border-1
               rounded-2xl text-center box-border 
               self-center cursor-pointer hover:bg-blue-500 hover:text-white duration-300"
+                onClick={() => setIsLoginOpen(true)}
               >
                 Đăng nhập
               </button>
@@ -99,6 +102,10 @@ const Header = () => {
                 className="self-center cursor-pointer"
               />
             </div>
+            <LoginModal
+              open={isLoginOpen}
+              onClose={() => setIsLoginOpen(false)}
+            />
           </div>
         </div>
       </div>
