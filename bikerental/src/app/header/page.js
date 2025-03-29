@@ -48,16 +48,13 @@ const Header = () => {
                 {isOpen && (
                   <ul className="absolute left-0 mt-4 w-56 bg-white  rounded-md z-50 ">
                     <li className="px-4 py-2 hover:bg-blue-200">
-                      <Link href="#">Thẻ trả trước TapGo</Link>
-                    </li>
-                    <li className="px-4 py-2 hover:bg-blue-200">
                       <Link href="/rifd">Thẻ RFID</Link>
                     </li>
                     <li className="px-4 py-2  hover:bg-blue-200">
                       <Link href="/rentbike">Dịch vụ - sự kiện</Link>
                     </li>
-                    <li className="px-4 py-2 hover:bg-blue-200">
-                      <Link href="#">Bảo hiểm Trip Care</Link>
+                    <li className="px-4 py-2  hover:bg-blue-200">
+                      <Link href="#">bảo hiểm</Link>
                     </li>
                   </ul>
                 )}
@@ -65,7 +62,7 @@ const Header = () => {
 
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
                 <div>
-                  <Link href="#">Danh sách trạm</Link>
+                  <Link href="/station-list">Danh sách trạm</Link>
                 </div>
               </li>
               <li className="px-8 py-4 text-lg font-medium hover:bg-blue-300 duration-300">
