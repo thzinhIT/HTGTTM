@@ -1,30 +1,28 @@
-import mysql from "mysql2/promise";
+import pool from "@/db.js"; // Đảm bảo đường dẫn đúng
+import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 export async function POST(req) {
     try {
         const { email, password, username, phone, role } = await req.json();
 
-        // Mã hóa mật khẩu trước khi lưu vào database
-        const hashedPassword = await bcrypt.hash(password, 10); // 10 là số vòng mã hóa (mạnh hơn nếu lớn hơn)
+        // Mã hóa mật khẩu
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Sử dụng createPool thay vì createConnection
-        const pool = mysql.createPool({
-            host: "127.0.0.1",
-            user: "root",
-            password: "",
-            database: "bikerental",
-        });
-
-        // Thêm role vào câu lệnh INSERT
+        // Lưu vào database
         await pool.execute(
             "INSERT INTO users (email, password, username, phone, role) VALUES (?, ?, ?, ?, ?)",
-            [email, hashedPassword, username, phone, role] // Dùng hashedPassword thay vì password gốc
+            [email, hashedPassword, username, phone, role]
         );
 
-        await pool.end();
+        // Tạo JWT token
+        const token = jwt.sign(
+            { email, username, role },
+            "mysecretkey", // Nên dùng biến môi trường trong thực tế
+            { expiresIn: "1h" }
+        );
 
-        return new Response(JSON.stringify({ message: "Đăng ký thành công!" }), {
+        return new Response(JSON.stringify({ message: "Đăng ký thành công!", token }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });

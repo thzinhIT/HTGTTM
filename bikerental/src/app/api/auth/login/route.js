@@ -1,19 +1,12 @@
-import mysql from "mysql2/promise";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import pool from '@/db.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 export async function POST(req) {
     try {
         const { email, password } = await req.json();
 
-        // Sử dụng createPool thay vì createConnection
-        const pool = mysql.createPool({
-            host: "127.0.0.1",
-            user: "root",
-            password: "",
-            database: "bikerental",
-        });
-
+       
         // Kiểm tra email trong database
         const [rows] = await pool.execute(
             "SELECT * FROM users WHERE email = ?",
