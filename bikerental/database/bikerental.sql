@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 30, 2025 lúc 04:20 AM
+-- Thời gian đã tạo: Th3 30, 2025 lúc 04:50 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.1.25
 
@@ -31,17 +31,19 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `phone` varchar(20) NOT NULL
+  `username` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `role` varchar(50) DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `password`, `username`, `phone`) VALUES
-(1, 'test@example.com', '123456', 'Test User', '0123456789'),
-(4, 'kiritanitaiyo@gmail.com', '25052004', 'Tien', '088312227');
+INSERT INTO `users` (`id`, `email`, `password`, `username`, `phone`, `role`) VALUES
+(1, 'test@example.com', '$2a$10$8iGu6ouD7.DjvhXZGicV7eT3qk7Wh0UdP5nWRAFG7f/a9vC1u4mjW', 'Test User', '0123456789', 'user'),
+(2, 'admin@example.com', '$2a$10$wZ2fsJMTb7x2Xl5E/EHgJOhLfB9G.G3IV4Z1eGc0PBM5zAfhy5Q8O', 'Admin User', '0123456789', 'admin'),
+(3, 'user@example.com', '$2b$10$uj7RFtsWK4xBdTyVbI5ppuLnpAEnU8xtvklc4xMIajt8rPWdrB7Ii', 'User Name', '0123456789', 'user');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -62,7 +64,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

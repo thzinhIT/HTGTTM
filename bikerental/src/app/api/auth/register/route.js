@@ -1,8 +1,12 @@
 import mysql from "mysql2/promise";
+import bcrypt from "bcryptjs";
 
 export async function POST(req) {
     try {
-        const { email, password, username, phone } = await req.json();
+        const { email, password, username, phone, role } = await req.json();
+
+        // Mã hóa mật khẩu trước khi lưu vào database
+        const hashedPassword = await bcrypt.hash(password, 10); // 10 là số vòng mã hóa (mạnh hơn nếu lớn hơn)
 
         // Sử dụng createPool thay vì createConnection
         const pool = mysql.createPool({
@@ -12,9 +16,10 @@ export async function POST(req) {
             database: "bikerental",
         });
 
+        // Thêm role vào câu lệnh INSERT
         await pool.execute(
-            "INSERT INTO users (email, password, username, phone) VALUES (?, ?, ?, ?)",
-            [email, password, username, phone]
+            "INSERT INTO users (email, password, username, phone, role) VALUES (?, ?, ?, ?, ?)",
+            [email, hashedPassword, username, phone, role] // Dùng hashedPassword thay vì password gốc
         );
 
         await pool.end();

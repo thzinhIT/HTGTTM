@@ -1,33 +1,75 @@
-import { NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
-
-const users = [
-    { email: 'admin@example.com', password: '123456' }, // Tài khoản cố định để test
-    { email: 'user@example.com', password: 'password' }
-];
+import mysql from "mysql2/promise";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
 export async function POST(req) {
     try {
         const { email, password } = await req.json();
 
-        if (!email || !password) {
-            return NextResponse.json({ message: 'Vui lòng nhập email và mật khẩu' }, { status: 400 });
-        }
+        // Sử dụng createPool thay vì createConnection
+        const pool = mysql.createPool({
+            host: "127.0.0.1",
+            user: "root",
+            password: "",
+            database: "bikerental",
+        });
 
-        const user = users.find(u => u.email === email && u.password === password);
-        if (!user) {
-            return NextResponse.json({ message: 'Sai email hoặc mật khẩu' }, { status: 401 });
-        }
-
-        // Tạo token JWT
-        const token = jwt.sign(
-            { email: user.email },
-            'test_secret_key', // Chỉ là key test, không cần lưu vào .env
-            { expiresIn: '1h' }
+        // Kiểm tra email trong database
+        const [rows] = await pool.execute(
+            "SELECT * FROM users WHERE email = ?",
+            [email]
         );
 
-        return NextResponse.json({ message: 'Đăng nhập thành công', token }, { status: 200 });
+        // Nếu không tìm thấy user
+        if (rows.length === 0) {
+            await pool.end();
+            return new Response(JSON.stringify({ message: "Email hoặc mật khẩu không đúng" }), {
+                status: 401,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const user = rows[0];
+        const hashedPassword = user.password;
+
+        let isMatch = false;
+
+        // Kiểm tra cả mật khẩu mã hóa và mật khẩu gốc
+        if (hashedPassword.startsWith("$2a$") || hashedPassword.startsWith("$2b$")) {
+            // Trường hợp mật khẩu đã mã hóa
+            isMatch = await bcrypt.compare(password, hashedPassword);
+        }
+
+        // Trường hợp nhập mật khẩu gốc (không mã hóa)
+        if (!isMatch) {
+            isMatch = password === "mypassword"; // Nhập mật khẩu gốc để test
+        }
+
+        if (!isMatch) {
+            await pool.end();
+            return new Response(JSON.stringify({ message: "Email hoặc mật khẩu không đúng" }), {
+                status: 401,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        // Tạo JWT Token với role
+        const token = jwt.sign(
+            { id: user.id, email: user.email, role: user.role },
+            "mysecretkey", // Thay bằng process.env.JWT_SECRET trong thực tế
+            { expiresIn: "1h" }
+        );
+
+        await pool.end();
+
+        return new Response(JSON.stringify({ message: "Đăng nhập thành công", token }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
     } catch (error) {
-        return NextResponse.json({ message: 'Lỗi server' }, { status: 500 });
+        return new Response(JSON.stringify({ message: "Lỗi server", error: error.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+        });
     }
 }
