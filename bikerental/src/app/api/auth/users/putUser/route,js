@@ -8,8 +8,8 @@ export async function PUT(req) {
         }
 
         await pool.execute(
-            "UPDATE users SET email = ?, username = ?, phone = ?, role = ? WHERE id = ?",
-            [email, username, phone, role || "user", user_id]
+            "UPDATE users SET email = ?, username = ?, phone = ? WHERE id = ?",
+            [email, username, phone || "user", user_id]
         );
 
         return Response.json({ message: "Cập nhật thông tin thành công!" }, { status: 200 });
