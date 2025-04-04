@@ -10,11 +10,10 @@ export async function POST(req) {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const userRole = role || "user";
 
         await pool.execute(
             "INSERT INTO users (email, password, username, phone) VALUES (?, ?, ?, ?)",
-            [email, hashedPassword, username, phone, userRole]
+            [email, hashedPassword, username, phone]
         );
 
         const token = jwt.sign({ email, username, password }, "mysecretkey", { expiresIn: "1h" });

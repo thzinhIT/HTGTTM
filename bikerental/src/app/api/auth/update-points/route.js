@@ -1,48 +1,15 @@
 import pool from "@/db.js";
 
-// Cập nhật điểm thưởng sau khi thanh toán bằng tiền
-export async function updatePoints(userId, theId, thanhTien) {
+// Hàm nạp điểm vào thẻ
+export async function napDiem(userId, theId, soDiemNap) {
     try {
-        if (!userId || !theId || !thanhTien) {
-            throw new Error("Thiếu thông tin cần thiết!");
+        if (!userId || !theId || !soDiemNap) {
+            throw new Error("Thiếu thông tin cần thiết để nạp điểm!");
         }
 
-        // Tính số điểm thưởng dựa trên số tiền thanh toán (1 điểm = 1000 đồng)
-        const diemThuongMoi = Math.floor(thanhTien / 1000);
-
-        // Lấy thông tin hiện tại của thẻ
-        const [rows] = await pool.execute("SELECT so_du_diem, diem_con_lai FROM the_nguoi_dung WHERE the_id = ?", [theId]);
-
-        if (rows.length === 0) {
-            throw new Error("Thẻ không tồn tại!");
-        }
-
-        const { so_du_diem, diem_con_lai } = rows[0];
-        const diemMoi = parseInt(diem_con_lai) + diemThuongMoi;
-
-        // Cập nhật thông tin điểm mới
-        await pool.execute(
-            "UPDATE the_nguoi_dung SET so_du_diem = ?, diem_con_lai = ? WHERE the_id = ?",
-            [so_du_diem + diemThuongMoi, diemMoi, theId]
-        );
-
-        console.log(`Điểm thưởng đã được cập nhật thành công! Thẻ ID: ${theId}`);
-    } catch (error) {
-        console.error("Lỗi khi cập nhật điểm thưởng:", error.message);
-        throw new Error("Không thể cập nhật điểm thưởng!");
-    }
-}
-
-// Thanh toán bằng điểm (trừ điểm đã sử dụng và hiển thị số điểm đã dùng)
-export async function thanhToanBangPoint(userId, theId, diemSuDung) {
-    try {
-        if (!userId || !theId || !diemSuDung) {
-            throw new Error("Thiếu thông tin cần thiết để thực hiện thanh toán!");
-        }
-
-        // Lấy thông tin hiện tại của thẻ
+        // Lấy thông tin loại thẻ và số dư hiện tại
         const [rows] = await pool.execute(
-            "SELECT diem_da_su_dung, diem_con_lai FROM the_nguoi_dung WHERE the_id = ?",
+            "SELECT loai_the, so_du_diem FROM the_nguoi_dung WHERE the_id = ?",
             [theId]
         );
 
@@ -50,50 +17,62 @@ export async function thanhToanBangPoint(userId, theId, diemSuDung) {
             throw new Error("Thẻ không tồn tại!");
         }
 
-        const { diem_da_su_dung, diem_con_lai } = rows[0];
+        const { loai_the, so_du_diem } = rows[0];
+        let soDuToiThieu;
 
-        if (diem_con_lai < diemSuDung) {
-            throw new Error("Số điểm không đủ để thanh toán!");
+        // Xác định số dư tối thiểu dựa trên loại thẻ
+        switch (loai_the.toLowerCase()) {
+            case "rideup":
+                soDuToiThieu = 100000;
+                break;
+            case "premium":
+                soDuToiThieu = 1000000;
+                break;
+            case "vip":
+                soDuToiThieu = 5000000;
+                break;
+            default:
+                throw new Error("Loại thẻ không hợp lệ!");
         }
 
-        // Tính toán giá trị mới sau khi sử dụng điểm
-        const diemDaSuDungMoi = parseInt(diem_da_su_dung) + parseInt(diemSuDung);
-        const diemConLaiMoi = parseInt(diem_con_lai) - parseInt(diemSuDung);
+        // Kiểm tra nếu số dư sau khi nạp không đạt tối thiểu
+        const soDuMoi = parseFloat(so_du_diem) + parseFloat(soDiemNap);
+        if (soDuMoi < soDuToiThieu) {
+            throw new Error(
+                `Số dư sau khi nạp không đạt yêu cầu tối thiểu (${soDuToiThieu} điểm) cho thẻ ${loai_the}.`
+            );
+        }
 
-        // Cập nhật thông tin thẻ trong database
+        // Cập nhật số dư mới vào cơ sở dữ liệu
         await pool.execute(
-            "UPDATE the_nguoi_dung SET diem_da_su_dung = ?, diem_con_lai = ? WHERE the_id = ?",
-            [diemDaSuDungMoi, diemConLaiMoi, theId]
+            "UPDATE the_nguoi_dung SET so_du_diem = ? WHERE the_id = ?",
+            [soDuMoi, theId]
         );
 
-        console.log(`Điểm đã được trừ thành công! Tổng điểm đã sử dụng: ${diemDaSuDungMoi}. Thẻ ID: ${theId}`);
+        console.log(
+            `Nạp điểm thành công! Tổng số dư hiện tại: ${soDuMoi} điểm. Loại thẻ: ${loai_the}, Thẻ ID: ${theId}`
+        );
+        return { message: "Nạp điểm thành công!", soDuMoi, loai_the };
     } catch (error) {
-        console.error("Lỗi khi thanh toán bằng điểm:", error.message);
-        throw new Error("Không thể thực hiện thanh toán bằng điểm!");
+        console.error("Lỗi khi nạp điểm:", error.message);
+        throw new Error("Không thể thực hiện nạp điểm!");
     }
 }
 
-// Xử lý API POST: Tích hợp thanh toán bằng tiền và điểm
+// Xử lý API POST: Nạp điểm
 export async function POST(req) {
     try {
-        const { userId, theId, thanhTien, diemSuDung, loaiThanhToan } = await req.json();
+        const { userId, theId, soDiemNap } = await req.json();
 
-        if (!userId || !theId || (!thanhTien && !diemSuDung)) {
+        if (!userId || !theId || !soDiemNap) {
             return Response.json({ message: "Thiếu thông tin cần thiết!" }, { status: 400 });
         }
 
-        if (loaiThanhToan === "tien") {
-            // Thanh toán bằng tiền và cập nhật điểm thưởng
-            await updatePoints(userId, theId, thanhTien);
-        } else if (loaiThanhToan === "diem") {
-            // Thanh toán bằng điểm
-            await thanhToanBangPoint(userId, theId, diemSuDung);
-        } else {
-            return Response.json({ message: "Loại thanh toán không hợp lệ!" }, { status: 400 });
-        }
+        // Thực hiện nạp điểm
+        const result = await napDiem(userId, theId, soDiemNap);
 
-        return Response.json({ message: "Thanh toán thành công!" }, { status: 200 });
+        return Response.json({ message: result.message, soDuMoi: result.soDuMoi, loaiThe: result.loai_the }, { status: 200 });
     } catch (error) {
-        return Response.json({ message: "Lỗi khi xử lý thanh toán!", error: error.message }, { status: 500 });
+        return Response.json({ message: "Lỗi khi nạp điểm!", error: error.message }, { status: 500 });
     }
 }
