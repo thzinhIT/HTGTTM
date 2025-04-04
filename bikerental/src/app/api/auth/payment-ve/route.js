@@ -3,53 +3,82 @@ import nodemailer from "nodemailer";
 
 // Xử lý thanh toán giỏ hàng (bằng chuyển khoản hoặc điểm)
 export async function POST(req) {
+    let connection;
     try {
         const { nguoiDungId, email, phuongThucThanhToan, theId, veId, diemSuDung } = await req.json();
 
-        if (!nguoiDungId || !email || !phuongThucThanhToan) {
+        // Kiểm tra thông tin bắt buộc
+        if (!nguoiDungId || !email || !phuongThucThanhToan || !veId) {
             return Response.json({ message: "Thiếu thông tin cần thiết!" }, { status: 400 });
         }
+
+        // Kiểm tra thêm cho thanh toán bằng điểm
+        if (phuongThucThanhToan === "diem" && (!theId || !diemSuDung || diemSuDung <= 0)) {
+            return Response.json({ message: "Thông tin điểm hoặc thẻ không hợp lệ!" }, { status: 400 });
+        }
+
+        // Bắt đầu transaction
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
 
         let trangThaiGiaoDich = "thanh_cong";
 
         if (phuongThucThanhToan === "chuyen_khoan" || phuongThucThanhToan === "diem") {
             // Ghi giao dịch vào bảng giao_dich
-            await pool.execute(
+            await connection.execute(
                 "INSERT INTO giao_dich (nguoi_dung_id, email, phuong_thuc_thanh_toan, trang_thai_giao_dich) VALUES (?, ?, ?, ?)",
                 [nguoiDungId, email, phuongThucThanhToan, trangThaiGiaoDich]
             );
 
             // Nếu thanh toán bằng điểm, trừ điểm trong thẻ
             if (phuongThucThanhToan === "diem") {
-                await thanhToanBangPoint(nguoiDungId, theId, diemSuDung);
+                await thanhToanBangPoint(nguoiDungId, theId, diemSuDung, connection);
             }
 
-            // Thêm dữ liệu vào bảng thong_tin_nguoi_dung
-            await insertGioHang(nguoiDungId, theId, veId);
+            // Lấy thông tin vé từ bảng ve
+            const [veRows] = await connection.execute("SELECT ten_ve FROM ve WHERE ve_id = ?", [veId]);
+            if (veRows.length === 0) {
+                throw new Error("Vé không tồn tại!");
+            }
+            const { ten_ve } = veRows[0];
+
+            // Thêm dữ liệu vào bảng ve_nguoi_dung (thay insertGioHang)
+            await insertVeNguoiDung(veId, ten_ve, 1, connection);
+
+            // Commit transaction trước khi gửi email
+            await connection.commit();
 
             // Gửi email xác nhận giao dịch
             await sendEmail(email, "Xác nhận giao dịch giỏ hàng", `Giao dịch giỏ hàng của bạn đã được thực hiện thành công!`);
+
             return Response.json({ message: "Thanh toán giỏ hàng thành công!" }, { status: 201 });
         } else {
             return Response.json({ message: "Phương thức thanh toán không hợp lệ!" }, { status: 400 });
         }
     } catch (error) {
+        // Nếu có lỗi, rollback transaction
+        if (connection) {
+            await connection.rollback();
+        }
         return Response.json({ message: "Lỗi khi xử lý thanh toán giỏ hàng!", error: error.message }, { status: 500 });
+    } finally {
+        // Đảm bảo giải phóng connection
+        if (connection) {
+            connection.release();
+        }
     }
 }
 
 // Thêm dữ liệu vào bảng ve_nguoi_dung
-async function insertVeNguoiDung(veId, tenVe, soLuong) {
+async function insertVeNguoiDung(nguoiDungId, veId, tenVe, soLuong, connection) {
     try {
-        // Xác định ngày mua và ngày hết hạn (ví dụ: vé có thời hạn 30 ngày kể từ ngày mua)
         const ngayMua = new Date();
         const ngayHetHan = new Date();
-        ngayHetHan.setDate(ngayMua.getDate() + 30); // Giả định vé hết hạn sau 30 ngày
+        ngayHetHan.setDate(ngayMua.getDate() + 30);
 
-        // Thêm thông tin vào bảng ve_nguoi_dung
-        await pool.execute(
-            "INSERT INTO ve_nguoi_dung (ve_id, ten_ve, ngay_mua, ngay_het_han, so_luong) VALUES (?, ?, ?, ?, ?)",
-            [veId, tenVe, ngayMua.toISOString().split('T')[0], ngayHetHan.toISOString().split('T')[0], soLuong]
+        await connection.execute(
+            "INSERT INTO ve_nguoi_dung (id, ve_id, ten_ve, ngay_mua, ngay_het_han, so_luong) VALUES (?, ?, ?, ?, ?, ?)",
+            [nguoiDungId, veId, tenVe, ngayMua.toISOString().split('T')[0], ngayHetHan.toISOString().split('T')[0], soLuong]
         );
 
         console.log("Dữ liệu vé đã được thêm vào bảng ve_nguoi_dung thành công!");
@@ -60,17 +89,16 @@ async function insertVeNguoiDung(veId, tenVe, soLuong) {
 }
 
 
-
 // Thanh toán bằng điểm
-async function thanhToanBangPoint(userId, theId, diemSuDung) {
+async function thanhToanBangPoint(userId, theId, diemSuDung, connection) {
     try {
-        const [rows] = await pool.execute(
-            "SELECT diem_da_su_dung, diem_con_lai FROM the_nguoi_dung WHERE the_id = ?",
-            [theId]
+        const [rows] = await connection.execute(
+            "SELECT diem_da_su_dung, diem_con_lai FROM the_nguoi_dung WHERE the_id = ? AND id = ?",
+            [theId, userId]
         );
 
         if (rows.length === 0) {
-            throw new Error("Thẻ không tồn tại!");
+            throw new Error("Thẻ không tồn tại hoặc không thuộc về người dùng này!");
         }
 
         const { diem_da_su_dung, diem_con_lai } = rows[0];
@@ -81,9 +109,9 @@ async function thanhToanBangPoint(userId, theId, diemSuDung) {
         const diemDaSuDungMoi = parseInt(diem_da_su_dung) + parseInt(diemSuDung);
         const diemConLaiMoi = parseInt(diem_con_lai) - parseInt(diemSuDung);
 
-        await pool.execute(
-            "UPDATE the_nguoi_dung SET diem_da_su_dung = ?, diem_con_lai = ? WHERE the_id = ?",
-            [diemDaSuDungMoi, diemConLaiMoi, theId]
+        await connection.execute(
+            "UPDATE the_nguoi_dung SET diem_da_su_dung = ?, diem_con_lai = ? WHERE the_id = ? AND id = ?",
+            [diemDaSuDungMoi, diemConLaiMoi, theId, userId]
         );
 
         console.log(`Điểm đã được trừ thành công! Tổng điểm đã sử dụng: ${diemDaSuDungMoi}. Thẻ ID: ${theId}`);
@@ -98,13 +126,13 @@ async function sendEmail(to, subject, message) {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: "your-email@gmail.com",
-            pass: "your-email-password",
+            user: process.env.EMAIL_USER || "your-email@gmail.com",
+            pass: process.env.EMAIL_PASS || "your-email-password",
         },
     });
 
     const mailOptions = {
-        from: "your-email@gmail.com",
+        from: process.env.EMAIL_USER || "your-email@gmail.com",
         to,
         subject,
         text: message,

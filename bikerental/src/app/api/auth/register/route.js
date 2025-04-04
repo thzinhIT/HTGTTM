@@ -4,8 +4,7 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req) {
     try {
-        const { email, password, username, phone, role } = await req.json();
-        const userRole = role || "user"; // Mặc định là user
+        const { email, password, username, phone } = await req.json();
 
         // Kiểm tra xem email hoặc số điện thoại đã tồn tại chưa
         const [existingUsers] = await pool.execute(
@@ -29,8 +28,8 @@ export async function POST(req) {
 
         // Lưu vào database
         await pool.execute(
-            "INSERT INTO users (email, password, username, phone, role) VALUES (?, ?, ?, ?, ?)",
-            [email, hashedPassword, username, phone, userRole]
+            "INSERT INTO users (email, password, username, phone) VALUES (?, ?, ?, ?)",
+            [email, hashedPassword, username, phone]
         );
 
         // Tạo JWT token
