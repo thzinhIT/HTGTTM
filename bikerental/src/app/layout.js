@@ -5,6 +5,7 @@ import Footer from "./footer/page";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -32,6 +33,19 @@ export default function RootLayout({ children }) {
 
         {/* Footer luôn hiển thị */}
         <Footer />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
       </body>
     </html>
   );

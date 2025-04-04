@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-
+import { toast } from "react-toastify";
 const registerSchema = z.object({
   email: z
     .string()
@@ -40,13 +40,32 @@ export default function RegisterModal({ open, onClose }) {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  const fectRegister = async (formData) => {
+    const res = await fetch(`http://localhost:3000/api/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      toast.success(data.message);
+      onClose(); // Đóng modal sau khi đăng ký thành công
+    } else {
+      toast.error(data.message);
+    }
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
       registerSchema.parse(formData);
+
+      fectRegister(formData);
+      // Reset form data and errors
+      setFormData({ email: "", username: "", password: "", phone: "" });
+      setErrors({});
       console.log("Register data:", formData);
-      onClose(); // Đóng modal sau khi đăng ký thành công
     } catch (error) {
       const fieldErrors = {};
       error.errors.forEach((err) => {

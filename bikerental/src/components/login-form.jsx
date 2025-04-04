@@ -73,10 +73,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import RegisterModal from "./RegisterModal";
+import RegisterModal from "../app/register/RegisterModal";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 const loginSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
@@ -93,9 +94,24 @@ export default function LoginModal({ open, onClose }) {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data) => {
-    console.log("Login data:", data);
-    onClose(); // Đóng modal sau khi đăng nhập
+  const onSubmit = async (data) => {
+    const res = await fetch("http://localhost:3000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
+    });
+    const req = await res.json();
+    console.log("checktokent", req);
+    const token = req.token;
+    localStorage.setItem("token", token);
+    if (res.ok) {
+      toast.success(req.message);
+      window.location.reload();
+    } else toast.error(req.message);
+    onClose();
   };
 
   return (

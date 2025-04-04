@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FaRegClock } from "react-icons/fa6";
 import { CiWarning } from "react-icons/ci";
 import { CiMoneyCheck1 } from "react-icons/ci";
+import { usePathname } from "next/navigation";
 
 const TransactionTable = () => {
   const [currentIndex, setCurrentIndex] = useState(2); // Bắt đầu từ index 2
@@ -57,6 +58,8 @@ const TransactionTable = () => {
       time: "30 ngày kể từ ngày đăng kí",
     },
   ]);
+  const pathName = usePathname();
+  const checkPathName = pathName === "/price";
   const [tram, setTram] = useState([
     {
       model: "lượt",
@@ -121,10 +124,10 @@ const TransactionTable = () => {
             currentData.slice(0, 2).map((item, index) => {
               return (
                 <div
-                  className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col w-[30%]"
+                  className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col justify-between w-[30%] min-h-[430px]    "
                   key={index + "vinh"}
                 >
-                  <div className="px-3 py-3">
+                  <div className="px-3 py-3  flex flex-col ">
                     <h3 className="mt-10 mb-2 text-center text-4xl font-semibold text-blue-700">
                       Vé {item.model}
                     </h3>
@@ -134,7 +137,7 @@ const TransactionTable = () => {
                       </span>{" "}
                       điểm TNGo/lượt
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 justify-between">
                       {" "}
                       <div className="flex items-center gap-1">
                         {" "}
@@ -153,7 +156,7 @@ const TransactionTable = () => {
                         </div>
                       )}
                       {item.warm && (
-                        <div className="flex items-start gap-1 mb-16">
+                        <div className="flex items-start gap-1 flex-1 ">
                           {" "}
                           <CiWarning className="text-yellow-500 text-xl flex-shrink-0" />
                           <p> Lưu ý: {item.warm}</p>
@@ -161,20 +164,28 @@ const TransactionTable = () => {
                       )}
                     </div>
                   </div>
+                  {checkPathName && (
+                    <div className="mb-3 w-full">
+                      <button className="bg-blue-600 text-white py-2 px-4 mx-auto block w-[70%] rounded-lg ">
+                        {" "}
+                        Đăng nhập để mua
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}
           <div
-            className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col w-[30%]"
+            className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col justify-between w-[30%] min-h-[430px]    "
             key={currentIndex + "vinh"}
           >
-            <div className="px-3 py-3">
+            <div className="px-3 py-3 flex flex-col">
               <h3 className="mt-10 mb-2 text-center text-4xl font-semibold text-blue-700">
                 Vé Tháng
               </h3>
               {currentData.length > 2 ? (
                 <>
-                  <div className="my-10 text-center">
+                  <div className="my-10 text-center   ">
                     <span className="text-blue-700 text-4xl font-semibold">
                       {currentData[currentIndex].point}
                     </span>{" "}
@@ -202,6 +213,7 @@ const TransactionTable = () => {
                       </div>
                     )}
                   </div>
+
                   {/* Nút Next & Prev */}
                   <div className="flex justify-center gap-0 mt-4">
                     <button
@@ -235,6 +247,14 @@ const TransactionTable = () => {
                 </div>
               )}
             </div>
+            {checkPathName && (
+              <div className="mb-3 w-full">
+                <button className="bg-blue-600 text-white py-2 px-4 mx-auto block w-[70%] rounded-lg ">
+                  {" "}
+                  Đăng nhập để mua
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
