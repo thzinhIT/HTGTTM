@@ -1,37 +1,42 @@
 import pool from "@/db.js";
 
-export default async function handler(req, res) {
+export const GET = async (req) => {
     let connection;
     try {
-        // Kiểm tra phương thức HTTP
-        if (req.method !== "GET") {
-            return res.status(405).json({ message: "Chỉ hỗ trợ phương thức GET" });
-        }
-
-        // Lấy thông tin theId từ dynamic route (query params)
-        const { theId } = req.query;
+        // Lấy thông tin theId từ query params
+        const { searchParams } = new URL(req.url);
+        const theId = searchParams.get("theId");
 
         // Kiểm tra thông tin đầu vào
         if (!theId) {
-            return res.status(400).json({ message: "Thiếu thông tin theId!" });
+            return new Response(JSON.stringify({ message: "Thiếu thông tin theId!" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
         // Bắt đầu kết nối đến cơ sở dữ liệu
         connection = await pool.getConnection();
 
-        // Lấy token mới nhất từ bảng user_tokens (xác định người dùng hiện tại)
+        // Lấy thông tin user_id từ token trong bảng user_tokens
         const [tokenRows] = await connection.execute(
             "SELECT user_id FROM user_tokens ORDER BY created_at DESC LIMIT 1"
         );
 
         if (tokenRows.length === 0) {
-            return res.status(404).json({ message: "Không tìm thấy token!" });
+            return new Response(JSON.stringify({ message: "Không tìm thấy token!" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
         const nguoiDungId = tokenRows[0]?.user_id || null;
 
         if (!nguoiDungId) {
-            return res.status(404).json({ message: "Không xác định được người dùng từ token!" });
+            return new Response(JSON.stringify({ message: "Không xác định được người dùng từ token!" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
         // Lấy thông tin người dùng từ bảng users
@@ -40,43 +45,90 @@ export default async function handler(req, res) {
         );
 
         if (userRows.length === 0) {
-            return res.status(404).json({ message: "Người dùng không tồn tại!" });
+            return new Response(JSON.stringify({ message: "Người dùng không tồn tại!" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
         const tenNguoiDung = userRows[0]?.username || null;
 
         if (!tenNguoiDung) {
-            return res.status(404).json({ message: "Dữ liệu người dùng không hợp lệ!" });
+            return new Response(JSON.stringify({ message: "Dữ liệu người dùng không hợp lệ!" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
-        // Lấy thông tin thẻ từ bảng `the`
+        // Lấy thông tin thẻ từ bảng the
         const [theRows] = await connection.execute("SELECT * FROM the WHERE the_id = ?", [theId]);
 
         if (theRows.length === 0) {
-            return res.status(404).json({ message: "Thẻ không tồn tại!" });
+            return new Response(JSON.stringify({ message: "Thẻ không tồn tại!" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
         }
+
+        const [userIdRows] = await connection.execute(
+            "SELECT id FROM users WHERE username = ?", [tenNguoiDung]
+        );
+        const id = userIdRows[0]?.id || null;
+        
+        if (!id) {
+            return new Response(JSON.stringify({ message: "ID người dùng không tồn tại!" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+        
 
         const { loai_the, phi_kich_hoat, diem_thuong } = theRows[0];
         const diemConLai = diem_thuong || 0;
 
+        // Tính toán ngày mua và ngày hết hạn
+        const ngayMua = new Date().toISOString().split("T")[0]; // Ngày hiện tại
+        const ngayHetHan = new Date();
+        ngayHetHan.setFullYear(ngayHetHan.getFullYear() + 1); // Hết hạn sau 1 năm
+        const formattedNgayHetHan = ngayHetHan.toISOString().split("T")[0];
+
+        // Thêm thông tin vào bảng the_nguoi_dung
+        await connection.execute(
+            "INSERT INTO the_nguoi_dung (id, ten_nguoi_dung, the_id, loai_the, so_du_diem, diem_da_su_dung, diem_con_lai, ngay_mua, ngay_het_han) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [id, tenNguoiDung, theId, loai_the, phi_kich_hoat, 0, diemConLai, ngayMua, formattedNgayHetHan]
+        );
+        
+        
+
         // Trả về thông tin thanh toán thành công
-        return res.status(200).json({
-            message: "Thông tin thẻ được lấy thành công!",
-            data: {
-                nguoiDungId,
-                tenNguoiDung,
-                theId,
-                loai_the,
-                phi_kich_hoat,
-                diemConLai,
-            },
-        });
+        return new Response(
+            JSON.stringify({
+                message: "Thanh toán thẻ thành công!",
+                data: {
+                    nguoiDungId,
+                    tenNguoiDung,
+                    theId,
+                    loai_the,
+                    phi_kich_hoat,
+                    diemConLai,
+                    ngayMua,
+                    ngayHetHan: formattedNgayHetHan,
+                },
+            }),
+            {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
     } catch (error) {
         console.error("Lỗi:", error.message);
-        return res.status(500).json({ message: "Lỗi xử lý!", error: error.message });
+        return new Response(JSON.stringify({ message: "Lỗi xử lý!", error: error.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+        });
     } finally {
         if (connection) {
             connection.release();
         }
     }
-}
+};

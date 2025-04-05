@@ -4,10 +4,10 @@ import bcrypt from "bcrypt"; // Thư viện dùng để mã hóa mật khẩu
 export async function PUT(req) {
     try {
         // Lấy dữ liệu từ request body
-        const { id, email, username, password, phone } = await req.json();
+        const {email, username, password, phone } = await req.json();
 
         // Kiểm tra thông tin bắt buộc
-        if (!id || !email || !username || !password) {
+        if (!email || !username || !password) {
             return Response.json({ message: "Thiếu thông tin bắt buộc!" }, { status: 400 });
         }
 

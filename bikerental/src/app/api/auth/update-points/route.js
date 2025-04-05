@@ -1,26 +1,27 @@
 import pool from "@/db.js";
 
-// Hàm nạp điểm vào thẻ
-export async function napDiem(userId, theId, soDiemNap) {
+// Hàm xử lý logic nạp điểm
+export async function napDiem(soDiemNap) {
     try {
-        if (!userId || !theId || !soDiemNap) {
-            throw new Error("Thiếu thông tin cần thiết để nạp điểm!");
+        // Kiểm tra số điểm cần nạp
+        if (!soDiemNap || isNaN(soDiemNap) || parseFloat(soDiemNap) <= 0) {
+            throw new Error("Số điểm cần nạp không hợp lệ! Vui lòng nhập một số lớn hơn 0.");
         }
 
-        // Lấy thông tin loại thẻ và số dư hiện tại
+        // Lấy thông tin thẻ của người dùng từ bảng `the_nguoi_dung`
         const [rows] = await pool.execute(
-            "SELECT loai_the, so_du_diem FROM the_nguoi_dung WHERE the_id = ?",
-            [theId]
+            "SELECT id, the_id, loai_the, so_du_diem FROM the_nguoi_dung LIMIT 1"
         );
 
         if (rows.length === 0) {
-            throw new Error("Thẻ không tồn tại!");
+            throw new Error("Không tìm thấy thông tin thẻ của người dùng trong hệ thống.");
         }
 
-        const { loai_the, so_du_diem } = rows[0];
-        let soDuToiThieu;
+        // Lấy dữ liệu thẻ từ kết quả truy vấn
+        const { user_id, the_id, loai_the, so_du_diem } = rows[0];
 
         // Xác định số dư tối thiểu dựa trên loại thẻ
+        let soDuToiThieu;
         switch (loai_the.toLowerCase()) {
             case "rideup":
                 soDuToiThieu = 100000;
@@ -32,47 +33,60 @@ export async function napDiem(userId, theId, soDiemNap) {
                 soDuToiThieu = 5000000;
                 break;
             default:
-                throw new Error("Loại thẻ không hợp lệ!");
+                throw new Error(`Loại thẻ không hợp lệ: ${loai_the}`);
         }
 
-        // Kiểm tra nếu số dư sau khi nạp không đạt tối thiểu
+        // Tính số dư mới sau khi nạp
         const soDuMoi = parseFloat(so_du_diem) + parseFloat(soDiemNap);
+
         if (soDuMoi < soDuToiThieu) {
             throw new Error(
-                `Số dư sau khi nạp không đạt yêu cầu tối thiểu (${soDuToiThieu} điểm) cho thẻ ${loai_the}.`
+                `Số dư sau khi nạp (${soDuMoi} điểm) không đạt yêu cầu tối thiểu (${soDuToiThieu} điểm) cho thẻ ${loai_the}.`
             );
         }
 
-        // Cập nhật số dư mới vào cơ sở dữ liệu
+        // Cập nhật số dư mới vào bảng `the_nguoi_dung`
         await pool.execute(
             "UPDATE the_nguoi_dung SET so_du_diem = ? WHERE the_id = ?",
-            [soDuMoi, theId]
+            [soDuMoi, the_id]
         );
 
-        console.log(
-            `Nạp điểm thành công! Tổng số dư hiện tại: ${soDuMoi} điểm. Loại thẻ: ${loai_the}, Thẻ ID: ${theId}`
-        );
-        return { message: "Nạp điểm thành công!", soDuMoi, loai_the };
+        return { message: "Nạp điểm thành công!", soDuMoi, loai_the, userId: user_id };
     } catch (error) {
         console.error("Lỗi khi nạp điểm:", error.message);
-        throw new Error("Không thể thực hiện nạp điểm!");
+        throw new Error(error.message || "Không thể thực hiện nạp điểm!");
     }
 }
 
-// Xử lý API POST: Nạp điểm
+// Xử lý API POST
 export async function POST(req) {
     try {
-        const { userId, theId, soDiemNap } = await req.json();
+        // Lấy thông tin từ body request
+        const { soDiemNap } = await req.json();
 
-        if (!userId || !theId || !soDiemNap) {
-            return Response.json({ message: "Thiếu thông tin cần thiết!" }, { status: 400 });
+        if (!soDiemNap) {
+            return new Response(
+                JSON.stringify({ message: "Thiếu thông tin số điểm cần nạp!" }),
+                { status: 400, headers: { "Content-Type": "application/json" } }
+            );
         }
 
-        // Thực hiện nạp điểm
-        const result = await napDiem(userId, theId, soDiemNap);
+        // Thực hiện logic nạp điểm
+        const result = await napDiem(soDiemNap);
 
-        return Response.json({ message: result.message, soDuMoi: result.soDuMoi, loaiThe: result.loai_the }, { status: 200 });
+        return new Response(
+            JSON.stringify({
+                message: result.message,
+                soDuMoi: result.soDuMoi,
+                loaiThe: result.loai_the,
+                userId: result.userId,
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } }
+        );
     } catch (error) {
-        return Response.json({ message: "Lỗi khi nạp điểm!", error: error.message }, { status: 500 });
+        return new Response(
+            JSON.stringify({ message: "Lỗi khi nạp điểm!", error: error.message }),
+            { status: 500, headers: { "Content-Type": "application/json" } }
+        );
     }
 }
