@@ -1,36 +1,18 @@
 import pool from "@/db.js";
-import nodemailer from "nodemailer";
-
-// Hàm gửi email thông báo
-async function sendEmail(recipientEmail, subject, text) {
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: "your_email@gmail.com", // Thay bằng email của bạn
-      pass: "your_email_password", // Thay bằng mật khẩu email của bạn
-    },
-  });
-
-  const mailOptions = {
-    from: "your_email@gmail.com",
-    to: recipientEmail,
-    subject: subject,
-    text: text,
-  };
-
-  await transporter.sendMail(mailOptions);
-}
 
 // Function thanh toán vé
 export default async function thanhToanVe(req, res) {
+  // Kiểm tra phương thức HTTP
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Phương thức không được hỗ trợ." });
   }
 
-  const { soLuong } = req.body; // Người dùng chỉ nhập số lượng vé
+  // Lấy thông tin từ request body
+  const { veId, soLuong } = req.body;
 
-  if (!soLuong) {
-    return res.status(400).json({ message: "Thiếu thông tin số lượng vé." });
+  // Kiểm tra dữ liệu đầu vào
+  if (!veId || !soLuong) {
+    return res.status(400).json({ message: "Thiếu thông tin ID vé hoặc số lượng vé." });
   }
 
   let connection;
@@ -42,8 +24,13 @@ export default async function thanhToanVe(req, res) {
     // Bắt đầu giao dịch
     await connection.beginTransaction();
 
-    // Xác thực token để lấy thông tin người dùng
-    const token = req.headers.authorization; // Token được gửi qua headers
+    // Xác thực token từ header
+    const token = req.headers.authorization?.split(" ")[1]; // Lấy token từ "Bearer [token]"
+    if (!token) {
+      throw new Error("Token không hợp lệ hoặc không được cung cấp!");
+    }
+
+    // Lấy thông tin user từ token
     const [tokenRows] = await connection.execute(
       "SELECT user_id FROM user_tokens WHERE token = ?",
       [token]
@@ -55,27 +42,17 @@ export default async function thanhToanVe(req, res) {
 
     const userId = tokenRows[0].user_id;
 
-    // Lấy thông tin email từ bảng users
-    const [userRows] = await connection.execute(
-      "SELECT email FROM users WHERE id = ?",
-      [userId]
-    );
+    // Lấy thông tin vé từ bảng `ve` dựa trên ID vé
+    const [veRows] = await connection.execute("SELECT * FROM ve WHERE ve_id = ?", [veId]);
 
-    if (userRows.length === 0) {
-      throw new Error("Người dùng không tồn tại.");
-    }
-
-    const email = userRows[0].email;
-
-    // Lấy thông tin vé từ bảng `ve` (giả định lấy vé đầu tiên hoặc dựa trên logic phù hợp)
-    const [veRows] = await connection.execute("SELECT * FROM ve LIMIT 1");
     if (veRows.length === 0) {
-      throw new Error("Không có thông tin vé trong hệ thống.");
+      throw new Error(`Vé với ID: ${veId} không tồn tại.`);
     }
 
-    const { ve_id: veId, ten_ve, diem_tngo, hieu_luc } = veRows[0];
+    const { ten_ve, diem_tngo, hieu_luc } = veRows[0];
     const tongDiemThanhToan = diem_tngo * soLuong;
 
+    // Lấy thông tin thẻ của người dùng
     const [theRows] = await connection.execute(
       "SELECT so_du_diem, diem_da_su_dung, loai_the FROM the_nguoi_dung WHERE id = ?",
       [userId]
@@ -87,7 +64,7 @@ export default async function thanhToanVe(req, res) {
 
     const { so_du_diem, diem_da_su_dung, loai_the } = theRows[0];
 
-    // Kiểm tra điều kiện số dư tối thiểu theo loại thẻ
+    // Xác định số dư tối thiểu dựa trên loại thẻ
     const minBalance = {
       RideUp: 100000,
       Prenium: 1000000,
@@ -108,45 +85,38 @@ export default async function thanhToanVe(req, res) {
     await connection.execute(
       `
       UPDATE the_nguoi_dung
-      SET so_du_diem = ?, diem_da_su_dung = ?, diem_con_lai = ?
+      SET so_du_diem = ?, diem_da_su_dung = ?
       WHERE id = ?
       `,
-      [diemConLai, diemDaSuDungMoi, diemConLai, userId]
+      [diemConLai, diemDaSuDungMoi, userId]
     );
 
     // Tính ngày mua và ngày hết hạn
     const ngayMua = new Date().toISOString().split("T")[0];
     const ngayHetHan = hieu_luc; // Dùng giá trị `hieu_luc` từ bảng `ve`
 
-
-
     // Thêm thông tin vào bảng `ve_nguoi_dung`
     await connection.execute(
       `
-      INSERT INTO ve_nguoi_dung (id, ten_nguoi_dung, ve_id, ten_ve, ngay_mua, ngay_het_han, so_luong)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO ve_nguoi_dung (id, ve_id, ten_ve, ngay_mua, ngay_het_han, so_luong)
+      VALUES (?, ?, ?, ?, ?, ?)
       `,
       [userId, veId, ten_ve, ngayMua, ngayHetHan, soLuong]
-    );
-
-    // Gửi email thông báo thành công
-    await sendEmail(
-      email,
-      "Xác nhận thanh toán vé",
-      `Xin chào! Thanh toán vé "${ten_ve}" đã được thực hiện thành công. Số lượng vé: ${soLuong}. Tổng điểm thanh toán: ${tongDiemThanhToan}.`
     );
 
     // Cam kết giao dịch
     await connection.commit();
 
-    res.status(200).json({ message: "Thanh toán vé thành công và email đã được gửi!" });
+    res.status(200).json({ message: "Thanh toán vé thành công!" });
   } catch (error) {
+    // Xử lý rollback khi có lỗi
     if (connection) {
       await connection.rollback();
     }
-    console.error(error);
+    console.error("Lỗi:", error.message);
     res.status(500).json({ message: error.message || "Đã xảy ra lỗi hệ thống." });
   } finally {
+    // Giải phóng kết nối
     if (connection) {
       connection.release();
     }

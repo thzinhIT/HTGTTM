@@ -43,9 +43,9 @@ export async function POST(req) {
             });
         }
 
-        // Tạo JWT Token với role
+       
         const token = jwt.sign(
-            { id: user.id, email: user.email, password: user.password, phone: user.phone}, // Payload
+            {email: user.email, password: user.password}, // Payload
             "mysecretkey", // Thay bằng process.env.JWT_SECRET trong thực tế
             { expiresIn: "2h" }
         );
