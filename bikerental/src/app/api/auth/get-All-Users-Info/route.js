@@ -1,9 +1,16 @@
 import pool from "@/db.js";
 
-export default async function getAllUsersInfo(req, res) {
+export default async function getUserById(req, res) {
   // Kiểm tra phương thức HTTP
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Phương thức không được hỗ trợ." });
+  }
+
+  // Lấy ID từ query parameters
+  const { id } = req.query;
+
+  if (!id) {
+    return res.status(400).json({ message: "Thiếu thông tin id của user." });
   }
 
   let connection;
@@ -12,16 +19,32 @@ export default async function getAllUsersInfo(req, res) {
     // Kết nối đến cơ sở dữ liệu
     connection = await pool.getConnection();
 
-    // Truy vấn tất cả thông tin từ bảng `the_nguoi_dung`
-    const [theNguoiDungRows] = await connection.execute("SELECT * FROM the_nguoi_dung");
+    // Truy vấn thông tin user từ bảng `users`
+    const [userRows] = await connection.execute(
+      "SELECT * FROM users WHERE id = ?",
+      [id]
+    );
 
-    // Truy vấn tất cả thông tin từ bảng `ve_nguoi_dung`
-    const [veNguoiDungRows] = await connection.execute("SELECT * FROM ve_nguoi_dung");
+    // Kiểm tra xem user có tồn tại không
+    if (userRows.length === 0) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng." });
+    }
 
-    // Kết hợp và trả về dữ liệu từ cả hai bảng
+    // Truy vấn thông tin token của user từ bảng `user_token`
+    const [tokenRows] = await connection.execute(
+      "SELECT token FROM user_token WHERE user_id = ?",
+      [id]
+    );
+
+    // Kiểm tra xem token có tồn tại không
+    if (tokenRows.length === 0) {
+      return res.status(404).json({ message: "Không tìm thấy token của người dùng." });
+    }
+
+    // Trả về thông tin của user cùng với token
     res.status(200).json({
-      the_nguoi_dung: theNguoiDungRows,
-      ve_nguoi_dung: veNguoiDungRows,
+      ...userRows[0],
+      token: tokenRows[0].token,
     });
   } catch (error) {
     console.error(error);

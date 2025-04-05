@@ -20,18 +20,42 @@ export default async function getUserById(req, res) {
     connection = await pool.getConnection();
 
     // Truy vấn thông tin user từ bảng `users`
-    const [rows] = await connection.execute(
+    const [userRows] = await connection.execute(
       "SELECT * FROM users WHERE id = ?",
       [id]
     );
 
     // Kiểm tra xem user có tồn tại không
-    if (rows.length === 0) {
+    if (userRows.length === 0) {
       return res.status(404).json({ message: "Không tìm thấy người dùng." });
     }
 
-    // Trả về thông tin của user
-    res.status(200).json(rows[0]);
+    // Truy vấn thông tin token và created_at từ bảng `user_tokens`
+    const [tokenRows] = await connection.execute(
+      "SELECT token, created_at FROM user_tokens WHERE user_id = ?",
+      [id]
+    );
+
+    // Kiểm tra xem token có tồn tại không
+    if (tokenRows.length === 0) {
+      return res.status(404).json({ message: "Không tìm thấy token của người dùng." });
+    }
+
+    // Kiểm tra thời gian `created_at` của token
+    const tokenCreatedAt = new Date(tokenRows[0].created_at);
+    const currentTime = new Date();
+    const timeDifferenceInHours = (currentTime - tokenCreatedAt) / (1000 * 60 * 60);
+
+    if (timeDifferenceInHours > 2) {
+      return res.status(400).json({ message: "Token đã hết hạn." });
+    }
+
+    // Trả về thông tin của user cùng với token
+    res.status(200).json({
+      ...userRows[0],
+      token: tokenRows[0].token,
+      created_at: tokenRows[0].created_at,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Đã xảy ra lỗi hệ thống.", error: error.message });

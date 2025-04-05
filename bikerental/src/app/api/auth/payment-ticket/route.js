@@ -76,9 +76,8 @@ export default async function thanhToanVe(req, res) {
     const { ve_id: veId, ten_ve, diem_tngo, hieu_luc } = veRows[0];
     const tongDiemThanhToan = diem_tngo * soLuong;
 
-    // Lấy thông tin từ bảng `the_nguoi_dung`
     const [theRows] = await connection.execute(
-      "SELECT so_du_diem, diem_da_su_dung FROM the_nguoi_dung WHERE id = ?",
+      "SELECT so_du_diem, diem_da_su_dung, loai_the FROM the_nguoi_dung WHERE id = ?",
       [userId]
     );
 
@@ -86,11 +85,19 @@ export default async function thanhToanVe(req, res) {
       throw new Error("Người dùng không tồn tại trong hệ thống thẻ.");
     }
 
-    const { so_du_diem, diem_da_su_dung } = theRows[0];
+    const { so_du_diem, diem_da_su_dung, loai_the } = theRows[0];
 
-    // Kiểm tra điểm để thanh toán
-    if (so_du_diem < tongDiemThanhToan) {
-      throw new Error("Không đủ điểm để thanh toán.");
+    // Kiểm tra điều kiện số dư tối thiểu theo loại thẻ
+    const minBalance = {
+      RideUp: 100000,
+      Prenium: 1000000,
+      VIP: 5000000,
+    };
+
+    if (so_du_diem - tongDiemThanhToan < (minBalance[loai_the] || 0)) {
+      throw new Error(
+        `Số dư thấp hơn mức tối thiểu (${minBalance[loai_the].toLocaleString()}), bạn không thể thanh toán.`
+      );
     }
 
     // Tính toán các giá trị cập nhật
@@ -110,6 +117,8 @@ export default async function thanhToanVe(req, res) {
     // Tính ngày mua và ngày hết hạn
     const ngayMua = new Date().toISOString().split("T")[0];
     const ngayHetHan = hieu_luc; // Dùng giá trị `hieu_luc` từ bảng `ve`
+
+
 
     // Thêm thông tin vào bảng `ve_nguoi_dung`
     await connection.execute(
