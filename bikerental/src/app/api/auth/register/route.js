@@ -6,6 +6,8 @@ export async function POST(req) {
     try {
         const { email, password, username, phone } = await req.json();
 
+        const role = 'User';
+
         // Kiểm tra xem email hoặc số điện thoại đã tồn tại chưa
         const [existingUsers] = await pool.execute(
             "SELECT * FROM users WHERE email = ? OR phone = ?",
@@ -28,13 +30,14 @@ export async function POST(req) {
 
         // Lưu vào database
         await pool.execute(
-            "INSERT INTO users (email, password, username, phone) VALUES (?, ?, ?, ?)",
-            [email, hashedPassword, username, phone]
+            "INSERT INTO users (email, password, username, phone, role) VALUES (?, ?, ?, ?, ?)",
+            [email, hashedPassword, username, phone, role] // Thêm `role` vào cột cuối cùng
         );
+
 
         // Tạo JWT token
         const token = jwt.sign(
-            { email, username, password, phone },
+            { email, username, password, phone, role },
             "mysecretkey", // Nên dùng biến môi trường trong thực tế
             { expiresIn: "1h" }
         );
