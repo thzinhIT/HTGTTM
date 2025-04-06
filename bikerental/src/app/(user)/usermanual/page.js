@@ -1,5 +1,5 @@
 import React from "react";
-import avatar from "../../../public/assets/img/banner-user-manual.jpg";
+import avatar from "../../../../public/assets/img/banner-user-manual.jpg";
 import Image from "next/image";
 import Howuse from "../how-to-use";
 import Content from "./content";

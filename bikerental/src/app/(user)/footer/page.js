@@ -1,12 +1,12 @@
 import React from "react";
 import Image from "next/image";
-import logo from "../../../public/assets/img/logoft.png";
-import icon from "../../../public/assets/img/logoSaleNoti.png";
+import logo from "../../../../public/assets/img/logoft.png";
+import icon from "../../../../public/assets/img/logoSaleNoti.png";
 import { FaPhoneAlt } from "react-icons/fa";
 import { CgMail } from "react-icons/cg";
 import { FaFacebook } from "react-icons/fa6";
-import ios from "../../../public/assets/img/app-ios.png";
-import android from "../../../public/assets/img/app-android.png";
+import ios from "../../../../public/assets/img/app-ios.png";
+import android from "../../../../public/assets/img/app-android.png";
 
 const Footer = () => {
   const bgImage = "/assets/img/bgft.jpg";
