@@ -34,7 +34,7 @@ export async function POST(req) {
 
         // Tạo JWT token
         const token = jwt.sign(
-            { email, username, role: userRole },
+            { email, username, password, phone },
             "mysecretkey", // Nên dùng biến môi trường trong thực tế
             { expiresIn: "1h" }
         );
