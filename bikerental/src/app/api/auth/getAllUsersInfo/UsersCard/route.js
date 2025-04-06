@@ -1,25 +1,25 @@
+
 import pool from "@/db.js";
+import { NextResponse } from "next/server";
 
-export default async function handler(req, res) {
+export async function GET(req) {
   try {
-    // Kiểm tra phương thức HTTP
-    if (req.method !== "GET") {
-      return res.status(405).json({ message: "Chỉ hỗ trợ phương thức GET" });
+    const url = new URL(req.url);
+    const userId = url.searchParams.get("id");
+
+    if (!userId) {
+      return NextResponse.json({ message: "Thiếu ID người dùng!" }, { status: 400 });
     }
 
-    // Truy vấn dữ liệu từ bảng the_nguoi_dung
-    const query = "SELECT * FROM the_nguoi_dung";
-    const [rows] = await pool.query(query);
+    const [rows] = await pool.execute("SELECT * FROM the_nguoi_dung WHERE id = ?", [userId]);
 
-    // Kiểm tra kết quả
-    if (!rows.length) {
-      return res.status(404).json({ message: "Không tìm thấy dữ liệu" });
+    if (rows.length === 0) {
+      return NextResponse.json({ message: "Không tìm thấy người dùng!" }, { status: 404 });
     }
 
-    // Trả về dữ liệu
-    res.status(200).json(rows);
+    return NextResponse.json({ user: rows[0] }, { status: 200 });
   } catch (error) {
-    console.error("Lỗi:", error);
-    res.status(500).json({ message: "Lỗi máy chủ", error: error.message });
+    console.error("Lỗi khi truy vấn người dùng:", error);
+    return NextResponse.json({ message: "Lỗi server!" }, { status: 500 });
   }
 }
