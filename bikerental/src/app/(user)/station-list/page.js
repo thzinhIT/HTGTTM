@@ -281,7 +281,7 @@
 import React, { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoLocationSharp } from "react-icons/io5";
-import City from "../../../public/assets/mock-data/list-station";
+import City from "../../../../public/assets/mock-data/list-station";
 import BikeMap from "@/components/bike-map";
 
 const ListStation = () => {

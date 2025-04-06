@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import avatar from "../../../public/assets/img/banner-news (1).jpg";
-import Data from "../../../public/assets/mock-data/mock-data";
+import avatar from "../../../../public/assets/img/banner-news (1).jpg";
+import Data from "../../../../public/assets/mock-data/mock-data";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";

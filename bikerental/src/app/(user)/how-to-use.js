@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import user1 from "../../public/assets/img/use-1.png";
-import user2 from "../../public/assets/img/use-2.png";
-import user3 from "../../public/assets/img/use-3.png";
+import user1 from "../../../public/assets/img/use-1.png";
+import user2 from "../../../public/assets/img/use-2.png";
+import user3 from "../../../public/assets/img/use-3.png";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 const Howuse = () => {

@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import logo from "../../../public/assets/img/logo-vn.jpg";
-import icon from "../../../public/assets/img/vi.png";
+import logo from "../../../../public/assets/img/logo-vn.jpg";
+import icon from "../../../../public/assets/img/vi.png";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import LoginModal from "@/components/login-form";

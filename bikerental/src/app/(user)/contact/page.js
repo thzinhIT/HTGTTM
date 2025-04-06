@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import avatar from "../../../public/assets/img/banner-contact.jpg";
+import avatar from "../../../../public/assets/img/banner-contact.jpg";
 import FormContact from "./form-contact";
 import Link from "next/link";
 const Contact = () => {
