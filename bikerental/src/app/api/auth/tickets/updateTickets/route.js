@@ -2,12 +2,31 @@ import pool from "@/db.js";
 
 export async function PUT(req) {
     try {
-        const { ticketId, updatedInfo } = await req.json();
+        // Lấy 'ticketId' từ query parameters
+        const { searchParams } = new URL(req.url);
+        const ticketId = searchParams.get("ve_id");
 
+        // Kiểm tra nếu thiếu ticketId
+        if (!ticketId) {
+            return new Response(JSON.stringify({ message: "Thiếu thông tin ticketId!" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const { ten_ve, diem_tngo, thoi_gian_hieu_luc, hieu_luc, phi_phat_sinh, ghi_chu } = await req.json();
+
+        if (!ten_ve || !thoi_gian_hieu_luc || !hieu_luc || !phi_phat_sinh || !ghi_chu) {
+            return Response.json({ message: "Thiếu thông tin bắt buộc!" }, { status: 400 });
+        }
+
+
+        // Cập nhật thông tin thẻ trong cơ sở dữ liệu
         await pool.execute(
             "UPDATE `ve` SET ten_ve = ?, diem_tngo = ?, thoi_gian_hieu_luc = ?, hieu_luc = ?, phi_phat_sinh = ?, ghi_chu = ? WHERE ve_id = ?",
-            [updatedInfo.ten_ve, updatedInfo.diem_tngo, updatedInfo.thoi_gian_hieu_luc, updatedInfo.hieu_luc, updatedInfo.phi_phat_sinh, updatedInfo.ghi_chu, ticketId]
+            [ten_ve, diem_tngo, thoi_gian_hieu_luc, hieu_luc, phi_phat_sinh, ghi_chu, ve_id]
         );
+
 
         return new Response(
             JSON.stringify({ message: "Thông tin vé đã được cập nhật!" }),

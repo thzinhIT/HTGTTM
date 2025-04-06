@@ -2,11 +2,30 @@ import pool from "@/db.js";
 
 export async function PUT(req) {
     try {
-        const { cardId, updatedInfo } = await req.json();
+        // Lấy 'the_id' từ query parameters
+        const { searchParams } = new URL(req.url);
+        const the_id = searchParams.get("the_id");
 
+        // Kiểm tra nếu thiếu the_id
+        if (!the_id) {
+            return new Response(JSON.stringify({ message: "Thiếu thông tin theId!" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        // Lấy dữ liệu cập nhật từ body của request
+        const { loai_the, phi_kich_hoat, so_du_toi_thieu, diem_thuong, so_xe_toi_da } = await req.json();
+
+        if (!loai_the || !phi_kich_hoat || !so_du_toi_thieu ||  !diem_thuong || !so_xe_toi_da) {
+            return Response.json({ message: "Thiếu thông tin bắt buộc!" }, { status: 400 });
+        }
+
+
+        // Cập nhật thông tin thẻ trong cơ sở dữ liệu
         await pool.execute(
             "UPDATE `the` SET loai_the = ?, phi_kich_hoat = ?, so_du_toi_thieu = ?, diem_thuong = ?, so_xe_toi_da = ? WHERE the_id = ?",
-            [updatedInfo.loai_the, updatedInfo.phi_kich_hoat, updatedInfo.so_du_toi_thieu, updatedInfo.diem_thuong, updatedInfo.so_xe_toi_da, cardId]
+            [loai_the, phi_kich_hoat, so_du_toi_thieu, diem_thuong, so_xe_toi_da, the_id]
         );
 
         return new Response(

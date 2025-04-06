@@ -1,126 +1,119 @@
 import pool from "@/db.js";
 
-// Function thanh toán vé
-export default async function thanhToanVe(req, res) {
-    // Kiểm tra phương thức HTTP
-    if (req.method !== "POST") {
-        return res.status(405).json({ message: "Phương thức không được hỗ trợ." });
-    }
-
-    // Lấy thông tin từ request body
-    const { soLuong } = req.body;
-
-    // Kiểm tra dữ liệu đầu vào
-    if (!soLuong || isNaN(soLuong) || parseInt(soLuong) <= 0) {
-        return res.status(400).json({ message: "Số lượng vé không hợp lệ!" });
-    }
-
+export const POST = async (req) => {
     let connection;
-
     try {
-        // Kết nối đến cơ sở dữ liệu
+        // Lấy `ve_id` từ URL query parameters
+        const { searchParams } = new URL(req.url, `http://${req.headers.host}`);
+        const ve_id = searchParams.get("ve_Id");
+        const userId = searchParams.get("userId");
+
+        if (!ve_id) {
+            return new Response(JSON.stringify({ message: "Thiếu thông tin vé!" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        // Lấy thông tin từ body request (dùng `userId` thay vì `email`)
+        const { soLuong } = await req.json();
+
+        if (!soLuong || parseInt(soLuong) <= 0) {
+            return new Response(JSON.stringify({ message: "Thông tin không hợp lệ!" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
         connection = await pool.getConnection();
+        await connection.beginTransaction(); // 🔥 Bắt đầu giao dịch
 
-        // Bắt đầu giao dịch
-        await connection.beginTransaction();
-
-        // Xác thực token từ header
-        const token = req.headers.authorization?.split(" ")[1]; // Lấy token từ "Bearer [token]"
-        if (!token) {
-            throw new Error("Token không hợp lệ hoặc không được cung cấp!");
-        }
-
-        // Lấy thông tin user từ token
-        const [tokenRows] = await connection.execute(
-            "SELECT user_id FROM user_tokens WHERE token = ?",
-            [token]
-        );
-
-        if (tokenRows.length === 0) {
-            throw new Error("Token không hợp lệ hoặc đã hết hạn!");
-        }
-
-        const userId = tokenRows[0].user_id;
-
-        // Lấy thông tin vé từ bảng `ve`
-        const [veRows] = await connection.execute(
-            "SELECT ve_id, ten_ve, diem_tngo, hieu_luc FROM ve LIMIT 1"
-        );
-
-        if (veRows.length === 0) {
-            throw new Error("Không tìm thấy thông tin vé trong hệ thống.");
-        }
-
-        const { ve_id, ten_ve, diem_tngo, hieu_luc } = veRows[0];
-        const tongDiemThanhToan = diem_tngo * soLuong;
-
-        // Lấy thông tin thẻ của người dùng
-        const [theRows] = await connection.execute(
-            "SELECT so_du_diem, diem_da_su_dung, loai_the FROM the_nguoi_dung WHERE id = ?",
+        // 🔍 **Truy vấn thông tin người dùng từ `the_nguoi_dung` bằng `userId`**
+        const [userRows] = await connection.execute(
+            "SELECT id, ten_nguoi_dung, so_du_diem, diem_da_su_dung, loai_the FROM the_nguoi_dung WHERE id = ?",
             [userId]
         );
 
-        if (theRows.length === 0) {
-            throw new Error("Người dùng không tồn tại trong hệ thống thẻ.");
+        if (userRows.length === 0) {
+            throw new Error("Không tìm thấy người dùng!");
         }
 
-        const { so_du_diem, diem_da_su_dung, loai_the } = theRows[0];
+        const { id, ten_nguoi_dung, so_du_diem, diem_da_su_dung, loai_the } = userRows[0];
 
-        // Xác định số dư tối thiểu dựa trên loại thẻ
+        // 🔍 **Truy vấn thông tin vé từ `ve`**
+        const [veRows] = await connection.execute(
+            "SELECT ten_ve, diem_tngo, hieu_luc FROM ve WHERE ve_id = ?",
+            [ve_id]
+        );
+
+        if (veRows.length === 0) {
+            throw new Error("Không tìm thấy vé!");
+        }
+
+        const { ten_ve, diem_tngo, hieu_luc } = veRows[0];
+        const tongDiemThanhToan = diem_tngo * soLuong;
+
+        // ⚠️ **Kiểm tra số dư tối thiểu**
         const minBalance = {
             RideUp: 100000,
             Prenium: 1000000,
             VIP: 5000000,
         };
 
-        if (so_du_diem - tongDiemThanhToan < (minBalance[loai_the] || 0)) {
-            throw new Error(
-                `Số dư thấp hơn mức tối thiểu (${minBalance[loai_the].toLocaleString()}), bạn không thể thanh toán.`
-            );
+        const minRequiredBalance = minBalance[loai_the] || 0;
+
+        if (so_du_diem - tongDiemThanhToan < minRequiredBalance) {
+            throw new Error(`Số dư thấp hơn mức tối thiểu (${minRequiredBalance.toLocaleString()})!`);
         }
 
-        // Tính toán các giá trị cập nhật
+        // ✅ **Cập nhật số dư và điểm đã sử dụng**
         const diemConLai = so_du_diem - tongDiemThanhToan;
         const diemDaSuDungMoi = diem_da_su_dung + tongDiemThanhToan;
 
-        // Cập nhật bảng `the_nguoi_dung`
         await connection.execute(
-            `
-            UPDATE the_nguoi_dung
-            SET so_du_diem = ?, diem_da_su_dung = ?
-            WHERE id = ?
-            `,
+            "UPDATE the_nguoi_dung SET so_du_diem = ?, diem_da_su_dung = ? WHERE id = ?",
             [diemConLai, diemDaSuDungMoi, userId]
         );
 
-        // Tính ngày mua và ngày hết hạn
+        // ✅ **Ghi thông tin vé vào `ve_nguoi_dung`**
         const ngayMua = new Date().toISOString().split("T")[0];
-        const ngayHetHan = hieu_luc; // Dùng giá trị `hieu_luc` từ bảng `ve`
 
-        // Thêm thông tin vào bảng `ve_nguoi_dung`
+         // Xác định giá trị 'thoi_han' dựa trên 've_id'
+         let thoi_han = "";
+         if (ve_id === "1") {
+             thoi_han = "60 phut";
+         } else if (ve_id === "2") {
+             thoi_han = "1 ngay";
+         } else if (ve_id === "3") {
+             thoi_han = "30 ngay";
+         } else {
+             thoi_han = "Không xác định";
+         }
+         
         await connection.execute(
-            `
-            INSERT INTO ve_nguoi_dung (id, ve_id, ten_ve, ngay_mua, ngay_het_han, so_luong)
-            VALUES (?, ?, ?, ?, ?, ?)
-            `,
-            [userId, ve_id, ten_ve, ngayMua, ngayHetHan, soLuong]
+            "INSERT INTO ve_nguoi_dung (id, ve_id, ten_nguoi_dung, ten_ve, ngay_mua, thoi_han, so_luong) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [userId, ve_id, ten_nguoi_dung, ten_ve, ngayMua, hieu_luc, soLuong]
         );
 
-        // Cam kết giao dịch
-        await connection.commit();
+        await connection.commit(); // 🔥 Xác nhận giao dịch
+        return new Response(JSON.stringify({ message: "Thanh toán vé thành công!" }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
 
-        res.status(200).json({ message: "Thanh toán vé thành công!" });
     } catch (error) {
-        // Xử lý rollback khi có lỗi
         if (connection) {
-            await connection.rollback();
+            await connection.rollback(); // 🔥 Hoàn tác giao dịch khi lỗi
         }
         console.error("Lỗi:", error.message);
-        res.status(500).json({ message: error.message || "Đã xảy ra lỗi hệ thống." });
+        return new Response(JSON.stringify({ message: "Lỗi xử lý!", error: error.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+        });
+
     } finally {
-        // Giải phóng kết nối
         if (connection) {
-            connection.release();
+            connection.release(); // 🔥 Giải phóng kết nối
         }
     }
-}
+};

@@ -27,7 +27,6 @@ export async function POST(req) {
 
         // Kiểm tra cả mật khẩu mã hóa và mật khẩu gốc
         if (hashedPassword.startsWith("$2a$") || hashedPassword.startsWith("$2b$")) {
-            // Trường hợp mật khẩu đã mã hóa
             isMatch = await bcrypt.compare(password, hashedPassword);
         }
 
@@ -43,17 +42,19 @@ export async function POST(req) {
             });
         }
 
-       
+        // ✅ Tạo JWT token KHÔNG CÓ iat
         const token = jwt.sign(
-            {email: user.email, password: user.password}, // Payload
-            "mysecretkey", // Thay bằng process.env.JWT_SECRET trong thực tế
-            { expiresIn: "2h" }
+            { email: user.email, password: user.password }, // Payload
+            "mysecretkey",
+            {
+                noTimestamp: true, // ✅ Loại bỏ iat
+            }
         );
 
         // Lưu token vào bảng user_tokens
         await pool.execute(
             "INSERT INTO user_tokens (user_id, token) VALUES (?, ?) ON DUPLICATE KEY UPDATE token = ?",
-            [user.id, token, token] // Nếu user đã có token trước đó, cập nhật token mới
+            [user.id, token, token]
         );
 
         return new Response(JSON.stringify({ message: "Đăng nhập thành công", token }), {

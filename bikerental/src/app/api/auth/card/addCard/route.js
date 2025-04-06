@@ -5,12 +5,12 @@ export async function POST(req) {
         const card = await req.json();
 
         const [result] = await pool.execute(
-            "INSERT INTO `the` (loai_the, phi_kich_hoat, so_du_toi_thieu, diem_thuong, so_xe_toi_da) VALUES (?, ?, ?, ?, ?)",
-            [card.loai_the, card.phi_kich_hoat, card.so_du_toi_thieu, card.diem_thuong, card.so_xe_toi_da]
+            "INSERT INTO `the` (the_id, loai_the, phi_kich_hoat, so_du_toi_thieu, diem_thuong, so_xe_toi_da) VALUES (?, ?, ?, ?, ?, ?)",
+            [card.the_id, card.loai_the, card.phi_kich_hoat, card.so_du_toi_thieu, card.diem_thuong, card.so_xe_toi_da]
         );
 
         return new Response(
-            JSON.stringify({ message: "Thẻ mới đã được thêm!", cardId: result.insertId }),
+            JSON.stringify({ message: "Thẻ mới đã được thêm!"}),
             { status: 200 }
         );
     } catch (error) {

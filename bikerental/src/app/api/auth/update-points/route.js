@@ -1,24 +1,25 @@
 import pool from "@/db.js";
 
 // Hàm xử lý logic nạp điểm
-export async function napDiem(soDiemNap) {
+export async function napDiem(id, soDiemNap) {
     try {
-        // Kiểm tra số điểm cần nạp
-        if (!soDiemNap || isNaN(soDiemNap) || parseFloat(soDiemNap) <= 0) {
-            throw new Error("Số điểm cần nạp không hợp lệ! Vui lòng nhập một số lớn hơn 0.");
+        // Kiểm tra thông tin đầu vào
+        if (!id || !soDiemNap || isNaN(soDiemNap) || parseFloat(soDiemNap) <= 0) {
+            throw new Error("Thông tin không hợp lệ! Vui lòng kiểm tra lại.");
         }
 
-        // Lấy thông tin thẻ của người dùng từ bảng `the_nguoi_dung`
+        // Truy vấn thông tin thẻ của người dùng theo ID
         const [rows] = await pool.execute(
-            "SELECT id, the_id, loai_the, so_du_diem FROM the_nguoi_dung LIMIT 1"
+            "SELECT id, the_id, loai_the, so_du_diem FROM the_nguoi_dung WHERE id = ?",
+            [id]
         );
 
         if (rows.length === 0) {
-            throw new Error("Không tìm thấy thông tin thẻ của người dùng trong hệ thống.");
+            throw new Error("Không tìm thấy thông tin thẻ của người dùng.");
         }
 
         // Lấy dữ liệu thẻ từ kết quả truy vấn
-        const { user_id, the_id, loai_the, so_du_diem } = rows[0];
+        const { the_id, loai_the, so_du_diem } = rows[0];
 
         // Xác định số dư tối thiểu dựa trên loại thẻ
         let soDuToiThieu;
@@ -47,11 +48,11 @@ export async function napDiem(soDiemNap) {
 
         // Cập nhật số dư mới vào bảng `the_nguoi_dung`
         await pool.execute(
-            "UPDATE the_nguoi_dung SET so_du_diem = ? WHERE the_id = ?",
-            [soDuMoi, the_id]
+            "UPDATE the_nguoi_dung SET so_du_diem = ? WHERE id = ?",
+            [soDuMoi, id]
         );
 
-        return { message: "Nạp điểm thành công!", soDuMoi, loai_the, userId: user_id };
+        return { message: "Nạp điểm thành công!", soDuMoi, loai_the, userId: id };
     } catch (error) {
         console.error("Lỗi khi nạp điểm:", error.message);
         throw new Error(error.message || "Không thể thực hiện nạp điểm!");
@@ -61,18 +62,22 @@ export async function napDiem(soDiemNap) {
 // Xử lý API POST
 export async function POST(req) {
     try {
+        // Lấy thông tin từ URL query parameters
+        const url = new URL(req.url);
+        const id = url.searchParams.get("id");
+
         // Lấy thông tin từ body request
         const { soDiemNap } = await req.json();
 
-        if (!soDiemNap) {
+        if (!id || !soDiemNap) {
             return new Response(
-                JSON.stringify({ message: "Thiếu thông tin số điểm cần nạp!" }),
+                JSON.stringify({ message: "Thiếu thông tin ID người dùng hoặc số điểm cần nạp!" }),
                 { status: 400, headers: { "Content-Type": "application/json" } }
             );
         }
 
-        // Thực hiện logic nạp điểm
-        const result = await napDiem(soDiemNap);
+        // Thực hiện logic nạp điểm với ID động
+        const result = await napDiem(id, soDiemNap);
 
         return new Response(
             JSON.stringify({
