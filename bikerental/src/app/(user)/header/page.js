@@ -71,7 +71,7 @@ const Header = () => {
                       <Link href="/rentbike">Dịch vụ - sự kiện</Link>
                     </li>
                     <li className="px-4 py-2  hover:bg-blue-200">
-                      <Link href="#">bảo hiểm</Link>
+                      <Link href="/trip-care">Bảo hiểm Trip Care</Link>
                     </li>
                   </ul>
                 )}
