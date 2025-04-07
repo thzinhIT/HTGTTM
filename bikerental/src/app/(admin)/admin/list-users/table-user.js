@@ -62,7 +62,7 @@ const TableUser = (props) => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={5} className="text-center">
+              <TableCell colSpan={7} className="text-center">
                 Loading...
               </TableCell>
             </TableRow>
