@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 06, 2025 lúc 10:11 AM
+-- Thời gian đã tạo: Th4 07, 2025 lúc 06:24 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.1.25
 
@@ -66,6 +66,7 @@ INSERT INTO `lien_he` (`ho_va_ten`, `email`, `sdt`, `tieu_de`, `noi_dung`, `crea
 CREATE TABLE `the` (
   `the_id` int(11) NOT NULL,
   `loai_the` varchar(50) NOT NULL,
+  `img` varchar(250) NOT NULL,
   `phi_kich_hoat` decimal(10,2) NOT NULL,
   `so_du_toi_thieu` decimal(10,2) NOT NULL,
   `diem_thuong` int(11) NOT NULL,
@@ -76,11 +77,10 @@ CREATE TABLE `the` (
 -- Đang đổ dữ liệu cho bảng `the`
 --
 
-INSERT INTO `the` (`the_id`, `loai_the`, `phi_kich_hoat`, `so_du_toi_thieu`, `diem_thuong`, `so_xe_toi_da`) VALUES
-(1, 'RideUp', 20000.00, 100000.00, 10000, 3),
-(2, 'Prenium', 20000.00, 1000000.00, 50000, 10),
-(3, 'VIP', 200000.00, 10000000.00, 500000, 100000),
-(4, 'Thẻ Diamond', 70000.00, 2000000.00, 50000, 1000000);
+INSERT INTO `the` (`the_id`, `loai_the`, `img`, `phi_kich_hoat`, `so_du_toi_thieu`, `diem_thuong`, `so_xe_toi_da`) VALUES
+(1, 'RideUp', 'https://tngo.vn/image/Rectangle%20669.jpg', 20000.00, 100000.00, 10000, 3),
+(2, 'Prenium', 'https://tngo.vn/image/Rectangle%20670.jpg', 20000.00, 1000000.00, 50000, 10),
+(3, 'VIP', 'https://tngo.vn/image/Rectangle%20671.jpg', 200000.00, 10000000.00, 500000, 100000);
 
 -- --------------------------------------------------------
 
