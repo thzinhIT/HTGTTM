@@ -4,10 +4,10 @@ export async function PUT(req) {
     try {
         // Lấy 'ticketId' từ query parameters
         const { searchParams } = new URL(req.url);
-        const ticketId = searchParams.get("ve_id");
+        const ve_id = searchParams.get("ve_id");
 
         // Kiểm tra nếu thiếu ticketId
-        if (!ticketId) {
+        if (!ve_id) {
             return new Response(JSON.stringify({ message: "Thiếu thông tin ticketId!" }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
