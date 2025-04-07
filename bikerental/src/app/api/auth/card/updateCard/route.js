@@ -15,17 +15,17 @@ export async function PUT(req) {
         }
 
         // Lấy dữ liệu cập nhật từ body của request
-        const { loai_the, phi_kich_hoat, so_du_toi_thieu, diem_thuong, so_xe_toi_da } = await req.json();
+        const { loai_the, phi_kich_hoat, img, so_du_toi_thieu, diem_thuong, so_xe_toi_da } = await req.json();
 
-        if (!loai_the || !phi_kich_hoat || !so_du_toi_thieu ||  !diem_thuong || !so_xe_toi_da) {
+        if (!loai_the || !phi_kich_hoat || !img || !so_du_toi_thieu ||  !diem_thuong || !so_xe_toi_da) {
             return Response.json({ message: "Thiếu thông tin bắt buộc!" }, { status: 400 });
         }
 
 
         // Cập nhật thông tin thẻ trong cơ sở dữ liệu
         await pool.execute(
-            "UPDATE `the` SET loai_the = ?, phi_kich_hoat = ?, so_du_toi_thieu = ?, diem_thuong = ?, so_xe_toi_da = ? WHERE the_id = ?",
-            [loai_the, phi_kich_hoat, so_du_toi_thieu, diem_thuong, so_xe_toi_da, the_id]
+            "UPDATE `the` SET loai_the = ?, img = ?, phi_kich_hoat = ?, so_du_toi_thieu = ?, diem_thuong = ?, so_xe_toi_da = ? WHERE the_id = ?",
+            [loai_the, img, phi_kich_hoat, so_du_toi_thieu, diem_thuong, so_xe_toi_da, the_id]
         );
 
         return new Response(
