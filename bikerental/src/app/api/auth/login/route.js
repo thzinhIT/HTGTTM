@@ -44,7 +44,7 @@ export async function POST(req) {
 
         // ✅ Tạo JWT token KHÔNG CÓ iat
         const token = jwt.sign(
-            { email: user.email, password: user.password, role: user.role }, // Payload
+            { email: user.email, password: user.password }, // Payload
             "mysecretkey",
             {
                 noTimestamp: true, // ✅ Loại bỏ iat
