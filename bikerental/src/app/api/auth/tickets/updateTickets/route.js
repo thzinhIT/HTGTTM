@@ -8,23 +8,23 @@ export async function PUT(req) {
 
         // Kiểm tra nếu thiếu ticketId
         if (!ve_id) {
-            return new Response(JSON.stringify({ message: "Thiếu thông tin ticketId!" }), {
+            return new Response(JSON.stringify({ message: "Thiếu thông tin vé!" }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
         }
 
-        const { ten_ve, diem_tngo, thoi_gian_hieu_luc, hieu_luc, phi_phat_sinh, ghi_chu } = await req.json();
+        const { ten_ve, loai_xe, diem_tngo, thoi_luong, thoi_han, phi_phat_sinh, ghi_chu } = await req.json();
 
-        if (!ten_ve || !thoi_gian_hieu_luc || !hieu_luc || !phi_phat_sinh || !ghi_chu) {
+        if (!ten_ve || !loai_xe || !diem_tngo || !thoi_luong || !thoi_han || !phi_phat_sinh || !ghi_chu) {
             return Response.json({ message: "Thiếu thông tin bắt buộc!" }, { status: 400 });
         }
 
 
         // Cập nhật thông tin thẻ trong cơ sở dữ liệu
         await pool.execute(
-            "UPDATE `ve` SET ten_ve = ?, diem_tngo = ?, thoi_gian_hieu_luc = ?, hieu_luc = ?, phi_phat_sinh = ?, ghi_chu = ? WHERE ve_id = ?",
-            [ten_ve, diem_tngo, thoi_gian_hieu_luc, hieu_luc, phi_phat_sinh, ghi_chu, ve_id]
+            "UPDATE `ve` SET ten_ve = ?, loai_xe = ?, diem_tngo = ?, thoi_luong = ?, thoi_han = ?, phi_phat_sinh = ?, ghi_chu = ? WHERE ve_id = ?",
+            [ten_ve, loai_xe, diem_tngo, thoi_luong, thoi_han, phi_phat_sinh, ghi_chu, ve_id]
         );
 
 

@@ -4,10 +4,11 @@ export async function POST(req) {
     try {
         const ticket = await req.json();
 
+        const safeValue = (value) => value === undefined ? null : value;
         // Chèn dữ liệu vé mới vào cơ sở dữ liệu
         const [result] = await pool.execute(
-            "INSERT INTO `ve` (ve_id, ten_ve, diem_tngo, thoi_gian_hieu_luc, hieu_luc, phi_phat_sinh, ghi_chu) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [ticket.ve_id, ticket.ten_ve, ticket.diem_tngo, ticket.thoi_gian_hieu_luc, ticket.hieu_luc, ticket.phi_phat_sinh, ticket.ghi_chu]
+            "INSERT INTO `ve` (ve_id, ten_ve, loai_xe, diem_tngo, thoi_luong, thoi_han, phi_phat_sinh, ghi_chu) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [ticket.ve_id, ticket.ten_ve, ticket.loai_xe, ticket.diem_tngo, ticket.thoi_luong, ticket.thoi_han, ticket.phi_phat_sinh, ticket.ghi_chu]
         );
 
         // Trả về thông báo thành công
