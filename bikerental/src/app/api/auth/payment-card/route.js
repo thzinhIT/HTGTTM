@@ -1,7 +1,8 @@
 import pool from "@/db.js";
-import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer"; // Nếu bạn muốn gửi email thật
 import { sendEmail } from "@/app/api/auth/sendEmail"; // Nếu bạn muốn gửi email thật
+const SECRET_KEY = "mysecretkey"; // Nên đặt vào biến môi trường trong thực tế
 
 
 export const POST = async (req) => {
@@ -17,51 +18,46 @@ export const POST = async (req) => {
             });
         }
 
-        // Lấy email và password từ body
-        const { email, password } = await req.json();
-
-        if (!email || !password) {
-            return new Response(JSON.stringify({ message: "Vui lòng nhập email và mật khẩu!" }), {
-                status: 400,
+       // ✅ Lấy token từ header: "Authorization: Bearer TOKEN"
+        const authHeader = req.headers.get("authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return new Response(JSON.stringify({ message: "Thiếu hoặc sai định dạng token!" }), {
+                status: 401,
                 headers: { "Content-Type": "application/json" },
             });
         }
-
+       
+        const token = authHeader.split(" ")[1]; // Lấy phần TOKEN phía sau "Bearer"
+       
+        // ✅ Giải mã token
+        let decoded;
+        try {
+            decoded = jwt.verify(token, SECRET_KEY);
+        } catch (err) {
+            return new Response(JSON.stringify({ message: "Token không hợp lệ!" }), {
+                status: 401,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+       
+        const email = decoded.email;
+        const password = decoded.password; // Lưu ý: Không nên lưu mật khẩu trong token, chỉ dùng cho ví dụ này
         connection = await pool.getConnection();
-
-        // Kiểm tra người dùng trong DB
-        const [rows] = await connection.execute(
-            "SELECT * FROM users WHERE email = ?",
+       
+        const [userRows] = await connection.execute(
+            "SELECT id, username FROM users WHERE email = ?",
             [email]
         );
-
-        if (rows.length === 0) {
-            return new Response(JSON.stringify({ message: "Email hoặc mật khẩu không đúng!" }), {
-                status: 401,
+        
+        if (userRows.length === 0) {
+            return new Response(JSON.stringify({ message: "Không tìm thấy người dùng!" }), {
+                status: 404,
                 headers: { "Content-Type": "application/json" },
             });
         }
-
-        const user = rows[0];
-
-        // Kiểm tra mật khẩu mã hóa
-        let isMatch = false;
-        if (user.password.startsWith("$2a$") || user.password.startsWith("$2b$")) {
-            isMatch = await bcrypt.compare(password, user.password);
-        }
-
-        if (!isMatch) {
-            // Hoặc kiểm tra mật khẩu gốc nếu bạn đang test
-            isMatch = password === "mypassword";
-        }
-
-        if (!isMatch) {
-            return new Response(JSON.stringify({ message: "Email hoặc mật khẩu không đúng!" }), {
-                status: 401,
-                headers: { "Content-Type": "application/json" },
-            });
-        }
-
+        
+        const user = userRows[0];
+        
         const nguoiDungId = user.id;
         const tenNguoiDung = user.username;
 
