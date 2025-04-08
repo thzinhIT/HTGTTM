@@ -52,6 +52,7 @@ export default function RegisterModal({ open, onClose }) {
     if (res.ok) {
       toast.success(data.message);
       onClose(); // Đóng modal sau khi đăng ký thành công
+      handleOnClickLogin();
     } else {
       toast.error(data.message);
     }

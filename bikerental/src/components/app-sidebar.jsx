@@ -6,6 +6,7 @@ import {
   Settings,
   Users,
   IdCard,
+  Ticket,
 } from "lucide-react";
 
 import {
@@ -32,14 +33,14 @@ const items = [
     icon: Users,
   },
   {
-    title: "Card",
+    title: "Cards",
     url: "/admin/list-cards",
     icon: IdCard,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
+    title: "Tickets",
+    url: "/admin/list-tickets",
+    icon: Ticket,
   },
   {
     title: "Settings",

@@ -1,10 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegClock } from "react-icons/fa6";
 import { CiWarning } from "react-icons/ci";
 import { CiMoneyCheck1 } from "react-icons/ci";
 import { usePathname } from "next/navigation";
-
+import useFetchGetData from "@/hooks/useFecthGetData";
 const TransactionTable = () => {
   const [currentIndex, setCurrentIndex] = useState(2); // Bắt đầu từ index 2
   const nextSlide = () => {
@@ -19,66 +19,32 @@ const TransactionTable = () => {
     }
   };
   const [activeButton, setActiveButton] = useState("mechanic"); // Mặc định là xe đạp điện
-  const [data, setdata] = useState([
-    {
-      model: "lượt",
-      point: "10.000",
-      duration: "60 phút",
-      time: "60 phút",
-      money: "3.000 điểm/15 phút",
-      warm: "Bạn phải có số dư tối thiểu 20.000 điểm TNGo",
-    },
-    {
-      model: "ngày",
-      point: "50.000",
-      duration: "450 phút",
-      time: "24h ngày đăng kí",
-      money: "3.000 điểm/15 phút",
-    },
-    {
-      model: "tháng",
-      point: "79.000",
-      duration: "Miễn phí tất cả chuyến đi dưới 45 phút",
-      time: "30 ngày kể từ ngày đăng kí",
-      money: "3.000 điểm/15 phút",
-    },
-    {
-      model: "tháng",
-      point: "300.000",
-      duration:
-        "Miễn phí các chuyến đi trong tháng, mỗi chuyến không quá 720 phút trong ngày",
-      time: "30 ngày kể từ ngày đăng kí",
-      money: "3.000 điểm/15 phút",
-    },
-    {
-      model: "tháng",
-      point: "500.000",
-      duration:
-        " Không giới hạn số chuyến đi trong tháng, thời gian đi không vượt quá 00h00 cùng ngày.",
-      time: "30 ngày kể từ ngày đăng kí",
-    },
-  ]);
+
   const pathName = usePathname();
   const checkPathName = pathName === "/price";
-  const [tram, setTram] = useState([
-    {
-      model: "lượt",
-      point: "20.000",
-      duration: "60 phút",
-      time: "60 phút",
-      money: "6.000 điểm/15 phút",
-      warm: "Lưu ý: Bạn phải có số dư tối thiểu 40.000 điểm TNGo",
-    },
-    {
-      model: "ngày",
-      point: "100.000",
-      duration: "450 phút",
-      time: "24h ngày đăng kí",
-      money: "6.000 điểm/15 phút",
-    },
-  ]);
-  const [currentData, setCurrentData] = useState(data);
+  const [bike, setBike] = useState();
+  const [tram, setTram] = useState();
+  const [currentData, setCurrentData] = useState();
 
+  const { data, loding, error } = useFetchGetData(
+    "http://localhost:3000/api/auth/tickets/getTickets?page=1"
+  );
+  useEffect(() => {
+    if (data) {
+      setBike(data?.veXeDap);
+      setTram(data?.veXeDien);
+    }
+    console.log("check data", data);
+  }, [data]);
+  useEffect(() => {
+    if (bike) {
+      setCurrentData(bike);
+    }
+    console.log("check data", data);
+  }, [bike]);
+  useEffect(() => {
+    console.log("check xe đạp", bike);
+  }, [bike]);
   return (
     <>
       <div className=" p-10 ">
@@ -96,7 +62,7 @@ const TransactionTable = () => {
           }`}
               onClick={() => {
                 setActiveButton("mechanic");
-                setCurrentData(data);
+                setCurrentData(bike);
               }}
             >
               Xe đạp cơ
@@ -119,9 +85,9 @@ const TransactionTable = () => {
           </div>
         </div>
 
-        <div className=" flex justify-between px-10 ">
-          {currentData.length !== 0 &&
-            currentData.slice(0, 2).map((item, index) => {
+        <div className=" flex flex-wrap justify-between px-10 ">
+          {currentData && currentData?.length > 0 ? (
+            currentData.map((item, index) => {
               return (
                 <div
                   className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col justify-between w-[30%] min-h-[430px]    "
@@ -129,43 +95,54 @@ const TransactionTable = () => {
                 >
                   <div className="px-3 py-3  flex flex-col ">
                     <h3 className="mt-10 mb-2 text-center text-4xl font-semibold text-blue-700">
-                      Vé {item.model}
+                      {item.ten_ve}
                     </h3>
-                    <div className="my-10  text-center">
-                      <span className="text-blue-700 text-4xl font-semibold">
-                        {item.point}
-                      </span>{" "}
-                      điểm TNGo/lượt
-                    </div>
-                    <div className="flex flex-col gap-2 justify-between">
-                      {" "}
-                      <div className="flex items-center gap-1">
+                    {item.diem_tngo ? (
+                      <>
                         {" "}
-                        <FaRegClock className="text-blue-700 flex-shrink-0" />
-                        <p>Thời lượng: {item.duration}</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <FaRegClock className="text-blue-700 flex-shrink-0" />
-                        <p>Thời hạn: {item.time}</p>
-                      </div>
-                      {item.money && (
-                        <div className="flex items-center gap-1">
-                          {" "}
-                          <CiMoneyCheck1 className="text-blue-700 text-2xl flex-shrink-0" />{" "}
-                          <p>Cước phi quá thời lượng: {item.money} </p>
+                        <div className="my-10  text-center">
+                          <span className="text-blue-700 text-4xl font-semibold">
+                            {item.diem_tngo}
+                          </span>{" "}
+                          điểm TNGo/lượt
                         </div>
-                      )}
-                      {item.warm && (
-                        <div className="flex items-start gap-1 flex-1 ">
+                        <div className="flex flex-col gap-2 justify-between">
                           {" "}
-                          <CiWarning className="text-yellow-500 text-xl flex-shrink-0" />
-                          <p> Lưu ý: {item.warm}</p>
+                          <div className="flex items-center gap-1">
+                            {" "}
+                            <FaRegClock className="text-blue-700 flex-shrink-0" />
+                            <p>Thời lượng: {item.thoi_luong}</p>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <FaRegClock className="text-blue-700 flex-shrink-0" />
+                            <p>Thời hạn: {item.thoi_han}</p>
+                          </div>
+                          {item.phi_phat_sinh && (
+                            <div className="flex items-center gap-1">
+                              {" "}
+                              <CiMoneyCheck1 className="text-blue-700 text-2xl flex-shrink-0" />{" "}
+                              <p>
+                                Cước phi quá thời lượng: {item.phi_phat_sinh}{" "}
+                              </p>
+                            </div>
+                          )}
+                          {item.ghi_chu && (
+                            <div className="flex items-start gap-1 flex-1 ">
+                              {" "}
+                              <CiWarning className="text-yellow-500 text-xl flex-shrink-0" />
+                              <p> Lưu ý: {item.ghi_chu}</p>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
+                      </>
+                    ) : (
+                      <p className="text-center text-xl text-red-500 mt-10">
+                        ! chưa được áp dụng
+                      </p>
+                    )}
                   </div>
-                  {checkPathName && (
-                    <div className="mb-3 w-full">
+                  {checkPathName && item.diem_tngo && (
+                    <div className="mb-3 w-full mt-3">
                       <button className="bg-blue-600 text-white py-2 px-4 mx-auto block w-[70%] rounded-lg ">
                         {" "}
                         Đăng nhập để mua
@@ -174,88 +151,10 @@ const TransactionTable = () => {
                   )}
                 </div>
               );
-            })}
-          <div
-            className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col justify-between w-[30%] min-h-[430px]    "
-            key={currentIndex + "vinh"}
-          >
-            <div className="px-3 py-3 flex flex-col">
-              <h3 className="mt-10 mb-2 text-center text-4xl font-semibold text-blue-700">
-                Vé Tháng
-              </h3>
-              {currentData.length > 2 ? (
-                <>
-                  <div className="my-10 text-center   ">
-                    <span className="text-blue-700 text-4xl font-semibold">
-                      {currentData[currentIndex].point}
-                    </span>{" "}
-                    điểm TNGo/{currentData[currentIndex].model}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-1">
-                      <FaRegClock className="text-blue-700 flex-shrink-0" />
-                      <p>Thời lượng: {currentData[currentIndex].duration}</p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <FaRegClock className="text-blue-700 flex-shrink-0" />
-                      <p>Thời hạn: {currentData[currentIndex].time}</p>
-                    </div>
-                    {currentData[currentIndex].money && (
-                      <div className="flex items-center gap-1">
-                        <CiMoneyCheck1 className="text-blue-700 text-2xl flex-shrink-0" />
-                        {currentData[currentIndex].money}
-                      </div>
-                    )}
-                    {currentData[currentIndex].warm && (
-                      <div className="flex items-center gap-1 mb-16">
-                        <CiWarning className="text-yellow-500 text-xl flex-shrink-0" />
-                        <p>{currentData[currentIndex].warm}</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Nút Next & Prev */}
-                  <div className="flex justify-center gap-0 mt-4">
-                    <button
-                      className={`px-4 py-2 text-3xl rounded-lg ${
-                        currentIndex === 2
-                          ? " text-gray-300 cursor-not-allowed"
-                          : "text-black cursor-pointer "
-                      }`}
-                      onClick={prevSlide}
-                      disabled={currentIndex === 2}
-                    >
-                      ←
-                    </button>
-                    <button
-                      className={`px-4 py-2 text-3xl rounded-lg ${
-                        currentIndex === data.length - 1
-                          ? " text-gray-300 cursor-not-allowed"
-                          : "text-black cursor-pointer"
-                      }`}
-                      onClick={nextSlide}
-                      disabled={currentIndex === data.length - 1}
-                    >
-                      →
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className="text-red-500  flex items-center justify-center h-[100%] text-xl ">
-                  {" "}
-                  ! chưa có áp dụng
-                </div>
-              )}
-            </div>
-            {checkPathName && (
-              <div className="mb-3 w-full">
-                <button className="bg-blue-600 text-white py-2 px-4 mx-auto block w-[70%] rounded-lg ">
-                  {" "}
-                  Đăng nhập để mua
-                </button>
-              </div>
-            )}
-          </div>
+            })
+          ) : (
+            <div>Loading...</div>
+          )}
         </div>
       </div>
 

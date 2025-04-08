@@ -1,8 +1,12 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useState } from "react";
+import useFetchGetData from "@/hooks/useFecthGetData";
 const Rifd = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [cards, setCards] = useState();
+  const [token, setToken] = useState(null);
   const [image, setImage] = useState([
     {
       img: "https://tngo.vn/image/Rectangle%20669.jpg",
@@ -14,6 +18,24 @@ const Rifd = () => {
       img: "https://tngo.vn/image/Rectangle%20671.jpg",
     },
   ]);
+
+  const { data, loading, error } = useFetchGetData(
+    "http://localhost:3000/api/auth/card/getCards?page=1"
+  );
+  const storedToken = localStorage.getItem("token");
+  useEffect(() => {
+    setToken(storedToken);
+  }, [storedToken]);
+  useEffect(() => {
+    if (data) {
+      setCards(data?.cards);
+    }
+    console.log("check data", data);
+  }, [data]);
+
+  useEffect(() => {
+    setIsOpen(true);
+  }, [cards]);
   return (
     <>
       <div>
@@ -34,125 +56,82 @@ const Rifd = () => {
         </div>
         <div className="w-[1320px] mx-auto">
           {/* list thẻ */}
-          <div className="flex justify-between mb-16 mt-5">
+          <div className="flex flex-wrap justify-between mb-16 mt-5">
             {" "}
-            {/* item1 */}
-            <div className="w-[31%] flex flex-col gap-3 justify-between">
-              <h2 className="text-2xl font-semibold">Thẻ RideUp</h2>
-              <div className="w-full min-h-[236px] h-auto relative">
-                <Image
-                  src={"https://tngo.vn/image/rfid-rideup.jpg"}
-                  alt="ảnh"
-                  fill
-                  objectFit="cover"
-                />
-              </div>
-              <div className="text-[17px]">
-                <p className="">
-                  ✅ Phí mở thẻ <span className="font-semibold">20.000đ</span>,
-                  miễn phí mở thẻ lần đầu
-                </p>
-                <p className="">
-                  ✅ Số dư tài khoản chính tối thiểu
-                  <span className="font-bold text-red-500">100.000 điểm</span>,
-                  tặng ngay
-                  <span className="font-bold text-green-600">10.000</span> điểm
-                  khuyến mãi đạp xe
-                </p>
-                <p className="s">
-                  ✅ Cho phép mở tối đa
-                  <span className="font-bold text-blue-600">03</span> xe cùng
-                  lúc
-                </p>
-              </div>
+            {isOpen && cards?.length > 0 ? (
+              cards.map((card, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    {" "}
+                    <div className="w-[31%] flex flex-col gap-3 justify-between">
+                      <h2 className="text-2xl font-semibold">
+                        {card.loai_the}
+                      </h2>
+                      <div className="w-full min-h-[236px] h-auto relative">
+                        <Image
+                          src={card.img}
+                          alt="ảnh"
+                          fill
+                          objectFit="cover"
+                        />
+                      </div>
+                      <div className="text-[17px]">
+                        <p className="">
+                          ✅ Phí mở thẻ{" "}
+                          <span className="font-semibold">
+                            {card?.phi_kich_hoat ?? "N/A"}
+                          </span>
+                          , miễn phí mở thẻ lần đầu
+                        </p>
+                        <p className="">
+                          ✅ Số dư tài khoản chính tối thiểu{" "}
+                          <span className="font-bold text-red-500">
+                            {card?.so_du_toi_thieu ?? "N/A"}
+                          </span>
+                          , tặng ngay{" "}
+                          <span className="font-bold text-green-600">
+                            {card?.diem_thuong ?? "N/A"}
+                          </span>{" "}
+                          điểm khuyến mãi đạp xe
+                        </p>
 
-              <div className="w-full mt-2">
-                <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900">
-                  Đăng nhập để mua thẻ
-                </button>
-              </div>
-            </div>
-            {/* item2 */}
-            <div className="w-[31%] flex flex-col gap-3 justify-between">
-              <h2 className="text-2xl font-semibold">Thẻ Premium</h2>
-              <div className="w-full min-h-[236px] h-auto relative">
-                <Image
-                  src={"https://tngo.vn/image/rfid-premium.jpg"}
-                  alt="ảnh"
-                  fill
-                  objectFit="cover"
-                />
-              </div>
-              <div className="text-[17px]">
-                <p className="">
-                  ✅ Phí mở thẻ <span className="font-semibold">20.000đ</span>,
-                  miễn phí mở thẻ lần đầu
-                </p>
-                <p className="">
-                  ✅ Số dư tài khoản chính tối thiểu
-                  <span className="font-bold text-red-500">1.000.000 điểm</span>
-                  , tặng ngay
-                  <span className="font-bold text-green-600">50.000</span> điểm
-                  khuyến mãi đạp xe
-                </p>
-                <p className="s">
-                  ✅ Cho phép mở tối đa
-                  <span className="font-bold text-blue-600">10</span> xe cùng
-                  lúc
-                </p>
-              </div>
+                        <p>
+                          <span className="font-bold text-blue-600">
+                            {card?.so_xe_toi_da ?? "N/A"}
+                          </span>{" "}
+                          xe cùng lúc
+                        </p>
+                      </div>
 
-              <div className="w-full mt-2">
-                <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900">
-                  Đăng nhập để mua thẻ
-                </button>
-              </div>
-            </div>
-            {/* item3 */}
-            <div className="w-[31%] flex flex-col gap-1 justify-between">
-              <h2 className="text-2xl font-semibold">Thẻ Vip</h2>
-              <div className="w-full min-h-[236px] h-auto relative">
-                <Image
-                  src={"https://tngo.vn/image/rfid-vip.jpg"}
-                  alt="ảnh"
-                  fill
-                  objectFit="cover"
-                  className="flex-shrink-0"
-                />
-              </div>
-              <div className="text-[17px] ">
-                <p className="">
-                  ✅ Phí mở thẻ <span className="font-semibold">20.000đ</span>,
-                  miễn phí mở thẻ lần đầu
-                </p>
-                <p className="">
-                  ✅ Số dư tài khoản chính tối thiểu
-                  <span className="font-bold text-red-500">5.000.000 điểm</span>
-                  , tặng ngay
-                  <span className="font-bold text-green-600">100.000</span> điểm
-                  khuyến mãi đạp xe
-                </p>
-                <p className="s">
-                  ✅ Cho phép mở tối đa
-                  <span className="font-bold text-blue-600">
-                    không giới hạn
-                  </span>{" "}
-                  xe cùng lúc
-                </p>
-              </div>
-
-              <div className="w-full mt-2 relative bottom-0">
-                <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900">
-                  Đăng nhập để mua thẻ
-                </button>
-              </div>
-            </div>
+                      <div className="w-full mt-2">
+                        {storedToken ? (
+                          <button
+                            className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900"
+                            onClick={() => {}}
+                          >
+                            Mua thẻ đi bạn ui
+                          </button>
+                        ) : (
+                          <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900">
+                            Đăng nhập để mua thẻ
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <div></div>
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
+
           <h2 className="text-3xl font-semibold mb-2">
             Chính sách sử dụng thẻ RFID
           </h2>
           {/* điều khoảng sử dụng */}
-          <div className="mt-10">
+          <div className="mt-10 ">
             <div className="flex gap-5 justify-between items-start">
               {" "}
               <div className="mt-2 w-[65%] text-justify">
@@ -367,8 +346,7 @@ const Rifd = () => {
         </div>
       </div>
 
-      <div className="h-[1000px] "></div>
-      <div></div>
+      <div className="h-[200px]"></div>
     </>
   );
 };

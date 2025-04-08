@@ -10,32 +10,30 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 
-export default function RootLayout({ children }) {
+export default function UserLayout({ children }) {
   // Kiểm tra nếu đường dẫn không phải là /admin hoặc các trang con của /admin
 
   return (
-    <html lang="en">
-      <body className="min-h-screen flex flex-col ">
-        <Header />
+    <>
+      <Header />
 
-        <main className="flex-1 w-[full] mt-[110px]">{children}</main>
+      <main className="flex-1 w-[full] mt-[110px]">{children}</main>
 
-        <Footer />
+      <Footer />
 
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition={Bounce}
-        />
-      </body>
-    </html>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+    </>
   );
 }

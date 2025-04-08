@@ -20,10 +20,10 @@ const loginSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
-export default function LoginModal({ open, onClose }) {
+export default function LoginModal({ open, onClose, addToken }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-
+  const [openLogin, setOpenLogin] = useState(false);
   const {
     register,
     handleSubmit,
@@ -31,6 +31,9 @@ export default function LoginModal({ open, onClose }) {
   } = useForm({
     resolver: zodResolver(loginSchema),
   });
+  const handleOnClickLogin = () => {
+    setOpenLogin(true);
+  };
 
   const onSubmit = async (data) => {
     const res = await fetch("http://localhost:3000/api/auth/login", {
@@ -47,10 +50,12 @@ export default function LoginModal({ open, onClose }) {
     localStorage.setItem("token", token);
     if (res.ok) {
       toast.success(req.message);
+      addToken();
+
       const decoded = jwt_decode(token);
       console.log("Decoded token:", decoded.email);
+      onClose();
     } else toast.error(req.message);
-    onClose();
   };
 
   return (

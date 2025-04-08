@@ -13,16 +13,23 @@ const Header = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [token, setToken] = useState(null);
 
-  useEffect(() => {
-    setToken(localStorage.getItem("token"));
-  }, [token]); // [] để chỉ chạy một lần khi component được mount
   console.log(token);
+  useEffect(() => {
+    // ✅ Khi component được render bên client, lấy token từ localStorage
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
   const removeToken = () => {
     // Xóa token khỏi localStorage
     localStorage.removeItem("token");
 
     // Cập nhật lại state token (để điều hướng lại UI)
     setToken(null);
+  };
+  const addToken = () => {
+    setToken(localStorage.getItem("token"));
   };
   return (
     <>
@@ -113,17 +120,11 @@ const Header = () => {
                   Đăng nhập
                 </button>
               )}
-              {/* <Image
-                src={icon}
-                alt="icon"
-                width={25}
-                height={25}
-                className="self-center cursor-pointer"
-              /> */}
             </div>
             <LoginModal
               open={isLoginOpen}
               onClose={() => setIsLoginOpen(false)}
+              addToken={addToken}
             />
           </div>
         </div>

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 import { IoAddCircleSharp } from "react-icons/io5";
 
-import TableUser from "./table-user";
+import TableUser from "../list-tickets/table-ticket";
 import { ModalCreateUser } from "./modal-create-user";
 import { ModalDeleteUser } from "./modal-delete-user";
 import { ModalUpdateUser } from "./modal-update-user";
