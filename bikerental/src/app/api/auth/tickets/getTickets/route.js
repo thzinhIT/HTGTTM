@@ -7,17 +7,23 @@ export async function GET(req) {
         const limit = 10;
         const offset = (page - 1) * limit;
 
-        const [tickets] = await pool.execute(
-            "SELECT * FROM `ve` LIMIT ? OFFSET ?",
-            [limit, offset]
+        const [veXeDap] = await pool.execute(
+            "SELECT * FROM `ve` WHERE loai_xe = 'xe đạp cơ'"
         );
+        
+        // Lấy danh sách vé xe đạp điện
+        const [veXeDien] = await pool.execute(
+            "SELECT * FROM `ve` WHERE loai_xe = 'xe đạp điện'"
+        );
+        
         const [[{ total }]] = await pool.execute(
             "SELECT COUNT(*) as total FROM `ve`"
         );
 
         return new Response(
             JSON.stringify({
-                tickets,
+                veXeDap,
+                veXeDien,
                 total,
                 page,
                 totalPages: Math.ceil(total / limit),
