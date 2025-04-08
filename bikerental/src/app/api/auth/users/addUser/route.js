@@ -9,14 +9,22 @@ export async function POST(req) {
             return Response.json({ message: "Thiếu thông tin!" }, { status: 400 });
         }
 
+        const role = 'User';
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await pool.execute(
-            "INSERT INTO users (email, password, username, phone) VALUES (?, ?, ?, ?)",
+            "INSERT INTO users (email, password, username, phone, role) VALUES (?, ?, ?, ?, ?)",
             [email, hashedPassword, username, phone]
         );
 
-        const token = jwt.sign({ email, username, password }, "mysecretkey", { expiresIn: "1h" });
+        
+       
+        const token = jwt.sign(
+                    {id, email, username, password, phone, role },
+                    "mysecretkey", // Nên dùng biến môi trường trong thực tế
+                  
+                );
         return Response.json({ message: "Đăng ký thành công!", token }, { status: 201 });
     } catch (error) {
         return Response.json({ message: "Đăng ký thất bại!", error: error.message }, { status: 500 });

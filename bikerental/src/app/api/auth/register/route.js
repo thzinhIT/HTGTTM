@@ -36,13 +36,9 @@ export async function POST(req) {
 
 
         // Tạo JWT token
-        const token = jwt.sign(
-            { email, username, password, phone, role },
-            "mysecretkey", // Nên dùng biến môi trường trong thực tế
-            { expiresIn: "1h" }
-        );
+        
 
-        return new Response(JSON.stringify({ message: "Đăng ký thành công!", token }), {
+        return new Response(JSON.stringify({ message: "Đăng ký thành công!" }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });

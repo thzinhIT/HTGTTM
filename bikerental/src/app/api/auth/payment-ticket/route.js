@@ -5,18 +5,17 @@ export const POST = async (req) => {
     try {
         // Lấy `ve_id` từ URL query parameters
         const { searchParams } = new URL(req.url, `http://${req.headers.host}`);
-        const ve_id = searchParams.get("ve_Id");
-        const userId = searchParams.get("userId");
+        const ve_id = searchParams.get("ve_id") || "1";
 
         if (!ve_id) {
             return new Response(JSON.stringify({ message: "Thiếu thông tin vé!" }), {
-                status: 400,
-                headers: { "Content-Type": "application/json" },
+            status: 400,
+            headers: { "Content-Type": "application/json" },
             });
         }
 
-        // Lấy thông tin từ body request (dùng `userId` thay vì `email`)
-        const { soLuong } = await req.json();
+        // Lấy thông tin từ body request
+        const { soLuong, token } = await req.json();
 
         if (!soLuong || parseInt(soLuong) <= 0) {
             return new Response(JSON.stringify({ message: "Thông tin không hợp lệ!" }), {
@@ -25,18 +24,35 @@ export const POST = async (req) => {
             });
         }
 
-        connection = await pool.getConnection();
-        await connection.beginTransaction(); // 🔥 Bắt đầu giao dịch
+        // Gửi yêu cầu tới API để truy vấn thông tin người dùng
+        const apiUrl = `http://localhost:3000/api/auth/payment-ticket?ve_Id=${ve_id}`;
+        const response = await fetch(apiUrl, {
+            method: "POST",
+                headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                },
+    });
 
-        // 🔍 **Truy vấn thông tin người dùng từ `the_nguoi_dung` bằng `userId`**
-        const [userRows] = await connection.execute(
-            "SELECT id, ten_nguoi_dung, so_du_diem, diem_da_su_dung, loai_the FROM the_nguoi_dung WHERE id = ?",
-            [userId]
-        );
+if (!response.ok) {
+    throw new Error("Không thể truy vấn thông tin người dùng!");
+}
 
-        if (userRows.length === 0) {
-            throw new Error("Không tìm thấy người dùng!");
-        }
+const userData = await response.json();
+
+// Tiến hành xử lý thông tin người dùng
+connection = await pool.getConnection();
+await connection.beginTransaction();
+
+const [userRows] = await connection.execute(
+    "SELECT id, ten_nguoi_dung, so_du_diem, diem_da_su_dung, loai_the FROM the_nguoi_dung WHERE id = ?",
+    [userData.id]
+);
+
+if (userRows.length === 0) {
+    throw new Error("Không tìm thấy người dùng!");
+}
+
 
         const { id, ten_nguoi_dung, so_du_diem, diem_da_su_dung, loai_the } = userRows[0];
 
