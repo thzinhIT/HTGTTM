@@ -1,17 +1,19 @@
 "use client";
-import React from "react";
-import Image from "next/image";
-import logo from "../../../../public/assets/img/logo-vn.jpg";
-import icon from "../../../../public/assets/img/vi.png";
-import Link from "next/link";
-import { useState, useEffect } from "react";
 import LoginModal from "@/components/login-form";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import logo from "../../../../public/assets/img/logo-vn.jpg";
 import { AvatarDropdownMenu } from "./drop-menu";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [token, setToken] = useState(null);
+
+  const pathName = usePathname();
+  const router = useRouter();
 
   console.log(token);
   useEffect(() => {
@@ -28,9 +30,12 @@ const Header = () => {
     // Cập nhật lại state token (để điều hướng lại UI)
     setToken(null);
   };
+
   const addToken = () => {
+    router.replace(`${pathName}?loginSuccess=true`);
     setToken(localStorage.getItem("token"));
   };
+
   return (
     <>
       <div className=" ">

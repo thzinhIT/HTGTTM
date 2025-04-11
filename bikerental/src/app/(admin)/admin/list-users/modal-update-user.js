@@ -90,9 +90,10 @@ export function ModalUpdateUser(props) {
         <Dialog open={open} onOpenChange={setIsOpenModalUpdate}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Thêm người dùng</DialogTitle>
+              <DialogTitle>Cập nhật người dùng</DialogTitle>
               <DialogDescription>
-                Bạn nuốn thêm người dùng mới vào hệ thống?
+                Bạn muốn cập nhật người dùng này không?
+                <br /> Nhập thông tin để cập nhật người dùng.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">

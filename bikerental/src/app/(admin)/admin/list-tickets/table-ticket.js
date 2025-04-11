@@ -17,7 +17,8 @@ import { ModalDeleteUser } from "../list-users/modal-delete-user";
 const TableTicket = (props) => {
   const [activeButton, setActiveButton] = useState("mechanic"); // Mặc định là xe đạp cơ
   const [currentData, setCurrentData] = useState();
-  const { bike, tram } = props;
+  const { bike, tram, handleOnClickDeleteTicket, handleOnClickUpdateTicket } =
+    props;
   useEffect(() => {
     if (bike) {
       setCurrentData(bike);
@@ -62,38 +63,46 @@ const TableTicket = (props) => {
           <TableRow>
             <TableHead className="w-[100px]">STT</TableHead>
             <TableHead className="w-[100px]">ID</TableHead>
-            <TableHead>Tên vé </TableHead>
+            <TableHead>Tên vé</TableHead>
             <TableHead>Điểm thưởng</TableHead>
             <TableHead>Thời lượng </TableHead>
             <TableHead>Thời Hạn </TableHead>
             <TableHead>Phí phát sinh </TableHead>
             <TableHead>Lưu ý </TableHead>
-
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow className=" ">
-            <TableCell className="font-medium ">1</TableCell>
-            <TableCell className="font-medium ">{1}</TableCell>
-            <TableCell>{1}</TableCell>
-            <TableCell>{1}</TableCell>
-            <TableCell>{1}</TableCell>
-            <TableCell>{1}</TableCell>
-            <TableCell>{1}</TableCell>
-            <TableCell>{1}</TableCell>
-
-            <TableCell className="text-right">
-              <div className="flex justify-end items-center gap-2">
-                <button className="text-blue-500 hover:text-blue-700  text-xl">
-                  <FaPen />
-                </button>
-                <button className="text-red-500 hover:text-red-700 text-xl">
-                  <IoIosCloseCircle />
-                </button>
-              </div>
-            </TableCell>
-          </TableRow>
+          {currentData?.map((item, index) => (
+            <TableRow key={item?.ve_id || index} className=" ">
+              <TableCell className="font-medium ">{index + 1}</TableCell>
+              <TableCell className="font-medium ">{item?.ve_id}</TableCell>
+              <TableCell>{item?.ten_ve}</TableCell>
+              <TableCell>{item?.diem_tngo}</TableCell>
+              <TableCell>{item?.thoi_luong}</TableCell>
+              <TableCell>{item?.thoi_han}</TableCell>
+              <TableCell>{item?.phi_phat_sinh}</TableCell>
+              <TableCell>{item?.ghi_chu}</TableCell>
+              <TableCell className="text-right">
+                <div className="flex justify-end items-center gap-2">
+                  <button
+                    className="text-blue-500 hover:text-blue-700  text-xl"
+                    onClick={() => handleOnClickUpdateTicket(item)}
+                  >
+                    <FaPen />
+                  </button>
+                  <button
+                    className="text-red-500 hover:text-red-700 text-xl"
+                    onClick={() => {
+                      handleOnClickDeleteTicket(item);
+                    }}
+                  >
+                    <IoIosCloseCircle />
+                  </button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>

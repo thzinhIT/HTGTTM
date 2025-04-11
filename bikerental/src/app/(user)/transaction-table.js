@@ -5,6 +5,15 @@ import { CiWarning } from "react-icons/ci";
 import { CiMoneyCheck1 } from "react-icons/ci";
 import { usePathname } from "next/navigation";
 import useFetchGetData from "@/hooks/useFecthGetData";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 const TransactionTable = () => {
   const [currentIndex, setCurrentIndex] = useState(2); // Bắt đầu từ index 2
   const nextSlide = () => {
@@ -90,7 +99,7 @@ const TransactionTable = () => {
             currentData.map((item, index) => {
               return (
                 <div
-                  className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col justify-between w-[30%] min-h-[430px]    "
+                  className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col justify-between w-[30%] min-h-[430px] mb-5    "
                   key={index + "vinh"}
                 >
                   <div className="px-3 py-3  flex flex-col ">
@@ -157,6 +166,42 @@ const TransactionTable = () => {
           )}
         </div>
       </div>
+
+      {checkPathName && (
+        <>
+          <div className="p-10">
+            <div className="w-[1320px] mx-auto px-10">
+              <h2 className=" text-blue-700 text-4xl my-9 font-bold text-center">
+                {" "}
+                Bạn đang muốn nạp điểm chăng????
+              </h2>
+
+              <div>
+                <Table>
+                  <TableCaption>A list of your recent invoices.</TableCaption>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[100px]">Invoice</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Method</TableHead>
+                      <TableHead className="text-right">Amount</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-medium">INV001</TableCell>
+                      <TableCell>Paid</TableCell>
+                      <TableCell>Credit Card</TableCell>
+                      <TableCell className="text-right">$250.00</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
+          <div></div>
+        </>
+      )}
 
       <div></div>
     </>

@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function UserLayout({ children }) {
   // Kiểm tra nếu đường dẫn không phải là /admin hoặc các trang con của /admin
