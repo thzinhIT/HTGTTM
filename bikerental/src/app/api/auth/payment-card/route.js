@@ -97,16 +97,6 @@ export const POST = async (req) => {
         return new Response(
             JSON.stringify({
                 message: "Thanh toán thẻ thành công!",
-                data: {
-                    nguoiDungId,
-                    tenNguoiDung,
-                    theId,
-                    loai_the,
-                    phi_kich_hoat,
-                    diemConLai,
-                    ngayMua,
-                    ngayHetHan: formattedNgayHetHan,
-                },
             }),
             {
                 status: 200,
@@ -144,21 +134,24 @@ async function sendEmail({ toEmail, username, theId, loai_the, phi_kich_hoat, di
         to: toEmail,
         subject: "🎉 Bạn đã thanh toán thẻ thành công!",
         html: `
-          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; background-color: #f9fafb;">
-            <h2 style="color: #1d4ed8; text-align: center;">📩 Cảm ơn bạn đã mua thẻ!</h2>
-            <p style="font-size: 16px; color: #334155;">Xin chào <strong>${username}</strong>,</p>
-            <p style="font-size: 16px; color: #334155;">Dưới đây là thông tin thẻ của bạn:</p>
-            <ul style="list-style: none; padding: 0;">
-              <li><strong>📌 Mã thẻ:</strong> ${theId}</li>
-              <li><strong>💳 Loại thẻ:</strong> ${loai_the}</li>
-              <li><strong>💰 Phí kích hoạt:</strong> ${phi_kich_hoat}</li>
-              <li><strong>🎯 Điểm còn lại:</strong> ${diemConLai}</li>
-              <li><strong>📅 Ngày mua:</strong> ${ngayMua}</li>
-              <li><strong>⏳ Hạn sử dụng:</strong> ${ngayHetHan}</li>
-            </ul>
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 700px; margin: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; background-color: #f9fafb;">
+            <style>
+                li { margin-bottom: 3rem;} 
+            </style>
+                <h2 style="color: #1d4ed8; text-align: center;font-size: 30px;">📩 Cảm ơn bạn đã mua thẻ!</h2>
+                    <p style="font-size: 20px; color: #334155;">Xin chào <strong>${username}</strong>,</p>
+                    <p style="font-size: 20px; color: #334155;">Dưới đây là thông tin thẻ của bạn:</p>
+                <ul style="list-style: none; padding: 0; font-size: 20px;">
+                    <li><strong>📌 Mã thẻ:</strong> ${theId}</li>
+                    <li><strong>💳 Loại thẻ:</strong> ${loai_the}</li>
+                    <li><strong>💰 Phí kích hoạt:</strong> ${phi_kich_hoat}</li>
+                    <li><strong>🎯 Điểm tặng ban đầu mua thẻ:</strong> ${diemConLai}</li>
+                    <li><strong>📅 Ngày mua:</strong> ${ngayMua}</li>
+                    <li><strong>⏳ Hạn sử dụng:</strong> ${ngayHetHan}</li>
+                </ul>
             <hr style="margin: 24px 0;">
-            <p style="font-size: 14px; color: #6b7280;">Nếu có bất kỳ thắc mắc nào, hãy phản hồi lại email này nhé.</p>
-          </div>
+        <p style="font-size: 22px; color: #6b7280;">Nếu có bất kỳ thắc mắc nào, hãy phản hồi lại email này nhé.</p>
+        </div>
         `,
     };
 
