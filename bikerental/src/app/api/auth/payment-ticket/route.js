@@ -128,7 +128,7 @@ export const POST = async (req) => {
     }
 };
 
-async function sendEmail({ toEmail, username, theId, loai_the, phi_kich_hoat, ngayMua, ngayHetHan }) {
+async function sendEmail({ toEmail, username, theId, ngayMua, ngayHetHan }) {
     const transporter = nodemailer.createTransport({
         service: "zoho",
         host: "smtpro.zoho.in",
@@ -146,13 +146,11 @@ async function sendEmail({ toEmail, username, theId, loai_the, phi_kich_hoat, ng
         subject: "🎉 Bạn đã thanh toán vé thành công!",
         html: `
           <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; background-color: #f9fafb;">
-            <h2 style="color: #1d4ed8; text-align: center;">📩 Cảm ơn bạn đã mua vé!</h2>
-            <p style="font-size: 16px; color: #334155;">Xin chào <strong>${username}</strong>,</p>
-            <p style="font-size: 16px; color: #334155;">Dưới đây là thông tin vé của bạn:</p>
-            <ul style="list-style: none; padding: 0;">
+            <h2 style="color: #1d4ed8; text-align: center;font-size: 26px;">📩 Cảm ơn bạn đã mua vé!</h2>
+            <p style="font-size: 20px; color: #334155;">Xin chào <strong>${username}</strong>,</p>
+            <p style="font-size: 20px; color: #334155;">Dưới đây là thông tin vé của bạn:</p>
+            <ul style="list-style: none; padding: 0;font-size: 20px;">
               <li><strong>📌 Mã vé:</strong> ${theId}</li>
-              <li><strong>💳 Loại thẻ:</strong> ${loai_the}</li>
-              <li><strong>💰 Điểm:</strong> ${phi_kich_hoat}</li>
               <li><strong>📅 Ngày mua:</strong> ${ngayMua}</li>
               <li><strong>⏳ Hạn sử dụng:</strong> ${ngayHetHan}</li>
             </ul>

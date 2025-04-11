@@ -1,97 +1,133 @@
 import pool from "@/db.js";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer"; // Cần thiết để gửi email
 
-// Hàm xử lý logic nạp điểm
-export async function napDiem(id, soDiemNap) {
+const SECRET_KEY = "mysecretkey"; // Nên đặt vào biến môi trường trong thực tế
+
+export const POST = async (req) => {
+    let connection;
     try {
-        // Kiểm tra thông tin đầu vào
-        if (!id || !soDiemNap || isNaN(soDiemNap) || parseFloat(soDiemNap) <= 0) {
-            throw new Error("Thông tin không hợp lệ! Vui lòng kiểm tra lại.");
+        const { searchParams } = new URL(req.url, `http://${req.headers.host}`);
+        const id = searchParams.get("id") || "1";
+
+        if (!id) {
+            return new Response(JSON.stringify({ message: "Thiếu thông tin điểm TNGO!" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
-        // Truy vấn thông tin thẻ của người dùng theo ID
+        const { soLuong } = await req.json();
+
+        if (!soLuong || parseInt(soLuong) <= 0) {
+            return new Response(JSON.stringify({ message: "Số lượng không hợp lệ!" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        // Lấy dữ liệu nạp từ bảng bang_gia
         const [rows] = await pool.execute(
-            "SELECT id, the_id, loai_the, so_du_diem FROM the_nguoi_dung WHERE id = ?",
+            "SELECT diem_tngo FROM bang_gia WHERE id = ?",
             [id]
         );
 
         if (rows.length === 0) {
-            throw new Error("Không tìm thấy thông tin thẻ của người dùng.");
+            return res.status(404).json({ message: "Không tìm thấy thông tin thẻ." });
         }
 
-        // Lấy dữ liệu thẻ từ kết quả truy vấn
-        const { the_id, loai_the, so_du_diem } = rows[0];
+        const { diem_tngo } = rows[0];
 
-        // Xác định số dư tối thiểu dựa trên loại thẻ
-        let soDuToiThieu;
-        switch (loai_the.toLowerCase()) {
-            case "rideup":
-                soDuToiThieu = 100000;
-                break;
-            case "premium":
-                soDuToiThieu = 1000000;
-                break;
-            case "vip":
-                soDuToiThieu = 5000000;
-                break;
-            default:
-                throw new Error(`Loại thẻ không hợp lệ: ${loai_the}`);
+        const authHeader = req.headers.get("authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return new Response(JSON.stringify({ message: "Thiếu hoặc sai định dạng token!" }), {
+                status: 401,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
-        // Tính số dư mới sau khi nạp
-        const soDuMoi = parseFloat(so_du_diem) + parseFloat(soDiemNap);
-
-        if (soDuMoi < soDuToiThieu) {
-            throw new Error(
-                `Số dư sau khi nạp (${soDuMoi} điểm) không đạt yêu cầu tối thiểu (${soDuToiThieu} điểm) cho thẻ ${loai_the}.`
-            );
+        const token = authHeader.split(" ")[1];
+        let decoded;
+        try {
+            decoded = jwt.verify(token, SECRET_KEY);
+        } catch (err) {
+            return new Response(JSON.stringify({ message: "Token không hợp lệ!" }), {
+                status: 401,
+                headers: { "Content-Type": "application/json" },
+            });
         }
 
-        // Cập nhật số dư mới vào bảng `the_nguoi_dung`
+        const userId = decoded.id;
+        const email = decoded.email;
+
+        // Lấy số dư người dùng
+        const [userRows] = await pool.execute(
+            "SELECT so_du_diem FROM the_nguoi_dung WHERE id = ?",
+            [userId]
+        );
+
+        if (userRows.length === 0) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng." });
+        }
+
+        const so_du_diem = parseFloat(userRows[0].so_du_diem) + parseFloat(diem_tngo) * parseInt(soLuong);
+        // Cập nhật số dư
         await pool.execute(
             "UPDATE the_nguoi_dung SET so_du_diem = ? WHERE id = ?",
-            [soDuMoi, id]
+            [so_du_diem, userId]
         );
 
-        return { message: "Nạp điểm thành công!", soDuMoi, loai_the, userId: id };
+        // ✅ Gửi email xác nhận
+        await sendEmail({
+            toEmail: email,
+        });
+
+        await connection.commit();
+        return new Response(JSON.stringify({ message: "Nạp thẻ thành công!" }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+
     } catch (error) {
-        console.error("Lỗi khi nạp điểm:", error.message);
-        throw new Error(error.message || "Không thể thực hiện nạp điểm!");
+        if (connection) await connection.rollback();
+        console.error("Lỗi:", error.message);
+        return new Response(JSON.stringify({ message: "Lỗi xử lý!", error: error.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+        });
+
+    } finally {
+        if (connection) connection.release();
     }
-}
+};
 
-// Xử lý API POST
-export async function POST(req) {
-    try {
-        // Lấy thông tin từ URL query parameters
-        const url = new URL(req.url);
-        const id = url.searchParams.get("id");
+async function sendEmail({ toEmail, username }) {
+    const transporter = nodemailer.createTransport({
+        service: "zoho",
+        host: "smtpro.zoho.in",
+        port: 465,
+        secure: true,
+        auth: {
+            user: "thanhvinh@zohomail.com",
+            pass: "Vinh12@6",
+        },
+    });
 
-        // Lấy thông tin từ body request
-        const { soDiemNap } = await req.json();
+    const mailOptions = {
+        from: '"Bike App" <thanhvinh@zohomail.com>',
+        to: toEmail,
+        subject: "🎉 Bạn đã nạp điểm tngo cho thẻ thành công!",
+        html: `
+          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; background-color: #f9fafb;">
+            <p style="font-size: 26px; color: #334155;">Cảm ơn bạn vì đã sử dụng dịch vụ nạp điểm thẻ RFID của website,</p>
+            <hr style="margin: 24px 0;">
+            <p style="font-size: 14px; color: #6b7280;">Nếu có bất kỳ thắc mắc nào, hãy phản hồi lại email này nhé.</p>
+          </div>
+        `,
+    };
 
-        if (!id || !soDiemNap) {
-            return new Response(
-                JSON.stringify({ message: "Thiếu thông tin ID người dùng hoặc số điểm cần nạp!" }),
-                { status: 400, headers: { "Content-Type": "application/json" } }
-            );
-        }
-
-        // Thực hiện logic nạp điểm với ID động
-        const result = await napDiem(id, soDiemNap);
-
-        return new Response(
-            JSON.stringify({
-                message: result.message,
-                soDuMoi: result.soDuMoi,
-                loaiThe: result.loai_the,
-                userId: result.userId,
-            }),
-            { status: 200, headers: { "Content-Type": "application/json" } }
-        );
-    } catch (error) {
-        return new Response(
-            JSON.stringify({ message: "Lỗi khi nạp điểm!", error: error.message }),
-            { status: 500, headers: { "Content-Type": "application/json" } }
-        );
-    }
+    await transporter.sendMail(mailOptions);
 }
