@@ -3,7 +3,8 @@ import Image from "next/image";
 import avatar from "../../../../public/assets/img/banner-contact.jpg";
 import FormContact from "./form-contact";
 import Link from "next/link";
-const Contact = () => {
+const Contact = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 1000)); // 2s delay
   return (
     <>
       <div>

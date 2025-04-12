@@ -26,6 +26,7 @@ const Header = () => {
   const removeToken = () => {
     // Xóa token khỏi localStorage
     localStorage.removeItem("token");
+    router.replace(`${pathName}?loginSuccess=false`);
 
     // Cập nhật lại state token (để điều hướng lại UI)
     setToken(null);

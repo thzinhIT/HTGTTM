@@ -4,7 +4,11 @@ import { FaRegClock } from "react-icons/fa6";
 import { CiWarning } from "react-icons/ci";
 import { CiMoneyCheck1 } from "react-icons/ci";
 import { usePathname } from "next/navigation";
+import { FaArrowAltCircleRight } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import useFetchGetData from "@/hooks/useFecthGetData";
+import LoginModal from "@/components/login-form";
 import {
   Table,
   TableBody,
@@ -16,6 +20,7 @@ import {
 } from "@/components/ui/table";
 const TransactionTable = () => {
   const [currentIndex, setCurrentIndex] = useState(2); // Bắt đầu từ index 2
+  const [price, setPrice] = useState();
   const nextSlide = () => {
     if (currentIndex < data.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -27,17 +32,34 @@ const TransactionTable = () => {
       setCurrentIndex(currentIndex - 1);
     }
   };
+
+  const searchParams = useSearchParams();
+  const loginSuccess = searchParams.get("loginSuccess");
+
+  useEffect(() => {
+    if (loginSuccess) {
+      const storeToken = localStorage.getItem("token");
+      setToken(storeToken);
+      console.log("check token", storeToken);
+    }
+  }, [loginSuccess]);
   const [activeButton, setActiveButton] = useState("mechanic"); // Mặc định là xe đạp điện
 
   const pathName = usePathname();
   const checkPathName = pathName === "/price";
+  const [token, setToken] = useState();
   const [bike, setBike] = useState();
   const [tram, setTram] = useState();
   const [currentData, setCurrentData] = useState();
-
-  const { data, loding, error } = useFetchGetData(
+  const urlPrice = "http://localhost:3000/api/auth/price/getPrice";
+  const {
+    data,
+    loding,
+    error: ticketError,
+  } = useFetchGetData(
     "http://localhost:3000/api/auth/tickets/getTickets?page=1"
   );
+
   useEffect(() => {
     if (data) {
       setBike(data?.veXeDap);
@@ -54,6 +76,18 @@ const TransactionTable = () => {
   useEffect(() => {
     console.log("check xe đạp", bike);
   }, [bike]);
+
+  const {
+    data: priceList,
+    loading,
+    error: priceError,
+  } = useFetchGetData(urlPrice);
+  useEffect(() => {
+    if (priceList) {
+      setPrice(priceList.price);
+    }
+  }, [priceList]);
+
   return (
     <>
       <div className=" p-10 ">
@@ -150,11 +184,18 @@ const TransactionTable = () => {
                       </p>
                     )}
                   </div>
-                  {checkPathName && item.diem_tngo && (
+                  {checkPathName && item.diem_tngo && !token ? (
                     <div className="mb-3 w-full mt-3">
-                      <button className="bg-blue-600 text-white py-2 px-4 mx-auto block w-[70%] rounded-lg ">
+                      <button className="bg-blue-600 text-white mx-auto block  py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900">
                         {" "}
                         Đăng nhập để mua
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="mb-3 w-full mt-3">
+                      <button className="bg-blue-600 text-white  mx-auto block py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900">
+                        {" "}
+                        Mua đi bạn ui
                       </button>
                     </div>
                   )}
@@ -173,7 +214,7 @@ const TransactionTable = () => {
             <div className="w-[1320px] mx-auto px-10">
               <h2 className=" text-blue-700 text-4xl my-9 font-bold text-center">
                 {" "}
-                Bạn đang muốn nạp điểm chăng????
+                Bạn đang thiếu điểm đúng ko ?
               </h2>
 
               <div>
@@ -181,19 +222,47 @@ const TransactionTable = () => {
                   <TableCaption>A list of your recent invoices.</TableCaption>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[100px]">Invoice</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Method</TableHead>
-                      <TableHead className="text-right">Amount</TableHead>
+                      <TableHead className="w-[100px]">STT</TableHead>
+                      <TableHead className={"text-end"}>Số tiền</TableHead>
+                      <TableHead></TableHead>
+                      <TableHead className={"text-end"}>Số điểm</TableHead>
+                      <TableHead className="text-end">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium">INV001</TableCell>
-                      <TableCell>Paid</TableCell>
-                      <TableCell>Credit Card</TableCell>
-                      <TableCell className="text-right">$250.00</TableCell>
-                    </TableRow>
+                    {price && price?.length > 0 ? (
+                      price?.map((item, index) => (
+                        <TableRow key={item.id}>
+                          <TableCell className="font-medium">
+                            {index + 1}
+                          </TableCell>
+                          <TableCell className={"text-end"}>
+                            {item.phi_nap} VNĐ
+                          </TableCell>
+                          <TableCell className={""}>
+                            <div className="">
+                              <FaArrowAltCircleRight className=" block text-xl text-blue-500 ml-auto " />
+                            </div>
+                          </TableCell>
+
+                          <TableCell className={"text-end"}>
+                            {" "}
+                            {item.diem_tngo}
+                          </TableCell>
+                          <TableCell className="text-end">
+                            <button className="py-3 px-3 bg-blue-500 rounded-xl text-white hover:bg-blue-800 transition duration-200 ease-in-out cursor-pointer">
+                              Mua ngay!!!
+                            </button>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell className="font-medium col-span-4 text-xl text-gray-300 text-center uppercase">
+                          ko có dữ liệu
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </div>

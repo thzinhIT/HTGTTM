@@ -3,10 +3,17 @@ import useFetchGetData from "@/hooks/useFecthGetData";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import usePostData from "@/hooks/useFetchPostData";
+import { AlertPayment } from "@/components/AlertPayment";
 const Rifd = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [cards, setCards] = useState();
   const [token, setToken] = useState();
+  const [id, setId] = useState();
+  const [dataCard, setDataCard] = useState(null);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [name, setName] = useState("");
+
   const [image, setImage] = useState([
     {
       img: "https://tngo.vn/image/Rectangle%20669.jpg",
@@ -21,27 +28,40 @@ const Rifd = () => {
 
   const params = useSearchParams();
   const loginSuccess = params.get("loginSuccess");
+  console.log(loginSuccess);
 
   const { data, loading, error } = useFetchGetData(
     "http://localhost:3000/api/auth/card/getCards?page=1"
   );
 
+  const postUrl = `http://localhost:3000/api/auth/payment-card?theId=${id}`;
+  const { postData, response } = usePostData();
+
+  const handleOnClickId = (item) => {
+    setName(item.loai_the);
+    setOpenAlert(true);
+    console.log(
+      "Bạn có chắc chắn muốn mua thẻ này không?",
+      item.the_id,
+      openAlert
+    );
+  };
+
   useEffect(() => {
     const tokenStorage = localStorage.getItem("token");
     setToken(tokenStorage);
-    console.log("check token", tokenStorage);
   }, [loginSuccess]);
 
   useEffect(() => {
     if (data) {
       setCards(data?.cards);
     }
-    console.log("check data", data);
   }, [data]);
 
   useEffect(() => {
     setIsOpen(true);
   }, [cards]);
+
   return (
     <>
       <div>
@@ -113,7 +133,7 @@ const Rifd = () => {
                         {token ? (
                           <button
                             className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900"
-                            onClick={() => {}}
+                            onClick={() => handleOnClickId(card)}
                           >
                             Mua thẻ đi bạn ui
                           </button>
@@ -353,6 +373,7 @@ const Rifd = () => {
       </div>
 
       <div className="h-[200px]"></div>
+      <AlertPayment open={openAlert} setOpen={setOpenAlert} name={name} />
     </>
   );
 };

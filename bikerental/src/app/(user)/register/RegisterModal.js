@@ -14,7 +14,7 @@ const registerSchema = z.object({
   email: z
     .string()
     .min(5, "Email phải có ít nhất 5 ký tự")
-    .max(30, "Email không được quá 50 ký tự")
+    .max(50, "Email không được quá 50 ký tự")
     .email("Email không hợp lệ")
     .regex(
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
@@ -52,7 +52,6 @@ export default function RegisterModal({ open, onClose }) {
     if (res.ok) {
       toast.success(data.message);
       onClose(); // Đóng modal sau khi đăng ký thành công
-      handleOnClickLogin();
     } else {
       toast.error(data.message);
     }
