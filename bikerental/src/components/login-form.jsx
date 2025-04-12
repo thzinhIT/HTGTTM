@@ -110,71 +110,60 @@ export default function LoginModal({ open, onClose, addToken }) {
         </DialogContent>
       </Dialog> */}
       <Dialog open={open} onOpenChange={onClose}>
-        <DialogContent className="max-w-md relative">
-          {loading ? (
-            <div className="absolute inset-0 flex justify-center items-center bg-white/80 z-50">
-              <HashLoader
-                color="#0051ff"
-                loading={true}
-                size={40}
-                speedMultiplier={2}
+        <DialogContent className="max-w-md ">
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-center">Đăng nhập</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* ✅ Email Input */}
+              <Input
+                type="email"
+                placeholder="Email"
+                {...register("email")}
+                className={errors.email ? "border-red-500" : ""}
               />
-            </div>
-          ) : (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-center">Đăng nhập</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                {/* ✅ Email Input */}
-                <Input
-                  type="email"
-                  placeholder="Email"
-                  {...register("email")}
-                  className={errors.email ? "border-red-500" : ""}
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email.message}</p>
-                )}
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
+              )}
 
-                {/* ✅ Password Input */}
-                <Input
-                  type="password"
-                  placeholder="Mật khẩu"
-                  {...register("password")}
-                  className={errors.password ? "border-red-500" : ""}
-                />
-                {errors.password && (
-                  <p className="text-red-500 text-sm">
-                    {errors.password.message}
-                  </p>
-                )}
+              {/* ✅ Password Input */}
+              <Input
+                type="password"
+                placeholder="Mật khẩu"
+                {...register("password")}
+                className={errors.password ? "border-red-500" : ""}
+              />
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password.message}
+                </p>
+              )}
 
-                <div className="flex justify-center mt-4">
-                  <Button
-                    type="submit"
-                    className="w-[70%] mx-auto cursor-pointer"
-                  >
-                    Đăng nhập
-                  </Button>
-                </div>
-              </form>
-
-              {/* Đăng ký */}
-              <p className="mt-4 text-center text-sm">
-                Nếu bạn chưa có tài khoản,{" "}
-                <button
-                  className="text-blue-600 hover:underline cursor-pointer"
-                  onClick={() => {
-                    setIsRegisterOpen(true);
-                    onClose();
-                  }}
+              <div className="flex justify-center mt-4">
+                <Button
+                  type="submit"
+                  className="w-[70%] mx-auto cursor-pointer"
                 >
-                  đăng ký ngay
-                </button>
-              </p>
-            </>
-          )}
+                  Đăng nhập
+                </Button>
+              </div>
+            </form>
+
+            {/* Đăng ký */}
+            <p className="mt-4 text-center text-sm">
+              Nếu bạn chưa có tài khoản,{" "}
+              <button
+                className="text-blue-600 hover:underline cursor-pointer"
+                onClick={() => {
+                  setIsRegisterOpen(true);
+                  onClose();
+                }}
+              >
+                đăng ký ngay
+              </button>
+            </p>
+          </>
         </DialogContent>
       </Dialog>
       <RegisterModal

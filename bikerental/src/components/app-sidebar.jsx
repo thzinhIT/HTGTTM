@@ -43,6 +43,11 @@ const items = [
     icon: Ticket,
   },
   {
+    title: "Prices",
+    url: "/admin/list-prices",
+    icon: Ticket,
+  },
+  {
     title: "Settings",
     url: "#",
     icon: Settings,
