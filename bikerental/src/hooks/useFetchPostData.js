@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { toast } from "react-toastify";
 const usePostData = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -10,6 +10,10 @@ const usePostData = () => {
     setError(null);
 
     const token = localStorage.getItem("token"); // Lấy token từ localStorage
+    alert("xin chaof");
+    console.log("token", token);
+    console.log("url", url);
+    console.log("data", data);
 
     try {
       const res = await fetch(url, {
@@ -25,6 +29,7 @@ const usePostData = () => {
       if (!res.ok) {
         toast.error(result.message);
       } else {
+        console.log("result", result);
         toast.success(result.message);
       }
     } catch (err) {

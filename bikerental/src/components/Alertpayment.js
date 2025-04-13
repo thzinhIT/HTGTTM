@@ -9,11 +9,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import React from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import usePostData from "@/hooks/useFetchPostData";
 import { Button } from "@/components/ui/button";
 
 export function AlertPayment(props) {
-  const { open, setOpen, name } = props;
-  console.log(name);
+  const { open, setOpen, name, url, data } = props;
+
+  const { postData, loading, error, response } = usePostData();
+  const handleClick = () => {
+    console.log("open", url);
+    postData(url, data);
+  };
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogContent>
@@ -28,8 +37,13 @@ export function AlertPayment(props) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction className={"bg-blue-500"}>
-            Thanh Toán 1234567
+          <AlertDialogAction
+            className={"bg-blue-500"}
+            onClick={() => {
+              handleClick();
+            }}
+          >
+            Thanh Toán 12345678
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

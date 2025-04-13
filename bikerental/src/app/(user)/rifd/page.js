@@ -4,14 +4,15 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import usePostData from "@/hooks/useFetchPostData";
-import { AlertPayment } from "@/components/AlertPayment";
+import { AlertPayment } from "@/components/Alertpayment";
 const Rifd = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [cards, setCards] = useState();
   const [token, setToken] = useState();
   const [id, setId] = useState();
-  const [dataCard, setDataCard] = useState(null);
+  const [dataCard, setDataCard] = useState();
   const [openAlert, setOpenAlert] = useState(false);
+  const [postUrl, setPostUrl] = useState(``);
   const [name, setName] = useState("");
 
   const [image, setImage] = useState([
@@ -34,18 +35,25 @@ const Rifd = () => {
     "http://localhost:3000/api/auth/card/getCards?page=1"
   );
 
-  const postUrl = `http://localhost:3000/api/auth/payment-card?theId=${id}`;
   const { postData, response } = usePostData();
+  useEffect(() => {
+    if (id) {
+    }
+  }, []);
 
   const handleOnClickId = (item) => {
     setName(item.loai_the);
     setOpenAlert(true);
-    console.log(
-      "Bạn có chắc chắn muốn mua thẻ này không?",
-      item.the_id,
-      openAlert
-    );
+    setId(item.the_id);
+    console.log("id", id);
+
+    console.log("item", postUrl);
   };
+  useEffect(() => {
+    if (id) {
+      setPostUrl(`http://localhost:3000/api/auth/payment-card?theId=${id}`);
+    }
+  }, [id]);
 
   useEffect(() => {
     const tokenStorage = localStorage.getItem("token");
@@ -373,7 +381,15 @@ const Rifd = () => {
       </div>
 
       <div className="h-[200px]"></div>
-      <AlertPayment open={openAlert} setOpen={setOpenAlert} name={name} />
+      {id && (
+        <AlertPayment
+          open={openAlert}
+          setOpen={setOpenAlert}
+          name={name}
+          url={postUrl}
+          data={dataCard}
+        />
+      )}
     </>
   );
 };
