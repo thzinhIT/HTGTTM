@@ -56,7 +56,16 @@ export const POST = async (req) => {
             [Id]
         );
 
-        if (userRows.length === 0) throw new Error("Không tìm thấy người dùng!");
+        if (userRows.length === 0)  return new Response(
+            JSON.stringify({
+                message: `Bạn chưa có thẻ để thanh toán!`,
+            }),
+            {
+                status: 500,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+
 
         const { ten_nguoi_dung, so_du_diem, diem_da_su_dung, loai_the } = userRows[0];
 
@@ -79,8 +88,17 @@ export const POST = async (req) => {
         const minRequiredBalance = minBalance[loai_the] || 0;
 
         if (so_du_diem - tongDiemThanhToan < minRequiredBalance) {
-            throw new Error(`Số dư thấp hơn mức tối thiểu (${minRequiredBalance.toLocaleString()})!`);
+            return new Response(
+                JSON.stringify({
+                    message: `Thẻ của bạn không đủ số dư, vui lòng nạp thêm.`,
+                }),
+                {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
         }
+
 
         const diemConLai = so_du_diem - tongDiemThanhToan;
         const diemDaSuDungMoi = diem_da_su_dung + tongDiemThanhToan;
@@ -118,7 +136,7 @@ export const POST = async (req) => {
     } catch (error) {
         if (connection) await connection.rollback();
         console.error("Lỗi:", error.message);
-        return new Response(JSON.stringify({ message: "Lỗi xử lý!", error: error.message }), {
+        return new Response(JSON.stringify({ message: "Lỗi thanh toán!", error: error.message }), {
             status: 500,
             headers: { "Content-Type": "application/json" },
         });

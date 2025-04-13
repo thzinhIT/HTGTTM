@@ -4,9 +4,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer"; // Cần thiết để gửi email
 const SECRET_KEY = "mysecretkey"; // Dùng biến môi trường thực tế
 
-// =============================
-// ========== POST ============
-// =============================
+
 export const POST = async (req) => {
     let connection;
     try {
@@ -56,6 +54,20 @@ export const POST = async (req) => {
         const user = userRows[0];
         const nguoiDungId = user.id;
         const tenNguoiDung = user.username;
+
+                // Kiểm tra xem thẻ đã tồn tại trong hệ thống của người dùng hay chưa
+                const [existingCardRows] = await connection.execute(
+                    "SELECT * FROM the_nguoi_dung WHERE the_id = ? AND id = ?",
+                    [theId, nguoiDungId]
+                );
+        
+                if (existingCardRows.length > 0) {
+                    return new Response(JSON.stringify({ message: "Thẻ của bạn đã tồn tại, bạn không thể mua thêm nữa!" }), {
+                        status: 400,
+                        headers: { "Content-Type": "application/json" },
+                    });
+                }
+        
 
         const [theRows] = await connection.execute(
             "SELECT * FROM the WHERE the_id = ?",
