@@ -90,8 +90,8 @@ export const POST = async (req) => {
         const formattedNgayHetHan = ngayHetHan.toISOString().split("T")[0];
 
         await connection.execute(
-            "INSERT INTO the_nguoi_dung (id, ten_nguoi_dung, the_id, loai_the, so_du_diem, diem_da_su_dung, diem_con_lai, ngay_mua, ngay_het_han) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [nguoiDungId, tenNguoiDung, theId, loai_the, phi_kich_hoat, 0, diemConLai, ngayMua, formattedNgayHetHan]
+            "INSERT INTO the_nguoi_dung (id, ten_nguoi_dung, the_id, loai_the, so_du_diem, diem_da_su_dung, ngay_mua, ngay_het_han) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [nguoiDungId, tenNguoiDung, theId, loai_the, phi_kich_hoat, 0, ngayMua, formattedNgayHetHan]
         );
 
         // ✅ Gửi email sau khi lưu thành công

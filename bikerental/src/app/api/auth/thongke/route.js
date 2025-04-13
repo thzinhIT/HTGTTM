@@ -57,14 +57,14 @@ export async function GET(req) {
       const data = {
           soNguoiDangKy: usersRegistered[0]?.so_nguoi_dang_ky || 0,
           veNguoiDung: {
-              soVeDuocBan: ticketsSold[0]?.so_ve_duoc_ban || 0,
+              soVeBanTrongThang: ticketsSold[0]?.so_ve_duoc_ban_trong_thang || 0,
               tongSoVeDuocMua: ticketsSold[0]?.tong_so_ve_duoc_mua || 0,
               thang: ticketsSold[0]?.thang || null,
               nam: ticketsSold[0]?.nam || null,
           },
           theNguoiDung: {
-              soTheDuocMua: cardsPurchased[0]?.so_the_duoc_mua || 0,
-              tongDiemTNgoDuocNap: cardsPurchased[0]?.tong_diem_tngo_duoc_nap || 0,
+              soTheDuocMuaTrongThang: cardsPurchased[0]?.so_the_duoc_ban_trong_thang || 0,
+              tongDiemTNgoDuocNap: cardsPurchased[0]?.tong_so_diem_da_duoc_nap || 0,
               thang: cardsPurchased[0]?.thang || null,
               nam: cardsPurchased[0]?.nam || null,
 
