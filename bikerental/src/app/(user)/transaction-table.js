@@ -4,23 +4,17 @@ import { FaRegClock } from "react-icons/fa6";
 import { CiWarning } from "react-icons/ci";
 import { CiMoneyCheck1 } from "react-icons/ci";
 import { usePathname } from "next/navigation";
-import { FaArrowAltCircleRight } from "react-icons/fa";
+
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import useFetchGetData from "@/hooks/useFecthGetData";
 import LoginModal from "@/components/login-form";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import DialogCount from "@/components/dialog-count";
+import MoneyTable from "./money-table";
+
 const TransactionTable = () => {
   const [currentIndex, setCurrentIndex] = useState(2); // Bắt đầu từ index 2
-  const [price, setPrice] = useState();
+
   const nextSlide = () => {
     if (currentIndex < data.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -37,6 +31,7 @@ const TransactionTable = () => {
   const loginSuccess = searchParams.get("loginSuccess");
 
   useEffect(() => {
+    setToken(localStorage.getItem("token"));
     if (loginSuccess) {
       const storeToken = localStorage.getItem("token");
       setToken(storeToken);
@@ -51,7 +46,24 @@ const TransactionTable = () => {
   const [bike, setBike] = useState();
   const [tram, setTram] = useState();
   const [currentData, setCurrentData] = useState();
-  const urlPrice = "http://localhost:3000/api/auth/price/getPrice";
+  const [open, setOpen] = useState(false);
+  const [postUrl, setPostUrl] = useState(``);
+  const [name, setName] = useState("");
+  const [id, setId] = useState("");
+  const handleOnClickId = (item) => {
+    setName(item.ten_ve);
+    setOpen(true);
+    setId(item.ve_id);
+    console.log("id", id);
+
+    console.log("item", postUrl);
+  };
+  useEffect(() => {
+    if (id) {
+      setPostUrl(`http://localhost:3000/api/auth/payment-ticket?ve_Id=${id}`);
+    }
+  }, [id]);
+
   const {
     data,
     loding,
@@ -76,17 +88,6 @@ const TransactionTable = () => {
   useEffect(() => {
     console.log("check xe đạp", bike);
   }, [bike]);
-
-  const {
-    data: priceList,
-    loading,
-    error: priceError,
-  } = useFetchGetData(urlPrice);
-  useEffect(() => {
-    if (priceList) {
-      setPrice(priceList.price);
-    }
-  }, [priceList]);
 
   return (
     <>
@@ -193,7 +194,10 @@ const TransactionTable = () => {
                     </div>
                   ) : (
                     <div className="mb-3 w-full mt-3">
-                      <button className="bg-blue-600 text-white  mx-auto block py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900">
+                      <button
+                        className="bg-blue-600 text-white  mx-auto block py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900"
+                        onClick={() => handleOnClickId(item)}
+                      >
                         {" "}
                         Mua đi bạn ui
                       </button>
@@ -210,68 +214,16 @@ const TransactionTable = () => {
 
       {checkPathName && (
         <>
-          <div className="p-10">
-            <div className="w-[1320px] mx-auto px-10">
-              <h2 className=" text-blue-700 text-4xl my-9 font-bold text-center">
-                {" "}
-                Bạn đang thiếu điểm đúng ko ?
-              </h2>
-
-              <div>
-                <Table>
-                  <TableCaption>A list of your recent invoices.</TableCaption>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[100px]">STT</TableHead>
-                      <TableHead className={"text-end"}>Số tiền</TableHead>
-                      <TableHead></TableHead>
-                      <TableHead className={"text-end"}>Số điểm</TableHead>
-                      <TableHead className="text-end">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {price && price?.length > 0 ? (
-                      price?.map((item, index) => (
-                        <TableRow key={item.id}>
-                          <TableCell className="font-medium">
-                            {index + 1}
-                          </TableCell>
-                          <TableCell className={"text-end"}>
-                            {item.phi_nap} VNĐ
-                          </TableCell>
-                          <TableCell className={""}>
-                            <div className="">
-                              <FaArrowAltCircleRight className=" block text-xl text-blue-500 ml-auto " />
-                            </div>
-                          </TableCell>
-
-                          <TableCell className={"text-end"}>
-                            {" "}
-                            {item.diem_tngo}
-                          </TableCell>
-                          <TableCell className="text-end">
-                            <button className="py-3 px-3 bg-blue-500 rounded-xl text-white hover:bg-blue-800 transition duration-200 ease-in-out cursor-pointer">
-                              Mua ngay!!!
-                            </button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell className="font-medium col-span-4 text-xl text-gray-300 text-center uppercase">
-                          ko có dữ liệu
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </div>
-          </div>
+          <MoneyTable token={token} />
           <div></div>
         </>
       )}
-
+      <DialogCount
+        open={open}
+        setOpen={setOpen}
+        name={name}
+        postUrl={postUrl}
+      />
       <div></div>
     </>
   );

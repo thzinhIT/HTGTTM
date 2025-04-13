@@ -20,7 +20,7 @@ const registerSchema = z.object({
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
       "Email phải có định dạng hợp lệ (ví dụ: example@gmail.com)"
     ),
-  username: z.string().min(6, "Tên người dùng ít nhất 3 ký tự"),
+  username: z.string().min(3, "Tên người dùng ít nhất 3 ký tự"),
   password: z.string().min(6, "Mật khẩu ít nhất 6 ký tự"),
   phone: z
     .string()

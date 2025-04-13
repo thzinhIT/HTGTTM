@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
+import Link from "next/link";
 export function AvatarDropdownMenu(props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [token, setToken] = useState(null);
@@ -50,7 +50,7 @@ export function AvatarDropdownMenu(props) {
       {isMenuOpen && (
         <ul className="absolute -left-[108px] mt-4 w-42 bg-gray-50 rounded-md z-50">
           <li className="px-4 py-2 hover:bg-blue-200 cursor-pointer">
-            Profile
+            <Link href={"/profile"}>Profile</Link>
           </li>
           <li className="px-4 py-2 hover:bg-blue-200 cursor-pointer">
             Settings
