@@ -7,8 +7,8 @@ const SECRET_KEY = "mysecretkey"; // Nên đặt vào biến môi trường tron
 export const POST = async (req) => {
     let connection;
     try {
-        const { searchParams } = new URL(req.url, `http://${req.headers.host}`);
-        const ve_id = searchParams.get("ve_id") || "1";
+        const { searchParams } = new URL(req.url);
+        const ve_id = searchParams.get("ve_id");
 
         if (!ve_id) {
             return new Response(JSON.stringify({ message: "Thiếu thông tin vé!" }), {
@@ -111,8 +111,8 @@ export const POST = async (req) => {
         const ngayMua = new Date().toISOString().split("T")[0];
 
         await connection.execute(
-            "INSERT INTO ve_nguoi_dung (id, ve_id, ten_nguoi_dung, ten_ve, ngay_mua, thoi_han, so_luong) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [Id, ve_id, ten_nguoi_dung, ten_ve, ngayMua, thoi_han, soLuong]
+            "INSERT INTO ve_nguoi_dung (users_id, ten_nguoi_dung, ve_id, ten_ve, ngay_mua, thoi_han, so_luong) VALUES ( ?, ?, ?, ?, ?, ?, ?)",
+            [Id, ten_nguoi_dung, ve_id, ten_ve, ngayMua, thoi_han, soLuong]
         );
 
         // ✅ Gửi email xác nhận
@@ -146,7 +146,7 @@ export const POST = async (req) => {
     }
 };
 
-async function sendEmail({ toEmail, username, theId, ngayMua, ngayHetHan }) {
+async function sendEmail({ toEmail, username, ve_id, ngayMua, ngayHetHan }) {
     const transporter = nodemailer.createTransport({
         service: "zoho",
         host: "smtpro.zoho.in",
@@ -168,7 +168,7 @@ async function sendEmail({ toEmail, username, theId, ngayMua, ngayHetHan }) {
             <p style="font-size: 20px; color: #334155;">Xin chào <strong>${username}</strong>,</p>
             <p style="font-size: 20px; color: #334155;">Dưới đây là thông tin vé của bạn:</p>
             <ul style="list-style: none; padding: 0;font-size: 20px;">
-              <li><strong>📌 Mã vé:</strong> ${theId}</li>
+              <li><strong>📌 Mã vé:</strong> ${ve_id}</li>
               <li><strong>📅 Ngày mua:</strong> ${ngayMua}</li>
               <li><strong>⏳ Hạn sử dụng:</strong> ${ngayHetHan}</li>
             </ul>
