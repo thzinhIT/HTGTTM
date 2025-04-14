@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 export function AvatarDropdownMenu(props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [token, setToken] = useState(null);
   const { removeToken } = props;
-
+  const router = useRouter();
   const handleLogout = () => {
     removeToken();
   };

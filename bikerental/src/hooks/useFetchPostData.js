@@ -10,7 +10,7 @@ const usePostData = () => {
     setError(null);
 
     const token = localStorage.getItem("token"); // Lấy token từ localStorage
-    alert("xin chaof");
+
     console.log("token", token);
     console.log("url", url);
     console.log("data", data);

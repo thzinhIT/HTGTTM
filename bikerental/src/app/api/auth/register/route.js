@@ -6,7 +6,7 @@ export async function POST(req) {
         const { email, password, username, phone } = await req.json();
 
         // Kiểm tra nếu email là adminTNGO@gmail.com thì role là 'Admin', ngược lại là 'User'
-        const role = email === 'adminTNGO@gmail.com' ? 'Admin' : 'User';
+        const role = email === 'adminTNGO@gmail.com' ? 'admin' : 'user';
 
 
         // Kiểm tra xem email hoặc số điện thoại đã tồn tại chưa
