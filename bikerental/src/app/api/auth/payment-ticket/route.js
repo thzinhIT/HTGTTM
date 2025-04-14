@@ -70,13 +70,13 @@ export const POST = async (req) => {
         const { ten_nguoi_dung, so_du_diem, diem_da_su_dung, loai_the } = userRows[0];
 
         const [veRows] = await connection.execute(
-            "SELECT ten_ve, diem_tngo, thoi_han FROM ve WHERE ve_id = ?",
+            "SELECT ten_ve, loai_xe, diem_tngo, thoi_han FROM ve WHERE ve_id = ?",
             [ve_id]
         );
 
         if (veRows.length === 0) throw new Error("Không tìm thấy vé!");
 
-        const { ten_ve, diem_tngo, thoi_han } = veRows[0];
+        const { ten_ve, loai_xe, diem_tngo, thoi_han } = veRows[0];
         const tongDiemThanhToan = diem_tngo * soLuong;
 
         const minBalance = {
@@ -111,8 +111,8 @@ export const POST = async (req) => {
         const ngayMua = new Date().toISOString().split("T")[0];
 
         await connection.execute(
-            "INSERT INTO ve_nguoi_dung (users_id, ten_nguoi_dung, ve_id, ten_ve, ngay_mua, thoi_han, so_luong) VALUES ( ?, ?, ?, ?, ?, ?, ?)",
-            [Id, ten_nguoi_dung, ve_id, ten_ve, ngayMua, thoi_han, soLuong]
+            "INSERT INTO ve_nguoi_dung (users_id, ten_nguoi_dung, ve_id, loai_xe, ten_ve, ngay_mua, thoi_han, so_luong) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [Id, ten_nguoi_dung, ve_id, loai_xe, ten_ve, ngayMua, thoi_han, soLuong]
         );
 
         // ✅ Gửi email xác nhận
@@ -136,7 +136,7 @@ export const POST = async (req) => {
     } catch (error) {
         if (connection) await connection.rollback();
         console.error("Lỗi:", error.message);
-        return new Response(JSON.stringify({ message: "Bạn không có thẻ thanh toán, vui lòng mua thẻ!", error: error.message }), {
+        return new Response(JSON.stringify({ message: "Bạn không có thẻ để thanh toán, vui lòng mua thẻ để tiếp tục!", error: error.message }), {
             status: 500,
             headers: { "Content-Type": "application/json" },
         });
