@@ -3,15 +3,21 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
 import { useEffect } from "react";
+import dayjs from "dayjs";
 import useFetchWithToken from "@/hooks/useFetchWithToken";
 const page = () => {
   const [user, setUser] = useState();
   const [card, setCard] = useState();
+  const [ticket, setTicket] = useState();
   const urlCard = "http://localhost:3000/api/auth/getAllUsersInfo/UsersCard";
   const urlUser = "http://localhost:3000/api/auth/getUserById";
+  const urlTicket =
+    "http://localhost:3000/api/auth/getAllUsersInfo/UsersTicket";
   const { data: cards, loading, error } = useFetchWithToken(urlCard);
   const { data: users } = useFetchWithToken(urlUser);
+  const { data: tickets } = useFetchWithToken(urlTicket);
   console.log("check card", cards);
+
   useEffect(() => {
     if (users) {
       setUser(users.user);
@@ -22,6 +28,12 @@ const page = () => {
       setCard(cards.user);
     }
   }, [cards]);
+  useEffect(() => {
+    if (tickets) {
+      setTicket(tickets.orders);
+    }
+    console.log("check ticket123", ticket);
+  }, [tickets]);
   return (
     <>
       <div
@@ -90,7 +102,9 @@ const page = () => {
                   <p className="text-xl font-semibold text-gray-700">
                     Thẻ xe: <span className="font-bold">{card.loai_the}</span>
                   </p>
-                  <p className="text-gray-600">Ngày tạo: {card.ngay_mua}</p>
+                  <p className="text-gray-600">
+                    Ngày tạo: {dayjs(card.ngay_mua).format("DD/MM/YYYY")}
+                  </p>
                 </div>
 
                 {/* Số dư */}
@@ -105,32 +119,34 @@ const page = () => {
               </div>
 
               {/* Danh sách vé đã mua */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                  Vé đã mua
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Vé 1 */}
-                  <div className="border rounded-lg p-4 bg-white shadow-sm">
-                    <p className="font-semibold">Vé lượt</p>
-                    <p className="text-sm text-gray-600">Số lượng: 2</p>
-                    <p className="text-sm text-gray-600">
-                      Hạn sử dụng: 12/04/2025
-                    </p>
-                  </div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                Tên vé
+              </h3>
+              {ticket?.length > 0 ? (
+                <div className="grid grid-cols-4 gap-4">
+                  {ticket?.map((item, index) => (
+                    <div className=" col-span-2" key={index}>
+                      {/* Vé 1 */}
+                      <div className="border rounded-lg p-4 bg-white shadow-sm">
+                        <p className="font-semibold">{item.ten_ve}</p>
+                        <p className="text-sm text-gray-600">
+                          Số lượng: {item.so_luong}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Ngày mua: {dayjs(item.ngay_mua).format("DD/MM/YYYY")}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Hạn sử dụng: {item.thoi_han}
+                        </p>
+                      </div>
 
-                  {/* Vé 2 */}
-                  <div className="border rounded-lg p-4 bg-white shadow-sm">
-                    <p className="font-semibold">Vé tháng</p>
-                    <p className="text-sm text-gray-600">Số lượng: 1</p>
-                    <p className="text-sm text-gray-600">
-                      Hạn sử dụng: 30/04/2025
-                    </p>
-                  </div>
-
-                  {/* Thêm các vé khác nếu có */}
+                      {/* Thêm các vé khác nếu có */}
+                    </div>
+                  ))}
                 </div>
-              </div>
+              ) : (
+                <div> hiện ko thấy dữ liệu </div>
+              )}
             </div>
           ) : (
             <div>loading...</div>
@@ -138,8 +154,7 @@ const page = () => {
           {/* Khối thông tin thẻ */}
         </div>
       </div>
-
-      <div className="h-[500px]"></div>
+      <div className="h-[200px]"></div>
     </>
   );
 };

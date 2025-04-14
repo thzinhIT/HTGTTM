@@ -16,6 +16,9 @@ import { toast } from "react-toastify";
 import jwt_decode from "jwt-decode";
 import { HashLoader } from "react-spinners";
 import { useRouter } from "next/navigation";
+import jwt from "jsonwebtoken";
+import Router from "next/navigation";
+
 const loginSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
@@ -26,6 +29,7 @@ export default function LoginModal({ open, onClose, addToken }) {
   const [loading, setLoading] = useState(false);
 
   const [openLogin, setOpenLogin] = useState(false);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -51,8 +55,14 @@ export default function LoginModal({ open, onClose, addToken }) {
         const token = req.token;
         localStorage.setItem("token", token);
         toast.success(req.message);
-        addToken();
-        onClose();
+        const decoded = jwt.decode(token);
+
+        if (decoded.role === "admin") {
+          router.push("/admin");
+        } else {
+          addToken();
+          onClose();
+        }
       } else {
         toast.error(req.message);
       }
