@@ -1,5 +1,4 @@
 import pool from "@/db.js"; // Đảm bảo đường dẫn đúng
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 export async function POST(req) {
@@ -43,7 +42,7 @@ export async function POST(req) {
             headers: { "Content-Type": "application/json" },
         });
     } catch (error) {
-        return new Response(JSON.stringify({ message: "Đăng ký thất bại!", error: error.message }), {
+        return new Response(JSON.stringify({ message: "Tài khoản đã tồn tại!", error: error.message }), {
             status: 500,
             headers: { "Content-Type": "application/json" },
         });

@@ -14,15 +14,15 @@ export async function PUT(req) {
             });
         }
 
-        const { diem_tngo, phi_nap } = await req.json();
+        const { diem_tngo, phi_nap, imgMoney } = await req.json();
 
-        if (!diem_tngo|| !phi_nap) {
+        if (!diem_tngo|| !phi_nap || !imgMoney) {
             return Response.json({ message: "Thiếu thông tin bắt buộc!" }, { status: 400 });
         }
 
         const [rows] = await pool.execute(
-            "SELECT COUNT(*) AS count FROM `bang_gia` WHERE diem_tngo = ? AND phi_nap = ? AND id = ?",
-            [diem_tngo, phi_nap, id]
+            "SELECT COUNT(*) AS count FROM `bang_gia` WHERE diem_tngo = ? AND phi_nap = ? AND imgMoney = ? AND id = ?",
+            [diem_tngo, phi_nap, imgMoney, id]
         );
 
         if (rows[0].count > 0) {
@@ -35,8 +35,8 @@ export async function PUT(req) {
 
         // Cập nhật thông tin thẻ trong cơ sở dữ liệu
         await pool.execute(
-            "UPDATE `bang_gia` SET diem_tngo = ?, phi_nap = ? WHERE id = ?",
-            [diem_tngo, phi_nap, id]
+            "UPDATE `bang_gia` SET diem_tngo = ?, phi_nap = ?, imgMoney = ? WHERE id = ?",
+            [diem_tngo, phi_nap, imgMoney, id]
         );
 
 

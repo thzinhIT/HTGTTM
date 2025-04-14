@@ -60,7 +60,7 @@ const TransactionTable = () => {
   };
   useEffect(() => {
     if (id) {
-      setPostUrl(`http://localhost:3000/api/auth/payment-ticket?ve_Id=${id}`);
+      setPostUrl(`http://localhost:3000/api/auth/payment-ticket?ve_id=${id}`);
     }
   }, [id]);
 

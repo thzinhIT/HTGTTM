@@ -20,8 +20,8 @@ export async function POST(req) {
 
         // Chèn dữ liệu bảng giá mới vào cơ sở dữ liệu
         const [result] = await pool.execute(
-            "INSERT INTO `bang_gia` (diem_tngo, phi_nap) VALUES (?, ?)",
-            [price.diem_tngo, price.phi_nap]
+            "INSERT INTO `bang_gia` (diem_tngo, phi_nap, imgMoney) VALUES (?, ?, ?)",
+            [price.diem_tngo, price.phi_nap, price.imgMoney]
         );
 
         // Trả về thông báo thành công

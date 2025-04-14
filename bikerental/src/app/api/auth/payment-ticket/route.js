@@ -136,7 +136,7 @@ export const POST = async (req) => {
     } catch (error) {
         if (connection) await connection.rollback();
         console.error("Lỗi:", error.message);
-        return new Response(JSON.stringify({ message: "Lỗi thanh toán!", error: error.message }), {
+        return new Response(JSON.stringify({ message: "Bạn không có thẻ thanh toán, vui lòng mua thẻ!", error: error.message }), {
             status: 500,
             headers: { "Content-Type": "application/json" },
         });

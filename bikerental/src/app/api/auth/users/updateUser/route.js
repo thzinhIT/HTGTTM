@@ -8,7 +8,7 @@ export async function PUT(req) {
         const id = searchParams.get("id");
 
         if (!id) {
-            return new Response(JSON.stringify({ message: "Thiếu thông tin theId!" }), {
+            return new Response(JSON.stringify({ message: "Thiếu id người dùng" }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
@@ -33,6 +33,6 @@ export async function PUT(req) {
 
         return Response.json({ message: "Cập nhật thông tin thành công!" }, { status: 200 });
     } catch (error) {
-        return Response.json({ message: "Cập nhật thông tin thất bại!", error: error.message }, { status: 500 });
+        return Response.json({ message: "Cập nhật thông tin thất bại, email này đã tồn tại rồi!", error: error.message }, { status: 500 });
     }
 }
