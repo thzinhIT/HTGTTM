@@ -16,9 +16,9 @@ export async function GET(req) {
         // Đếm số vé được bán trong tháng
         const [ticketsSold] = await pool.execute(
            `SELECT 
-              ten_ve, 
+              ten_ve , 
               COUNT(*) as so_ve_duoc_ban_trong_thang, 
-              SUM(so_luong) as tong_so_ve_duoc_mua,
+              SUM(so_luong) OVER() as tong_so_ve_duoc_mua,
               MONTH(ngay_mua) as thang, 
               YEAR(ngay_mua) as nam
           FROM ve_nguoi_dung
@@ -33,6 +33,7 @@ export async function GET(req) {
               loai_the, 
               COUNT(*) as so_the_duoc_ban_trong_thang, 
               SUM(so_du_diem) as tong_so_diem_da_duoc_nap,
+              COUNT(*) OVER() as tong_so_the_duoc_mua,
               MONTH(ngay_mua) as thang, 
               YEAR(ngay_mua) as nam
             FROM the_nguoi_dung
@@ -53,25 +54,39 @@ export async function GET(req) {
            LIMIT 3`,
       );
 
+
+
+
       // Tách dữ liệu trả về thành các thống kê riêng biệt
       const data = {
-          soNguoiDangKy: usersRegistered[0]?.so_nguoi_dang_ky || 0,
-          veNguoiDung: {
-              soVeBanTrongThang: ticketsSold[0]?.so_ve_duoc_ban_trong_thang || 0,
-              tongSoVeDuocMua: ticketsSold[0]?.tong_so_ve_duoc_mua || 0,
-              thang: ticketsSold[0]?.thang || null,
-              nam: ticketsSold[0]?.nam || null,
-          },
-          theNguoiDung: {
-              soTheDuocMuaTrongThang: cardsPurchased[0]?.so_the_duoc_ban_trong_thang || 0,
-              tongDiemTNgoDuocNap: cardsPurchased[0]?.tong_so_diem_da_duoc_nap || 0,
-              thang: cardsPurchased[0]?.thang || null,
-              nam: cardsPurchased[0]?.nam || null,
+          soNguoiDangKy: usersRegistered.map(item => ({
+              so_nguoi_dang_ky: item.so_nguoi_dang_ky,
+          }))[0],
 
-          },
-          topNguoiDungNapNhieuDiem: topUsersByPoints || [],
+
+          veNguoiDungList: ticketsSold.map(item => ({
+              ten_ve: item.ten_ve,
+              soVeBanTrongThang: item.so_ve_duoc_ban_trong_thang,
+              thang: item.thang,
+              nam: item.nam,
+          }),),
+          tongSoVeDuocMua: ticketsSold.reduce((total, item) => total + Number(item.tong_so_ve_duoc_mua), 0),
+
+
+
+          theNguoiDung: cardsPurchased.map(item => ({
+              loai_the: item.loai_the,  
+              soTheBanTrongThang: item.so_the_duoc_ban_trong_thang,
+              thang: item.thang,
+              nam: item.nam,
+         })),
+
+         tongSoTheDuocMua: cardsPurchased.reduce((total, item) => total + Number(item.tong_so_the_duoc_mua), 0),
+
+        topNguoiDungNapNhieuDiem: topUsersByPoints || [],
   
       };
+
 
         return new Response(JSON.stringify(data), {
             status: 200,
