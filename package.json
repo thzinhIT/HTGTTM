@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "mysql2": "^3.14.0",
-    "react-spinners": "^0.15.0"
+    "react-spinners": "^0.15.0",
+    "recharts": "^2.15.2"
   }
 }

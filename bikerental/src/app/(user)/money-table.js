@@ -71,7 +71,11 @@ const MoneyTable = (props) => {
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">{index + 1}</TableCell>
                     <TableCell className={"text-end"}>
-                      {item.phi_nap} VNĐ
+                      <img
+                        src={item.imgMoney}
+                        className="max-h-[100px] min-w-[230px] ml-auto"
+                        alt="ảnh tiền"
+                      />
                     </TableCell>
                     <TableCell className={""}>
                       <div className="">

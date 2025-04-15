@@ -58,7 +58,7 @@ export default function LoginModal({ open, onClose, addToken }) {
         const decoded = jwt.decode(token);
 
         if (decoded.role === "admin") {
-          router.push("/admin");
+          router.push("/admin/home");
         } else {
           addToken();
           onClose();
