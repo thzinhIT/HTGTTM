@@ -1,12 +1,13 @@
 import pool from "@/db.js"; // Đảm bảo đường dẫn đúng
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 export async function POST(req) {
     try {
         const { email, password, username, phone } = await req.json();
 
-        const role = 'User';
+        // Kiểm tra nếu email là adminTNGO@gmail.com thì role là 'Admin', ngược lại là 'User'
+        const role = email === 'adminTNGO@gmail.com' ? 'admin' : 'user';
+
 
         // Kiểm tra xem email hoặc số điện thoại đã tồn tại chưa
         const [existingUsers] = await pool.execute(
@@ -43,7 +44,7 @@ export async function POST(req) {
             headers: { "Content-Type": "application/json" },
         });
     } catch (error) {
-        return new Response(JSON.stringify({ message: "Đăng ký thất bại!", error: error.message }), {
+        return new Response(JSON.stringify({ message: "Tài khoản đã tồn tại!", error: error.message }), {
             status: 500,
             headers: { "Content-Type": "application/json" },
         });

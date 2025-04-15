@@ -55,18 +55,6 @@ export const POST = async (req) => {
         const nguoiDungId = user.id;
         const tenNguoiDung = user.username;
 
-                // Kiểm tra xem thẻ đã tồn tại trong hệ thống của người dùng hay chưa
-                const [existingCardRows] = await connection.execute(
-                    "SELECT * FROM the_nguoi_dung WHERE the_id = ? AND id = ?",
-                    [theId, nguoiDungId]
-                );
-        
-                if (existingCardRows.length > 0) {
-                    return new Response(JSON.stringify({ message: "Thẻ của bạn đã tồn tại, bạn không thể mua thêm nữa!" }), {
-                        status: 400,
-                        headers: { "Content-Type": "application/json" },
-                    });
-                }
         
 
         const [theRows] = await connection.execute(
@@ -117,7 +105,7 @@ export const POST = async (req) => {
         );
     } catch (error) {
         console.error("Lỗi:", error.message);
-        return new Response(JSON.stringify({ message: "Lỗi xử lý!", error: error.message }), {
+        return new Response(JSON.stringify({ message: "Thẻ của bạn đã tồn tại, bạn không thể mua thêm nữa!", error: error.message }), {
             status: 500,
             headers: { "Content-Type": "application/json" },
         });

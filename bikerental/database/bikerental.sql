@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 14, 2025 lúc 07:38 AM
+-- Thời gian đã tạo: Th4 14, 2025 lúc 06:19 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.1.25
 
@@ -30,20 +30,21 @@ SET time_zone = "+00:00";
 CREATE TABLE `bang_gia` (
   `id` int(11) NOT NULL,
   `diem_tngo` int(11) NOT NULL,
-  `phi_nap` text NOT NULL
+  `phi_nap` int(11) NOT NULL,
+  `imgMoney` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `bang_gia`
 --
 
-INSERT INTO `bang_gia` (`id`, `diem_tngo`, `phi_nap`) VALUES
-(1, 10000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348-10.jpg'),
-(2, 20000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348-08.jpg'),
-(3, 50000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348-06.jpg'),
-(4, 100000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348-04.jpg'),
-(5, 200000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348-02.jpg'),
-(6, 500000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348.jpg');
+INSERT INTO `bang_gia` (`id`, `diem_tngo`, `phi_nap`, `imgMoney`) VALUES
+(1, 12000, 10000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348-10.jpg'),
+(2, 25000, 20000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348-08.jpg'),
+(3, 55000, 50000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348-06.jpg'),
+(4, 120000, 100000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348-04.jpg'),
+(5, 230000, 200000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348-02.jpg'),
+(6, 550000, 500000, 'https://www.sbv.gov.vn/webcenter/cs/groups/cucphathanhkhoquy/documents/noidungtinh/c2j2/mdcy/~edisp/~export/SBVWEBAPP01SBV072320~3/338348.jpg');
 
 -- --------------------------------------------------------
 
@@ -136,7 +137,7 @@ CREATE TABLE `the_nguoi_dung` (
 --
 
 INSERT INTO `the_nguoi_dung` (`id`, `ten_nguoi_dung`, `the_id`, `loai_the`, `so_du_diem`, `diem_da_su_dung`, `ngay_mua`, `ngay_het_han`) VALUES
-(21, 'Tiến', 2, 'Prenium', 1280000, 740000, '2025-04-14', '2026-04-14'),
+(21, 'Tiến', 3, 'VIP', 12150000, 50000, '2025-04-14', '2026-04-14'),
 (28, 'A Vinh Cờ Tướng', 1, 'RideUp', 20000, 0, '2025-04-08', '2026-04-08'),
 (29, 'Tiến', 3, 'VIP', 500000, 0, '2025-04-08', '2026-04-08');
 
@@ -198,7 +199,7 @@ INSERT INTO `users` (`id`, `email`, `password`, `username`, `phone`, `role`) VAL
 (1, '2505@example.com', '$2a$10$8iGu6ouD7.DjvhXZGicV7eT3qk7Wh0UdP5nWRAFG7f/a9vC1u4mjW', 'newusername', '0123456789', 'User'),
 (2, 'admin@example.com', '$2a$10$wZ2fsJMTb7x2Xl5E/EHgJOhLfB9G.G3IV4Z1eGc0PBM5zAfhy5Q8O', 'Admin User', '0123456789', 'User'),
 (3, 'lebinh@gmail.com', '$2b$10$lri3Su1RFntkKcUraf91V.evioKP15l7cHIDQKuz3E/4/0ii/1EKK', 'Admin User', '098765432', 'User'),
-(4, 'thanhvinh123@gmail.com', '$2b$10$pXAfNKwQZ6GcBPRL8vRZZuuhHd7zlFXNKlViL4svtmR9X.4bottwC', 'exampleuser', '123456789', 'User'),
+(4, 'thanhvinh123@gmail.com', '$2b$10$eEVAJcFSaJlJ2qqcBPyEW.Flku7EL6G5MQsDu.oy4Qwa0LKD3uyAu', 'user', '098765432', 'User'),
 (5, 'user2@example.com', '$2b$10$8Dgw0Ks6pcxdd3c40CLakuxkRICG2eOkwl.ATRmUtDJm236atNuN.', 'binh', '012345678', 'User'),
 (9, 'user123456@example.com', '$2b$10$3jFo93A7tBH3LjvTCjlGBOfQuY861Z3BFaWw21QpDeGjkn3O266r6', 'vinh123', '0886485440', 'User'),
 (10, 'tes123t@example.com', '$2b$10$LnzYHjKIoSjoZLcEOzvmT.f9DXq2d7GB4nLhdYB0oGVo1hK8AsdTK', 'vinh1', '0888312227', 'User'),
@@ -227,6 +228,7 @@ CREATE TABLE `user_tokens` (
 --
 
 INSERT INTO `user_tokens` (`user_id`, `token`, `created_at`) VALUES
+(4, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJ0aGFuaHZpbmgxMjNAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkZUVWQUpjRlNhSmxKMnFxY0JQeUVXLkZsa3U3RUw2RzVNUXNEdS5veTRRd2EwTEtEM3V5QXUiLCJyb2xlIjoiVXNlciJ9.iTURW-h-rM4yZloUgOtS1RE-o7z0nGF4qtFc7xllvlU', '2025-04-14 22:46:14'),
 (21, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEsImVtYWlsIjoidGllbjYzMjAwNEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRCTWR6VS9ZOVhqa2pIMEsucjVqNGNPRkRmMzVmOVJKT1pFTVUvR3JIajJpRnc4R2ovTWN2SyIsInJvbGUiOiJVc2VyIn0.aS6majQYMX7sy25C76sxzhHyBdYu42oNGcL2y0wl5ow', '2025-04-06 10:35:43'),
 (23, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRpZW40QGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJDlEZ3Y5eFhQRXRGM2lEdjE3Qml4S2VqWHdkVzUxODlZRFlnclNzaU9JMkhXaGFnZkE4UFh5Iiwicm9sZSI6IlVzZXIifQ.aNQAsQ5zgxeDuSYEFBC_dIXPnMz8p7DP1XhUMlHvZ2E', '2025-04-06 15:09:23'),
 (28, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjgsImVtYWlsIjoidmluaHRoYW5obmd1eWVuMTIxMjIwMDRAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkQlBuLnlSVUF2azNqUFZtNDRlVGppZVBEY0RKTW5xOE1ILkhHMy9WLi42emRNZThROGZ6SWkiLCJyb2xlIjoiVXNlciJ9.qK6NpQpVHsc1cr6OyEJB48X3EoR7Y7FqeowvzFXiG9A', '2025-04-08 22:28:08'),
@@ -274,6 +276,7 @@ CREATE TABLE `ve_nguoi_dung` (
   `ten_nguoi_dung` varchar(100) NOT NULL,
   `ve_id` int(11) NOT NULL,
   `ten_ve` varchar(50) NOT NULL,
+  `loai_xe` varchar(50) NOT NULL,
   `ngay_mua` date NOT NULL,
   `thoi_han` varchar(50) NOT NULL,
   `so_luong` int(11) NOT NULL
@@ -283,9 +286,8 @@ CREATE TABLE `ve_nguoi_dung` (
 -- Đang đổ dữ liệu cho bảng `ve_nguoi_dung`
 --
 
-INSERT INTO `ve_nguoi_dung` (`id_donhang`, `users_id`, `ten_nguoi_dung`, `ve_id`, `ten_ve`, `ngay_mua`, `thoi_han`, `so_luong`) VALUES
-(1, 21, 'Tiến', 7, 'Vé Tháng', '2025-04-14', '60 ngày kể từ ngày đăng ký', 1),
-(2, 21, 'Tiến', 5, 'Vé ngày', '2025-04-14', '24h ngày đăng ký', 1);
+INSERT INTO `ve_nguoi_dung` (`id_donhang`, `users_id`, `ten_nguoi_dung`, `ve_id`, `ten_ve`, `loai_xe`, `ngay_mua`, `thoi_han`, `so_luong`) VALUES
+(6, 21, 'Tiến', 1, 'Vé lượt', 'Xe đạp cơ', '2025-04-14', '60 phút', 1);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -389,7 +391,7 @@ ALTER TABLE `ve`
 -- AUTO_INCREMENT cho bảng `ve_nguoi_dung`
 --
 ALTER TABLE `ve_nguoi_dung`
-  MODIFY `id_donhang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_donhang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
