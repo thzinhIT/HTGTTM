@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
-
+import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,6 +16,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { headers } from "../../../../next.config";
+import { useState } from "react";
+import Loadingform from "@/components/loading-form";
 
 const formSchema = z.object({
   username: z.string().min(8, {
@@ -24,9 +27,10 @@ const formSchema = z.object({
   email: z.string().min(10, {
     message: "Email phải nhiều hơn 10 chữ.",
   }),
-  phone: z.number().min(10, {
-    message: "Số điện thoại phải nhiều hơn or bằng  10 số.",
-  }),
+  phone: z
+    .string()
+    .min(9, "Số điện thoại phải ít nhất 9 chữ số")
+    .regex(/^\d+$/, "Số điện thoại chỉ được chứa chữ số"),
   title: z.string().min(15, {
     message: "Tiêu đề phải nhiều hơn 15 chữ.",
   }),
@@ -36,6 +40,7 @@ const formSchema = z.object({
 });
 
 export default function FormContact() {
+  const [loading, setLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,6 +55,30 @@ export default function FormContact() {
   // ✅ Xử lý submit form
   const onSubmit = (data) => {
     console.log("Form Data:", data);
+    const FetchPostData = async () => {
+      setLoading(true);
+      const res = await fetch("http://localhost:3000/api/auth/contract", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ho_va_ten: data.username,
+          email: data.email,
+          sdt: data.phone,
+          tieu_de: data.title,
+          noi_dung: data.content,
+        }),
+      });
+
+      const req = await res.json();
+      if (res.ok) {
+        setLoading(false);
+        toast.success(req.message);
+        form.reset();
+      } else toast.error(req.message);
+    };
+    FetchPostData();
   };
 
   return (
@@ -132,9 +161,9 @@ export default function FormContact() {
         />
         <Button
           type="submit"
-          className="w-full bg-blue-600 text-xl font-semibold"
+          className={`w-full bg-blue-600 text-xl font-semibold  disabled:${loading}`}
         >
-          Gửi
+          {loading ? <Loadingform /> : "Gửi"}
         </Button>
       </form>
     </Form>
