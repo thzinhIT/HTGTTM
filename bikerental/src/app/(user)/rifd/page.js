@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import usePostData from "@/hooks/useFetchPostData";
 import { AlertPayment } from "@/components/Alertpayment";
+import LoadingPage from "@/components/loading-page";
 const Rifd = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [cards, setCards] = useState();

@@ -18,7 +18,7 @@ import { HashLoader } from "react-spinners";
 import { useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
 import Router from "next/navigation";
-
+import Loadingform from "./loading-form";
 const loginSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
@@ -58,9 +58,10 @@ export default function LoginModal({ open, onClose, addToken }) {
         const decoded = jwt.decode(token);
 
         if (decoded.role === "admin") {
-          router.push("/admin");
+          router.push("/admin/home");
         } else {
           addToken();
+          setLoading(false);
           onClose();
         }
       } else {
@@ -76,49 +77,6 @@ export default function LoginModal({ open, onClose, addToken }) {
   return (
     <>
       {" "}
-      {/* <Dialog open={open} onOpenChange={onClose}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-center">Đăng nhập</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              type="email"
-              placeholder="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              type="password"
-              placeholder="Mật khẩu"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className={"mb-2"}
-            />
-            <div className="flex justify-center mt-4">
-              <Button type="submit" className="w-[70%] mx-auto">
-                Đăng nhập
-              </Button>
-            </div>
-          </form>
-          <p className="mt-4 text-center text-sm">
-            Nếu bạn chưa có tài khoản,{" "}
-            <button
-              className="text-blue-600 hover:underline"
-              onClick={() => {
-                setIsRegisterOpen(true);
-                onClose(); // Đóng modal đăng nhập
-              }}
-            >
-              đăng ký ngay
-            </button>
-          </p>
-        </DialogContent>
-      </Dialog> */}
       <Dialog open={open} onOpenChange={onClose}>
         <DialogContent className="max-w-md ">
           <>
@@ -155,7 +113,7 @@ export default function LoginModal({ open, onClose, addToken }) {
                   type="submit"
                   className="w-[70%] mx-auto cursor-pointer"
                 >
-                  Đăng nhập
+                  {loading ? <Loadingform /> : "Đăng nhập"}
                 </Button>
               </div>
             </form>

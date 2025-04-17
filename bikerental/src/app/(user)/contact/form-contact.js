@@ -58,27 +58,28 @@ export default function FormContact() {
         {/* ✅ Mỗi FormField chỉ nên chứa một input */}
         <FormField
           control={form.control}
-          name="username"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[17px]">Họ và tên</FormLabel>
+              <FormLabel className="text-[17px]">Email</FormLabel>
               <FormControl>
-                <Input placeholder="Nhập username" {...field} />
+                <Input placeholder="Nhập email" type="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <div className="flex gap-5 justify-between">
           <div className="w-[50%]">
             <FormField
               control={form.control}
-              name="email"
+              name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[17px]">Email</FormLabel>
+                  <FormLabel className="text-[17px]">Họ và tên</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nhập email" type="email" {...field} />
+                    <Input placeholder="Nhập username" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -12,8 +12,6 @@ import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default async function UserLayout({ children }) {
-  // Kiểm tra nếu đường dẫn không phải là /admin hoặc các trang con của /admin
-
   return (
     <>
       <Header />

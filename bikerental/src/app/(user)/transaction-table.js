@@ -66,7 +66,7 @@ const TransactionTable = () => {
 
   const {
     data,
-    loding,
+    loading,
     error: ticketError,
   } = useFetchGetData(
     "http://localhost:3000/api/auth/tickets/getTickets?page=1"
@@ -185,24 +185,27 @@ const TransactionTable = () => {
                       </p>
                     )}
                   </div>
-                  {checkPathName && item.diem_tngo && !token ? (
-                    <div className="mb-3 w-full mt-3">
-                      <button className="bg-blue-600 text-white mx-auto block  py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900">
-                        {" "}
-                        Đăng nhập để mua
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="mb-3 w-full mt-3">
-                      <button
-                        className="bg-blue-600 text-white  mx-auto block py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900"
-                        onClick={() => handleOnClickId(item)}
-                      >
-                        {" "}
-                        Mua đi bạn ui
-                      </button>
-                    </div>
-                  )}
+
+                  <div className={`${checkPathName ? "" : "hidden"}`}>
+                    {item.diem_tngo && !token ? (
+                      <div className="mb-3 w-full mt-3">
+                        <button className="bg-blue-600 text-white mx-auto block  py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900 ">
+                          {" "}
+                          Đăng nhập để mua
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="mb-3 w-full mt-3">
+                        <button
+                          className="bg-blue-600 text-white  mx-auto block py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900"
+                          onClick={() => handleOnClickId(item)}
+                        >
+                          {" "}
+                          Mua đi bạn ui
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             })
