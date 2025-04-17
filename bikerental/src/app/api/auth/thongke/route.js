@@ -16,10 +16,11 @@ export async function GET(req) {
         // Đếm số vé được bán trong tháng
         const [ticketsSold] = await pool.execute(
            `SELECT 
-              ten_ve , 
+              ten_ve, 
               COUNT(*) as so_ve_duoc_ban_trong_thang, 
               SUM(so_luong) OVER() as tong_so_ve_duoc_mua,
               MONTH(ngay_mua) as thang, 
+              loai_xe,
               YEAR(ngay_mua) as nam
           FROM ve_nguoi_dung
           WHERE ngay_mua BETWEEN ? AND ?
@@ -47,11 +48,15 @@ export async function GET(req) {
         // Chuẩn bị dữ liệu trả về
         const [topUsersByPoints] = await pool.execute(
           `SELECT id, ten_nguoi_dung, 
-                  SUM(so_du_diem) as tong_diem_nap 
+                  SUM(so_du_diem) as tong_diem_nap, 
+                  MONTH(ngay_mua) as thang, 
+                  YEAR(ngay_mua) as nam
            FROM the_nguoi_dung 
-           GROUP BY id 
+           WHERE ngay_mua BETWEEN ? AND ?
+           GROUP BY id, thang, nam
            ORDER BY tong_diem_nap DESC 
            LIMIT 3`,
+           [currentMonthStart, currentMonthEnd]
       );
 
 
@@ -66,6 +71,7 @@ export async function GET(req) {
 
           veNguoiDungList: ticketsSold.map(item => ({
               ten_ve: item.ten_ve,
+              loai_xe: item.loai_xe,
               soVeBanTrongThang: item.so_ve_duoc_ban_trong_thang,
               thang: item.thang,
               nam: item.nam,
@@ -83,7 +89,10 @@ export async function GET(req) {
 
          tongSoTheDuocMua: cardsPurchased.reduce((total, item) => total + Number(item.tong_so_the_duoc_mua), 0),
 
-        topNguoiDungNapNhieuDiem: topUsersByPoints || [],
+        topNguoiDungNapNhieuDiemTrongThang: topUsersByPoints.map(item => ({
+            ten_nguoi_dung: item.ten_nguoi_dung,
+            tong_diem_nap: item.tong_diem_nap
+        })),
   
       };
 

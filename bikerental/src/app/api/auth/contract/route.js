@@ -12,15 +12,7 @@ export async function POST(req) {
         // Phản hồi thành công bằng cách sử dụng Response từ Next.js
         return new Response(
             JSON.stringify({
-                message: 'Thông tin liên hệ đã được lưu!',
-                data: {
-                    id: result.insertId,
-                    ho_va_ten: contract.ho_va_ten,
-                    email: contract.email,
-                    sdt: contract.sdt,
-                    tieu_de: contract.tieu_de,
-                    noi_dung: contract.noi_dung
-                },
+                message: 'Bạn đã liên hệ thành công!',
             }),
             { status: 201, headers: { 'Content-Type': 'application/json' } }
         );
@@ -30,7 +22,7 @@ export async function POST(req) {
 
         // Phản hồi lỗi
         return new Response(
-            JSON.stringify({ message: "Lỗi thêm thông tin mới!", error: error.message }),
+            JSON.stringify({ message: "Liên hệ không thành công!", error: error.message }),
             { status: 500, headers: { 'Content-Type': 'application/json' } }
         );
     }
