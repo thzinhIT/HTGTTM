@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { toast } from "react-toastify";
+import Loadingform from "@/components/loading-form";
 const registerSchema = z.object({
   email: z
     .string()
@@ -36,11 +37,13 @@ export default function RegisterModal({ open, onClose }) {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const fectRegister = async (formData) => {
+    setLoading(true);
     const res = await fetch(`http://localhost:3000/api/auth/register`, {
       method: "POST",
       headers: {
@@ -50,6 +53,7 @@ export default function RegisterModal({ open, onClose }) {
     });
     const data = await res.json();
     if (res.ok) {
+      setLoading(false);
       toast.success(data.message);
       onClose(); // Đóng modal sau khi đăng ký thành công
     } else {
@@ -133,7 +137,7 @@ export default function RegisterModal({ open, onClose }) {
           </div>
           <div className="flex justify-center">
             <Button type="submit" className="w-[70%] cursor-pointer">
-              Đăng ký
+              {loading ? <Loadingform /> : "Đăng ký"}
             </Button>
           </div>
         </form>

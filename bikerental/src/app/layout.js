@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { ToastContainer, toast, Bounce } from "react-toastify";
+import LoadingProvider from "./loading-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col ">
-        <main className="">{children}</main>
+        <LoadingProvider>{children}</LoadingProvider>
 
         <ToastContainer
           position="top-right"

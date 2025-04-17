@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import dayjs from "dayjs";
 import useFetchWithToken from "@/hooks/useFetchWithToken";
+import LoadingPage from "@/components/loading-page";
 const page = () => {
   const [user, setUser] = useState();
   const [card, setCard] = useState();
@@ -145,7 +146,7 @@ const page = () => {
                   ))}
                 </div>
               ) : (
-                <div> hiện ko thấy dữ liệu </div>
+                <div> Hiện ko thấy dữ liệu </div>
               )}
             </div>
           ) : (
