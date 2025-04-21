@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import usePostData from "@/hooks/useFetchPostData";
 import { AlertPayment } from "@/components/Alertpayment";
 import LoadingPage from "@/components/loading-page";
+import formatMoney from "@/components/format-money";
 const Rifd = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [cards, setCards] = useState();
@@ -114,25 +115,25 @@ const Rifd = () => {
                         <p className="">
                           ✅ Phí mở thẻ{" "}
                           <span className="font-semibold">
-                            {card?.phi_kich_hoat ?? "N/A"}
+                            {formatMoney(card?.phi_kich_hoat) ?? "N/A"}
                           </span>
                           , miễn phí mở thẻ lần đầu
                         </p>
                         <p className="">
                           ✅ Số dư tài khoản chính tối thiểu{" "}
                           <span className="font-bold text-red-500">
-                            {card?.so_du_toi_thieu ?? "N/A"}
+                            {formatMoney(card?.so_du_toi_thieu) ?? "N/A"}
                           </span>
                           , tặng ngay{" "}
                           <span className="font-bold text-green-600">
-                            {card?.diem_thuong ?? "N/A"}
+                            {formatMoney(card?.diem_thuong) ?? "N/A"}
                           </span>{" "}
                           điểm khuyến mãi đạp xe
                         </p>
 
                         <p>
                           <span className="font-bold text-blue-600">
-                            {card?.so_xe_toi_da ?? "N/A"}
+                            {formatMoney(card?.so_xe_toi_da) ?? "N/A"}
                           </span>{" "}
                           xe cùng lúc
                         </p>

@@ -43,7 +43,7 @@ export function AlertPayment(props) {
               handleClick();
             }}
           >
-            Thanh Toán 12345678
+            Thanh Toán
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

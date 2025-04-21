@@ -15,6 +15,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import usePostData from "@/hooks/useFetchPostData";
+import { useState } from "react";
+import { FaHandPointDown } from "react-icons/fa";
+import formatMoney from "./format-money";
 
 // Schema validate với Zod
 const formSchema = z.object({
@@ -25,13 +28,16 @@ const formSchema = z.object({
 
 export default function DialogCount(props) {
   let data = {}; // object rỗng
-  const { open, setOpen, name, postUrl } = props; // lấy props từ cha
+  const [count, setCount] = useState(1);
+  const { open, setOpen, name, postUrl, price, point } = props; // lấy props từ cha
   const { postData } = usePostData(); // custom hook để gửi dữ liệu
+  const [total, setTotal] = useState(0);
   console.log("postUrl", postUrl); // log url
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
@@ -76,6 +82,14 @@ export default function DialogCount(props) {
               id="soLuong"
               {...register("soLuong", { valueAsNumber: true })}
               className="col-span-3"
+              onChange={(e) => {
+                const value = parseInt(e.target.value || "0");
+                setValue("soLuong", value); // nếu bạn đang dùng react-hook-form
+
+                setCount(value);
+                console.log(count);
+                setTotal(value * price); // tự tính tổng tiền
+              }}
             />
           </div>
           {errors.soLuong && (
@@ -83,6 +97,23 @@ export default function DialogCount(props) {
               {errors.soLuong.message}
             </p>
           )}
+          {/* Hiển thị tổng tiền và điểm */}
+          <FaHandPointDown className="mx-auto text-xl animate-bounce" />
+          <div className="flex text-center items-center justify-center text-sm text-gray-600">
+            {count > 0 && (
+              <>
+                <div className="w-1/2">
+                  <span>Số điểm: </span>
+                  <strong>{formatMoney(point * count)}</strong>
+                </div>
+
+                <div className="w-1/2">
+                  <span>Tổng tiền: </span>
+                  <strong>{(count * price).toLocaleString()} VNĐ</strong>
+                </div>
+              </>
+            )}
+          </div>
 
           <DialogFooter>
             <Button type="submit" className={"bg-blue-500 cursor-pointer"}>

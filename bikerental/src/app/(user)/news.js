@@ -9,6 +9,7 @@ const News = () => {
       logo: "https://tngo.vn/Data/Logo-NhanDan%20(3).png",
       img: "https://tngo.vn/Data/edit-16-16941651063501736088332.png",
       title: "Sớm nhân rộng mô hình xe đạp công cộng  ",
+      link: "",
     },
     {
       logo: "https://tngo.vn/Data/Vietnam_Television_logo_from_2013.svg.png",
@@ -50,10 +51,10 @@ const News = () => {
   ]);
   return (
     <>
-      <div className="bg-[#F4F4FA] mb-12 ">
+      <div className="bg-[#F4F4FA] dark:bg-black mb-12 ">
         <div className="w-[1320px] mx-auto py-12">
           <div>
-            <h3 className="text-center text-5xl text-black font-semibold mb-12">
+            <h3 className="text-center text-5xl dark:text-white text-black font-semibold mb-12">
               Báo chí nói gì về chúng tôi
             </h3>
           </div>
@@ -97,7 +98,7 @@ const News = () => {
                       />
                       <div className="min-h-20">
                         {/* <Link hr>  {item.title}</Link> */}
-                        <p className=" text-black pt-2 pb-6 flex-shrink-0">
+                        <p className=" dark:text-white text-black pt-2 pb-6 flex-shrink-0">
                           {item.title}
                         </p>
                       </div>

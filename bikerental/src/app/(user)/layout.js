@@ -10,15 +10,23 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export default async function UserLayout({ children }) {
   return (
     <>
-      <Header />
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <Header />
 
-      <main className="flex-1 w-[full] mt-[110px]">{children}</main>
+        <main className="flex-1 w-[full] mt-[110px]">{children}</main>
 
-      <Footer />
+        <Footer />
+      </ThemeProvider>
 
       <ToastContainer
         position="top-right"

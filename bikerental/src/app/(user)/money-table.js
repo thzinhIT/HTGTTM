@@ -13,9 +13,12 @@ import {
 } from "@/components/ui/table";
 import { AlertPayment } from "@/components/Alertpayment";
 import DialogCount from "@/components/dialog-count";
+import formatMoney from "@/components/format-money";
 const MoneyTable = (props) => {
   const { token } = props;
   const [price, setPrice] = useState();
+  const [point, setPoint] = useState(0);
+  const [priceItem, setPriceItem] = useState(0);
   const [open, setOpen] = useState(false);
   const [postUrl, setPostUrl] = useState(``);
   const [name, setName] = useState("");
@@ -36,6 +39,8 @@ const MoneyTable = (props) => {
   const handleOnClickId = (item) => {
     setOpen(true);
     setId(item.id);
+    setPriceItem(item.phi_nap);
+    setPoint(item.diem_tngo);
     console.log("id", id);
     console.log("item", postUrl);
   };
@@ -85,7 +90,7 @@ const MoneyTable = (props) => {
 
                     <TableCell className={"text-end"}>
                       {" "}
-                      {item.diem_tngo}
+                      {formatMoney(item.diem_tngo)}
                     </TableCell>
                     <TableCell className="text-end">
                       {token ? (
@@ -122,6 +127,8 @@ const MoneyTable = (props) => {
           setOpen={setOpen}
           name={name}
           postUrl={postUrl}
+          price={priceItem}
+          point={point}
         />
       )}
     </div>

@@ -40,8 +40,8 @@ const Header = () => {
   return (
     <>
       <div className=" ">
-        <div className="flex justify-between items-center py-5 gap-2 fixed  left-0 top-0 z-50 bg-white w-full shadow-[0px_2px_4px_0px_#b6b6b680] pr-5 ">
-          <div className="flex-shirk-0 pl-7">
+        <div className="flex justify-between items-center py-5 gap-2 fixed  left-0 top-0 z-50 dark:bg-black bg-white w-full shadow-[0px_2px_4px_0px_#b6b6b680] pr-5 ">
+          <div className="flex-shirk-0 pl-7 dark:bg-black">
             <Link href={"/"}>
               <Image src={logo} alt="logo" width={152} height={70} />
             </Link>
@@ -76,14 +76,14 @@ const Header = () => {
 
                 {/* Menu con */}
                 {isOpen && (
-                  <ul className="absolute left-0 mt-4 w-56 bg-gray-50  rounded-md z-50 ">
-                    <li className="px-4 py-2 hover:bg-blue-200">
+                  <ul className="absolute left-0 mt-4 w-56 dark:bg-black bg-gray-50  rounded-md z-50 ">
+                    <li className="px-4 py-2 dark:hover:bg-blue-950 hover:bg-blue-200">
                       <Link href="/rifd">Thẻ RFID</Link>
                     </li>
-                    <li className="px-4 py-2  hover:bg-blue-200">
+                    <li className="px-4 py-2 dark:hover:bg-blue-950  hover:bg-blue-200">
                       <Link href="/rentbike">Dịch vụ - sự kiện</Link>
                     </li>
-                    <li className="px-4 py-2  hover:bg-blue-200">
+                    <li className="px-4 py-2 dark:hover:bg-blue-950  hover:bg-blue-200">
                       <Link href="/trip-care">Bảo hiểm Trip Care</Link>
                     </li>
                   </ul>

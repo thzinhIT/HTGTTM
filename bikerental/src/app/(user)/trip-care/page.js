@@ -19,8 +19,8 @@ const Tripcare = () => {
       </div>
       <div className="mx-auto w-[1320px]">
         {/* I. Quy Tắc Và Điều Khoản Áp Dụng */}
-        <div className="bg-white px-6 py-4">
-          <h2 className="text-xl font-semibold text-black mb-2">
+        <div className=" dark:bg-[rgb(10,10,10)]   bg-white px-6 py-4">
+          <h2 className="text-xl font-semibold text-black dark:text-white mb-2">
             I. Quy Tắc Và Điều Khoản Áp Dụng
           </h2>
           <p className="text-sm text-gray-700 leading-relaxed">
@@ -31,8 +31,8 @@ const Tripcare = () => {
           </p>
         </div>
         {/* II. Quy Trình Mua Bảo Hiểm Trip Care Trên App TNGO */}
-        <div className="bg-white px-6 py-4">
-          <h2 className="text-xl font-semibold text-black mb-4">
+        <div className=" dark:bg-[rgb(10,10,10)] bg-white px-6 py-4">
+          <h2 className="text-xl font-semibold text-black dark:text-white mb-4">
             II. Quy Trình Mua Bảo Hiểm Trip Care Trên App TNGO
           </h2>
           <div>
@@ -44,8 +44,8 @@ const Tripcare = () => {
           </div>
         </div>
         {/* III. Chương Trình Bảo Hiểm */}
-        <div className="bg-white px-6 py-4">
-          <h2 className="text-xl font-semibold text-black mb-4">
+        <div className=" dark:bg-[rgb(10,10,10)] bg-white px-6 py-4">
+          <h2 className="text-xl font-semibold text-black dark:text-white mb-4">
             III. Chương Trình Bảo Hiểm
           </h2>
           {/* Bảng 1: Quyền lợi bảo hiểm */}
@@ -54,7 +54,7 @@ const Tripcare = () => {
           </p>
           <div className="overflow-x-auto mb-6">
             <table className="w-full text-sm text-left border border-red-500">
-              <thead className="bg-white font-semibold text-black">
+              <thead className=" dark:bg-[rgb(10,10,10)] bg-white font-semibold text-black dark:text-white">
                 <tr>
                   <th className="border border-red-500 px-2 py-1">STT</th>
                   <th className="border border-red-500 px-2 py-1">
@@ -140,7 +140,7 @@ const Tripcare = () => {
           </p>
           <div className="overflow-x-auto mb-4">
             <table className="w-full text-sm text-left border border-yellow-500">
-              <thead className="bg-yellow-50 font-semibold text-black">
+              <thead className="bg-yellow-50 font-semibold text-black dark:text-white">
                 <tr>
                   <th className="border border-yellow-500 px-2 py-1">
                     Thời hạn bảo hiểm
@@ -191,8 +191,8 @@ const Tripcare = () => {
           </p>
         </div>
         {/* IV. Loại Trừ Trách Nhiệm Bảo Hiểm */}
-        <div className="bg-white px-6 py-4">
-          <h2 className="text-xl font-semibold text-black mb-4">
+        <div className=" dark:bg-[rgb(10,10,10)] bg-white px-6 py-4">
+          <h2 className="text-xl font-semibold text-black dark:text-white mb-4">
             IV. Loại Trừ Trách Nhiệm Bảo Hiểm
           </h2>
           <div className="text-sm text-gray-700">
@@ -258,8 +258,8 @@ const Tripcare = () => {
           </div>
         </div>
         {/* V. Đối Tượng Tham Gia Bảo Hiểm */}
-        <div className="bg-white px-6 py-4">
-          <h2 className="text-xl font-semibold text-black mb-4">
+        <div className=" dark:bg-[rgb(10,10,10)] bg-white px-6 py-4">
+          <h2 className="text-xl font-semibold text-black dark:text-white mb-4">
             V. Đối Tượng Tham Gia Bảo Hiểm
           </h2>
           <div className="text-sm text-gray-700">
@@ -289,14 +289,14 @@ const Tripcare = () => {
           </div>
         </div>
         {/* VI. Chấm Dứt Hợp Đồng Bảo Hiểm Trước Hạn */}
-        <div className="bg-white px-6 py-4">
-          <h2 className="text-xl font-semibold text-black mb-4">
+        <div className=" dark:bg-[rgb(10,10,10)] bg-white px-6 py-4">
+          <h2 className="text-xl font-semibold text-black dark:text-white mb-4">
             VI. Chấm Dứt Hợp Đồng Bảo Hiểm Trước Hạn
           </h2>
           <div className="text-sm text-gray-700">Không áp dụng</div>
         </div>
-        <div className="bg-white px-6 py-4">
-          <h2 className="text-xl font-semibold text-black mb-4">
+        <div className=" dark:bg-[rgb(10,10,10)] bg-white px-6 py-4">
+          <h2 className="text-xl font-semibold text-black dark:text-white mb-4">
             VII. Hướng Dẫn Bồi Thường
           </h2>
           <div className="text-sm text-gray-700">
@@ -313,7 +313,7 @@ const Tripcare = () => {
                 Bảng 3: Quy trình giải quyết yêu cầu bồi thường bảo hiểm
               </div>
               <table className="w-full text-sm text-left border border-red-500">
-                <thead className="bg-red-50 font-semibold text-black">
+                <thead className="bg-red-50 font-semibold text-black dark:text-white">
                   <tr>
                     <th className="border border-red-500 px-4 py-2">
                       Bước Thực Hiện
@@ -389,14 +389,14 @@ const Tripcare = () => {
           </div>
         </div>
         {/* VIII. Tư Vấn & Giải Thích Tư Vấn Tắt */}
-        <div className="bg-white px-6 py-4">
-          <h2 className="text-xl font-semibold text-black mb-4">
+        <div className=" dark:bg-[rgb(10,10,10)] bg-white px-6 py-4">
+          <h2 className="text-xl font-semibold text-black dark:text-white mb-4">
             VIII. Tư Vấn & Giải Thích Tư Vấn Tắt
           </h2>
           <div className="text-sm text-gray-700">
             <div className="font-bold mb-2">Bảng 4: Giải thích tư vấn tắt</div>
             <table className="w-full text-sm text-left border border-gray-300">
-              <thead className="bg-gray-200 font-semibold text-black">
+              <thead className="bg-gray-200 font-semibold text-black dark:text-white">
                 <tr>
                   <th className="border border-gray-300 px-4 py-2">STT</th>
                   <th className="border border-gray-300 px-4 py-2">
@@ -506,7 +506,7 @@ const Tripcare = () => {
           </div>
         </div>
         {/* IX. Xác Nhận Của Khách Hàng */}
-        <div className="px-6 py-4 bg-white mb-8  mt-6">
+        <div className="px-6 py-4  dark:bg-[rgb(10,10,10)] bg-white mb-8  mt-6">
           <h2 className="text-xl font-semibold mb-2">
             IX. Xác Nhận Của Khách Hàng
           </h2>

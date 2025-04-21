@@ -1,8 +1,22 @@
+"use client";
+
+import * as React from "react";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 export function AvatarDropdownMenu(props) {
+  const { setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [token, setToken] = useState(null);
   const { removeToken } = props;
@@ -49,15 +63,15 @@ export function AvatarDropdownMenu(props) {
 
       {/* Menu khi avatar được click */}
       {isMenuOpen && (
-        <ul className="absolute -left-[108px] mt-4 w-42 bg-gray-50 rounded-md z-50">
-          <li className="px-4 py-2 hover:bg-blue-200 cursor-pointer">
+        <ul className="absolute -left-[108px] mt-4 w-42 dark:bg-black bg-gray-50 rounded-md z-50">
+          <li className="px-4 py-2  dark:hover:bg-blue-950  hover:bg-blue-200 cursor-pointer">
             <Link href={"/profile"}>Profile</Link>
           </li>
-          <li className="px-4 py-2 hover:bg-blue-200 cursor-pointer">
-            Settings
+          <li className="px-4 py-2 dark:hover:bg-blue-950 hover:bg-blue-200 cursor-pointer">
+            <Link href={"/settings"}>Settings</Link>
           </li>
           <li
-            className="px-4 py-2 hover:bg-blue-200 cursor-pointer"
+            className="px-4 py-2 dark:hover:bg-blue-950 hover:bg-blue-200 cursor-pointer"
             onClick={() => handleLogout()}
           >
             Log out

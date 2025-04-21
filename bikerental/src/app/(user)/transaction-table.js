@@ -11,6 +11,7 @@ import useFetchGetData from "@/hooks/useFecthGetData";
 import LoginModal from "@/components/login-form";
 import DialogCount from "@/components/dialog-count";
 import MoneyTable from "./money-table";
+import formatMoney from "@/components/format-money";
 
 const TransactionTable = () => {
   const [currentIndex, setCurrentIndex] = useState(2); // Bắt đầu từ index 2
@@ -146,7 +147,7 @@ const TransactionTable = () => {
                         {" "}
                         <div className="my-10  text-center">
                           <span className="text-blue-700 text-4xl font-semibold">
-                            {item.diem_tngo}
+                            {formatMoney(item.diem_tngo)}
                           </span>{" "}
                           điểm TNGo/lượt
                         </div>
