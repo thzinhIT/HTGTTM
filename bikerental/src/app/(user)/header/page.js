@@ -86,6 +86,9 @@ const Header = () => {
                     <li className="px-4 py-2 dark:hover:bg-blue-950  hover:bg-blue-200">
                       <Link href="/trip-care">Bảo hiểm Trip Care</Link>
                     </li>
+                    <li className="px-4 py-2 dark:hover:bg-blue-950  hover:bg-blue-200">
+                      <Link href="/trip-care">Đường đi đến trạm</Link>
+                    </li>
                   </ul>
                 )}
               </li>
