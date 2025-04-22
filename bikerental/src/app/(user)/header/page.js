@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import logo from "../../../../public/assets/img/logo-vn.jpg";
 import { AvatarDropdownMenu } from "./drop-menu";
-
+import logoDark from "../../../../public/assets/img/logo-dark.jpg";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -87,7 +87,7 @@ const Header = () => {
                       <Link href="/trip-care">Bảo hiểm Trip Care</Link>
                     </li>
                     <li className="px-4 py-2 dark:hover:bg-blue-950  hover:bg-blue-200">
-                      <Link href="/trip-care">Đường đi đến trạm</Link>
+                      <Link href="/gps">Đường đi đến trạm</Link>
                     </li>
                   </ul>
                 )}
