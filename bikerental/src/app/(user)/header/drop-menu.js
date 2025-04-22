@@ -1,12 +1,19 @@
+// app/components/AvatarDropdownMenu.js (giả định)
+"use client";
 import { useState, useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { IoPersonOutline } from "react-icons/io5"; // Icon cho Profile
+import { IoMdSettings } from "react-icons/io"; // Icon cho Settings
+import { CiLogout } from "react-icons/ci"; // Icon cho Log out
+
 export function AvatarDropdownMenu(props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [token, setToken] = useState(null);
   const { removeToken } = props;
   const router = useRouter();
+
   const handleLogout = () => {
     removeToken();
   };
@@ -23,7 +30,6 @@ export function AvatarDropdownMenu(props) {
 
   // Hàm kiểm tra click ngoài để đóng menu
   const handleClickOutside = (event) => {
-    // Kiểm tra nếu click ngoài avatar và menu thì đóng menu
     if (!event.target.closest(".avatar-dropdown-menu")) {
       setIsMenuOpen(false);
     }
@@ -32,8 +38,6 @@ export function AvatarDropdownMenu(props) {
   // Gắn sự kiện click khi component mount và hủy bỏ khi unmount
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
-
-    // Hủy bỏ sự kiện khi component unmount
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
@@ -49,18 +53,28 @@ export function AvatarDropdownMenu(props) {
 
       {/* Menu khi avatar được click */}
       {isMenuOpen && (
-        <ul className="absolute -left-[108px] mt-4 w-42 bg-gray-50 rounded-md z-50">
-          <li className="px-4 py-2 hover:bg-blue-200 cursor-pointer">
-            <Link href={"/profile"}>Profile</Link>
+        <ul className="absolute -left-[108px] mt-4 w-48 bg-white shadow-md rounded-md z-50">
+          <li className="flex items-center gap-3 px-4 py-2 hover:bg-blue-100 cursor-pointer">
+            <IoPersonOutline className="text-gray-500 text-lg" />
+            <Link href="/profile" className="font-semibold">
+              Profile
+            </Link>
           </li>
-          <li className="px-4 py-2 hover:bg-blue-200 cursor-pointer">
-            Settings
+          <li className="flex items-center gap-3 px-4 py-2 hover:bg-blue-100 cursor-pointer">
+            <IoMdSettings className="text-gray-500 text-lg" />
+            <Link href="/settings" className="font-semibold">
+              Settings
+            </Link>
           </li>
           <li
-            className="px-4 py-2 hover:bg-blue-200 cursor-pointer"
-            onClick={() => handleLogout()}
+            className="flex items-center gap-3 px-4 py-2 hover:bg-blue-100 cursor-pointer"
+            onClick={() => {
+              handleLogout();
+              router.push("/");
+            }}
           >
-            Log out
+            <CiLogout className="text-gray-500 text-lg" />
+            <span className="font-semibold">Log out</span>
           </li>
         </ul>
       )}
