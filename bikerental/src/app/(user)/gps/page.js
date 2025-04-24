@@ -163,8 +163,8 @@ export default function ShortestDistancePage() {
     City.forEach((cityData) => {
       cityData.stations.forEach((station) => {
         const dist = haversineDistance(
-          userLocation[0],
-          userLocation[1],
+          userLocation?.[0],
+          userLocation?.[1],
           parseFloat(station.lat),
           parseFloat(station.lng)
         );
@@ -198,7 +198,7 @@ export default function ShortestDistancePage() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
+    <div className="p-6 max-w-5xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold text-center">
         Tìm trạm gần nhất từ địa chỉ
       </h1>
@@ -259,7 +259,7 @@ export default function ShortestDistancePage() {
               <Popup>
                 {nearest.name} <br />
                 Cách bạn: {nearest.distance} km <br />
-                Thời gian di chuyển: {nearest.duration - 140} (phút)
+                Thời gian di chuyển: {parseInt(nearest.duration / 3)} (phút)
               </Popup>
             </Marker>
           )}

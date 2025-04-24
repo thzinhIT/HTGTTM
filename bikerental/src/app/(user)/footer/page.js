@@ -7,6 +7,7 @@ import { CgMail } from "react-icons/cg";
 import { FaFacebook } from "react-icons/fa6";
 import ios from "../../../../public/assets/img/app-ios.png";
 import android from "../../../../public/assets/img/app-android.png";
+import Link from "next/link";
 
 const Footer = () => {
   const bgImage = "/assets/img/bgft.jpg";
@@ -62,18 +63,66 @@ const Footer = () => {
               {/* Cột 3: Liên kết nhanh */}
               <li className="flex flex-col w-[17%] text-white gap-5">
                 <h2 className="text-lg font-semibold">Liên kết nhanh</h2>
-                <p className="text-sm cursor-pointer">Hướng dẫn sử dụng</p>
-                <p className="text-sm cursor-pointer">Danh sách trạm</p>
-                <p className="text-sm cursor-pointer">Tin tức</p>
-                <p className="text-sm cursor-pointer">Liên hệ</p>
+                <Link
+                  href="/usermanual"
+                  className="relative text-sm cursor-pointer inline-block
+                  after:content-[''] after:absolute after:left-0 after:-bottom-1
+                  after:w-0 after:h-[2px] after:bg-current
+                  after:transition-all after:duration-300 hover:after:w-1/3"
+                >
+                  Hướng dẫn sử dụng
+                </Link>
+                <Link
+                  href="/station-list"
+                  className="relative text-sm cursor-pointer inline-block
+                  after:content-[''] after:absolute after:left-0 after:-bottom-1
+                  after:w-0 after:h-[2px] after:bg-current
+                  after:transition-all after:duration-300 hover:after:w-1/3"
+                >
+                  Danh sách trạm
+                </Link>
+                <Link
+                  href="/newspaper"
+                  className="relative text-sm cursor-pointer inline-block
+                  after:content-[''] after:absolute after:left-0 after:-bottom-1
+                  after:w-0 after:h-[2px] after:bg-current
+                  after:transition-all after:duration-300 hover:after:w-1/3"
+                >
+                  Tin tức
+                </Link>
+                <Link
+                  href="/contact"
+                  className="relative text-sm cursor-pointer inline-block
+                  after:content-[''] after:absolute after:left-0 after:-bottom-1
+                  after:w-0 after:h-[2px] after:bg-current
+                  after:transition-all after:duration-300 hover:after:w-1/3"
+                >
+                  Liên hệ
+                </Link>
               </li>
 
               {/* Cột 4: Lặp nội dung (có thể xóa hoặc chỉnh sửa) */}
               <li className="flex flex-col w-[17%] text-white gap-5">
                 <h2 className="text-lg font-semibold">Khác</h2>
-                <p className="text-sm cursor-pointer">Bảng giá</p>
-                <p className="text-sm cursor-pointer">Bảng xếp hạng</p>
-                <p className="text-sm cursor-pointer">Thẻ RIFD</p>
+                <Link
+                  href="/contact"
+                  className="relative text-sm cursor-pointer inline-block
+                  after:content-[''] after:absolute after:left-0 after:-bottom-1
+                  after:w-0 after:h-[2px] after:bg-current
+                  after:transition-all after:duration-300 hover:after:w-1/3"
+                >
+                  Bảng Giá
+                </Link>
+
+                <Link
+                  href="/contact"
+                  className="relative text-sm cursor-pointer inline-block
+                  after:content-[''] after:absolute after:left-0 after:-bottom-1
+                  after:w-0 after:h-[2px] after:bg-current
+                  after:transition-all after:duration-300 hover:after:w-1/3"
+                >
+                  Thẻ Rifd
+                </Link>
               </li>
 
               {/* Cột 5: Tải ứng dụng */}

@@ -46,16 +46,17 @@ const DashboardPage = () => {
   ];
 
   // Tính tổng điểm nạp
-  const totalPoints = dataJSON?.topNguoiDungNapNhieuDiem.reduce(
-    (total, user) => total + parseInt(user.tong_diem_nap),
+  const totalPoints = dataJSON?.topNguoiDungNapNhieuDiemTrongThang?.reduce(
+    (total, user) => total + parseInt(Number(user.tong_diem_nap)),
     0
   );
 
   // Tạo dữ liệu cho Pie chart với tỷ lệ phần trăm
-  const pieData = dataJSON?.topNguoiDungNapNhieuDiem.map((user) => ({
+  const pieData = dataJSON?.topNguoiDungNapNhieuDiemTrongThang?.map((user) => ({
     name: user.ten_nguoi_dung,
-    value: (user.tong_diem_nap / totalPoints) * 100, // Tính tỷ lệ phần trăm
+    value: (Number(user.tong_diem_nap) / totalPoints) * 100, // Tính tỷ lệ phần trăm
   }));
+  console.log("pieData:", pieData);
 
   return (
     <div className="p-6 space-y-6">

@@ -115,7 +115,7 @@ const Rifd = () => {
                         <p className="">
                           ✅ Phí mở thẻ{" "}
                           <span className="font-semibold">
-                            {formatMoney(card?.phi_kich_hoat) ?? "N/A"}
+                            {formatMoney(card?.phi_kich_hoat) ?? "N/A"} VNĐ
                           </span>
                           , miễn phí mở thẻ lần đầu
                         </p>

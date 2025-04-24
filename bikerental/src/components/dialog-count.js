@@ -98,9 +98,12 @@ export default function DialogCount(props) {
             </p>
           )}
           {/* Hiển thị tổng tiền và điểm */}
-          <FaHandPointDown className="mx-auto text-xl animate-bounce" />
+          {point && (
+            <FaHandPointDown className="mx-auto text-xl animate-bounce" />
+          )}
+
           <div className="flex text-center items-center justify-center text-sm text-gray-600">
-            {count > 0 && (
+            {count > 0 && point && (
               <>
                 <div className="w-1/2">
                   <span>Số điểm: </span>

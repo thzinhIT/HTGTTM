@@ -7,6 +7,7 @@ import {
   Users,
   IdCard,
   Ticket,
+  LogOut,
 } from "lucide-react";
 
 import {
@@ -48,9 +49,9 @@ const items = [
     icon: Ticket,
   },
   {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
+    title: "Log Out",
+    url: "/",
+    icon: LogOut,
   },
 ];
 

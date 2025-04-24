@@ -3,6 +3,9 @@
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { CgLogOut } from "react-icons/cg";
+import { CiSettings } from "react-icons/ci";
+import { CgProfile } from "react-icons/cg";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -64,17 +67,22 @@ export function AvatarDropdownMenu(props) {
       {/* Menu khi avatar được click */}
       {isMenuOpen && (
         <ul className="absolute -left-[108px] mt-4 w-42 dark:bg-black bg-gray-50 rounded-md z-50">
-          <li className="px-4 py-2  dark:hover:bg-blue-950  hover:bg-blue-200 cursor-pointer">
+          <li className="px-4 py-2  dark:hover:bg-blue-950  hover:bg-blue-200 cursor-pointer  flex items-center gap-4">
+            <CgProfile />
+
             <Link href={"/profile"}>Profile</Link>
           </li>
-          <li className="px-4 py-2 dark:hover:bg-blue-950 hover:bg-blue-200 cursor-pointer">
+          <li className=" flex items-center gap-4 px-4 py-2 dark:hover:bg-blue-950 hover:bg-blue-200 cursor-pointer">
+            <CiSettings className="text-xl" />
             <Link href={"/settings"}>Settings</Link>
           </li>
           <li
-            className="px-4 py-2 dark:hover:bg-blue-950 hover:bg-blue-200 cursor-pointer"
+            className=" flex items-center gap-4 px-4 py-2 dark:hover:bg-blue-950 hover:bg-blue-200 cursor-pointer"
+            type="button"
             onClick={() => handleLogout()}
           >
-            Log out
+            <CgLogOut className="text-xl" />
+            <span>Log out</span>
           </li>
         </ul>
       )}

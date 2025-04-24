@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FaRegClock } from "react-icons/fa6";
 import { CiWarning } from "react-icons/ci";
 import { CiMoneyCheck1 } from "react-icons/ci";
@@ -51,6 +51,9 @@ const TransactionTable = () => {
   const [postUrl, setPostUrl] = useState(``);
   const [name, setName] = useState("");
   const [id, setId] = useState("");
+  const [price, setPrice] = useState();
+
+  const [point, setPoint] = useState();
   const handleOnClickId = (item) => {
     setName(item.ten_ve);
     setOpen(true);
@@ -135,7 +138,7 @@ const TransactionTable = () => {
             currentData.map((item, index) => {
               return (
                 <div
-                  className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] flex flex-col justify-between w-[30%] min-h-[430px] mb-5    "
+                  className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] dark:border-1 dark:border-white flex flex-col justify-between w-[30%] min-h-[430px] mb-5    "
                   key={index + "vinh"}
                 >
                   <div className="px-3 py-3  flex flex-col ">

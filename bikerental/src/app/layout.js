@@ -31,7 +31,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen flex flex-col ">
         <LoadingProvider>{children}</LoadingProvider>
 

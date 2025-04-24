@@ -138,6 +138,9 @@ const page = () => {
                         <p className="text-sm text-gray-600 dark:text-gray-200 ">
                           Số lượng: {item.so_luong}
                         </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-200 ">
+                          Loai Xe: {item.loai_xe}
+                        </p>
                         <p className="text-sm text-gray-600 dark:text-gray-200">
                           Ngày mua: {dayjs(item.ngay_mua).format("DD/MM/YYYY")}
                         </p>
@@ -151,11 +154,11 @@ const page = () => {
                   ))}
                 </div>
               ) : (
-                <div> Hiện ko thấy dữ liệu </div>
+                <div>loading...</div>
               )}
             </div>
           ) : (
-            <div>loading...</div>
+            <div> Hiện ko thấy dữ liệu </div>
           )}
           {/* Khối thông tin thẻ */}
         </div>
