@@ -79,18 +79,23 @@ export const POST = async (req) => {
         const { ten_ve, loai_xe, diem_tngo, thoi_han } = veRows[0];
         const tongDiemThanhToan = diem_tngo * soLuong;
 
-        const minBalance = {
-            RideUp: 100000,
-            Prenium: 1000000,
-            VIP: 5000000,
-        };
+        const [balanceRows] = await connection.execute(
+            "SELECT loai_the, so_du_toi_thieu FROM the"
+        );
+        if (balanceRows.length === 0) throw new Error("Không tìm thấy thông tin thẻ!");
+
+        const minBalance = balanceRows.reduce((acc, row) => {
+            acc[row.loai_the] = row.so_du_toi_thieu; // ánh xạ loai_the vào so_du_toi_thieu
+            return acc;
+        }, {});
+
 
         const minRequiredBalance = minBalance[loai_the] || 0;
 
         if (so_du_diem - tongDiemThanhToan < minRequiredBalance) {
             return new Response(
                 JSON.stringify({
-                    message: `Thẻ của bạn không đủ số dư, vui lòng nạp thêm.`,
+                    message: `Thẻ của bạn chưa đủ số dư tối thiểu để mở thẻ!`,
                 }),
                 {
                     status: 400,
