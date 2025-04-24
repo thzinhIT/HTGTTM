@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 17, 2025 lúc 08:12 AM
+-- Thời gian đã tạo: Th4 24, 2025 lúc 12:55 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.1.25
 
@@ -114,8 +114,8 @@ CREATE TABLE `the` (
 
 INSERT INTO `the` (`the_id`, `loai_the`, `img`, `phi_kich_hoat`, `so_du_toi_thieu`, `diem_thuong`, `so_xe_toi_da`) VALUES
 (1, 'RideUp', 'https://tngo.vn/image/rfid-rideup.jpg', 20000, 100000, 10000, 3),
-(2, 'Prenium', 'https://tngo.vn/image/rfid-premium.jpg', 20000, 1000000, 50000, 10),
-(3, 'VIP', 'https://tngo.vn/image/rfid-vip.jpg', 20000, 5000000, 300000, 100);
+(2, 'Prenium', 'https://tngo.vn/image/rfid-premium.jpg', 20000, 500000, 50000, 10),
+(3, 'VIP', 'https://tngo.vn/image/rfid-vip.jpg', 20000, 1000000, 300000, 100);
 
 -- --------------------------------------------------------
 
@@ -139,10 +139,9 @@ CREATE TABLE `the_nguoi_dung` (
 --
 
 INSERT INTO `the_nguoi_dung` (`id`, `ten_nguoi_dung`, `the_id`, `loai_the`, `so_du_diem`, `diem_da_su_dung`, `ngay_mua`, `ngay_het_han`) VALUES
-(21, 'Tiến', 3, 'VIP', 12150000, 50000, '2025-04-14', '2026-04-14'),
-(28, 'A Vinh Cờ Tướng', 1, 'RideUp', 20000, 0, '2025-04-08', '2026-04-08'),
+(21, 'Tiến', 3, 'VIP', 11852000, 210000, '2025-04-14', '2026-04-14'),
 (29, 'Tiến', 3, 'VIP', 500000, 0, '2025-04-08', '2026-04-08'),
-(33, 'Bomman', 2, 'Prenium', 1160000, 200000, '2025-04-15', '2026-04-15');
+(36, 'Aoba', 3, 'VIP', 1035000, 70000, '2025-04-24', '2026-04-24');
 
 -- --------------------------------------------------------
 
@@ -245,9 +244,10 @@ INSERT INTO `users` (`id`, `email`, `password`, `username`, `phone`, `role`) VAL
 (26, '12345@gmail.com', '$2b$10$tZJLWKNia3Yd0ou18zIINe2WrdqFpxG9A1iQiA9csIAuVWnzck7MS', 'User 123', '0987654321', 'user'),
 (28, 'vinhthanhnguyen12122004@gmail.com', '$2b$10$BPn.yRUAvk3jPVm44eTjiePDcDJMnq8MH.HG3/V..6zdMe8Q8fzIi', 'A Vinh Cờ Tướng', '0987654321', 'user'),
 (29, 'kiritanitaiyo@gmail.com', '$2b$10$TVqqjid/L72DS96WZ21ECO37GAWSWC5Roo/WEyhsBgSX9tSyZxAxa', 'Tiến', '0987654321', 'user'),
-(30, '2251120118@ut.edu.vn', '$2b$10$LdTtjX6lJvhB.TuBAhf60.RwY0poK.92v41JZuHsD56jSJfLgHRny', 'Tiến 123', '0987654321', 'user'),
 (32, 'adminTNGO@gmail.com', '$2b$10$rqngEqbYju7OSIAipYW3P.iIhJ.TQv48QibPeXuUp0xdrHNLGR3Ii', 'Admin123', '073281352', 'admin'),
-(33, 'tienbi63543@gmail.com', '$2b$10$NVcsfO1Q1PPfNdP1B720VeSBuYOUkJoAFCC3q/FVZho3l0HqdAAUW', 'Bomman', '0886485440', 'user');
+(34, 'tienbi63543@gmail.com', '$2b$10$1yozPp/RDM8bZ3N/rdxtC.EwDi4C.5xm0Njz.7BBvg43.FhUjn332', 'Tiến Minh', '0886485440', 'user'),
+(35, '2251120118@ut.edu.vn', '$2b$10$QGVzckFLSstNUkSatV7S9ui4eNNBJygzUAaLvlLelVipH4fAioJp.', 'Tiến 123', '0886485440', 'user'),
+(36, 'arcgenshin2505@gmail.com', '$2b$10$HnVDgafS4MSJ8u9BzTN2jOQseRuRU4Uup.DKtGdxNcppQ5H6TUh6u', 'Aoba', '0988312227', 'user');
 
 -- --------------------------------------------------------
 
@@ -271,9 +271,10 @@ INSERT INTO `user_tokens` (`user_id`, `token`, `created_at`) VALUES
 (23, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRpZW40QGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJDlEZ3Y5eFhQRXRGM2lEdjE3Qml4S2VqWHdkVzUxODlZRFlnclNzaU9JMkhXaGFnZkE4UFh5Iiwicm9sZSI6IlVzZXIifQ.aNQAsQ5zgxeDuSYEFBC_dIXPnMz8p7DP1XhUMlHvZ2E', '2025-04-06 15:09:23'),
 (28, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjgsImVtYWlsIjoidmluaHRoYW5obmd1eWVuMTIxMjIwMDRAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkQlBuLnlSVUF2azNqUFZtNDRlVGppZVBEY0RKTW5xOE1ILkhHMy9WLi42emRNZThROGZ6SWkiLCJyb2xlIjoiVXNlciJ9.qK6NpQpVHsc1cr6OyEJB48X3EoR7Y7FqeowvzFXiG9A', '2025-04-08 22:28:08'),
 (29, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksImVtYWlsIjoia2lyaXRhbml0YWl5b0BnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRUVnFxamlkL0w3MkRTOTZXWjIxRUNPMzdHQVdTV0M1Um9vL1dFeWhzQmdTWDl0U3laeEF4YSIsInJvbGUiOiJVc2VyIn0.NGXvwgxK2zffM_3TFdOcOy4FuwAsIqdj_DfwiQ95YCA', '2025-04-08 22:38:21'),
-(30, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsImVtYWlsIjoiMjI1MTEyMDExOEB1dC5lZHUudm4iLCJwYXNzd29yZCI6IiQyYiQxMCRMZFR0alg2bEp2aEIuVHVCQWhmNjAuUndZMHBvSy45MnY0MUpadUhzRDU2alNKZkxnSFJueSIsInJvbGUiOiJVc2VyIn0.m3vWVj3X9bQDJ1v4vqy6hnc8XeDP8SKgCoasM4Odr6w', '2025-04-08 23:27:26'),
 (32, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsImVtYWlsIjoiYWRtaW5UTkdPQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHJxbmdFcWJZanU3T1NJQWlwWVczUC5pSWhKLlRRdjQ4UWliUGVYdVVwMHhkckhOTEdSM0lpIiwicm9sZSI6ImFkbWluIn0.6CzvDliZNTK91n-t1Q8TwotQSSyXECzKAax4O0EoJIs', '2025-04-14 23:46:21'),
-(33, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzMsImVtYWlsIjoidGllbmJpNjM1NDNAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkTlZjc2ZPMVExUFBmTmRQMUI3MjBWZVNCdVlPVWtKb0FGQ0MzcS9GVlpobzNsMEhxZEFBVVciLCJyb2xlIjoidXNlciJ9.e3gkNZ15waJNanTdiMMoZF1Pj8jEIMh9XyBKsz0ZqB0', '2025-04-15 19:05:49');
+(34, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImVtYWlsIjoidGllbmJpNjM1NDNAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkMXlvelBwL1JETThiWjNOL3JkeHRDLkV3RGk0Qy41eG0wTmp6LjdCQnZnNDMuRmhVam4zMzIiLCJyb2xlIjoidXNlciJ9.mVLCxIwo3JxhXtwScchJPO-qeqMIft9fdu89yC2ltUE', '2025-04-22 09:57:13'),
+(35, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzUsImVtYWlsIjoiMjI1MTEyMDExOEB1dC5lZHUudm4iLCJwYXNzd29yZCI6IiQyYiQxMCRRR1Z6Y2tGTFNzdE5Va1NhdFY3Uzl1aTRlTk5CSnlnelVBYUx2bExlbFZpcEg0ZkFpb0pwLiIsInJvbGUiOiJ1c2VyIn0.HWRKE-jzO81_AYtg8kYpdTEgl3QjlJ9g0u6sndnO730', '2025-04-24 14:08:27'),
+(36, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzYsImVtYWlsIjoiYXJjZ2Vuc2hpbjI1MDVAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkSG5WRGdhZlM0TVNKOHU5QnpUTjJqT1FzZVJ1UlU0VXVwLkRLdEdkeE5jcHBRNUg2VFVoNnUiLCJyb2xlIjoidXNlciJ9.zMEp7ye2CBcxWJkii0tGT4AhoLxT7xblnb0_Tzr0wN8', '2025-04-24 14:23:44');
 
 -- --------------------------------------------------------
 
@@ -327,8 +328,11 @@ CREATE TABLE `ve_nguoi_dung` (
 --
 
 INSERT INTO `ve_nguoi_dung` (`id_donhang`, `users_id`, `ten_nguoi_dung`, `ve_id`, `ten_ve`, `loai_xe`, `ngay_mua`, `thoi_han`, `so_luong`) VALUES
-(6, 21, 'Tiến', 1, 'Vé lượt', 'Xe đạp cơ', '2025-04-14', '60 phút', 1),
-(7, 33, 'Bomman', 7, 'Vé Tháng', 'xe đạp điện', '2025-04-15', '60 ngày kể từ ngày đăng ký', 1);
+(9, 21, 'Tiến', 1, 'Vé lượt', 'Xe đạp cơ', '2025-04-22', '60 phút', 21),
+(10, 34, 'Tiến Minh', 1, 'Vé lượt', 'Xe đạp cơ', '2025-04-22', '60 phút', 10),
+(11, 36, 'Aoba', 1, 'Vé lượt', 'Xe đạp cơ', '2025-04-24', '60 phút', 2),
+(12, 36, 'Aoba', 2, 'Vé ngày', 'Xe đạp cơ', '2025-04-24', '24h ngày đăng ký', 1),
+(13, 36, 'Aoba', 2, 'Vé ngày', 'Xe đạp cơ', '2025-04-24', '24h ngày đăng ký', 1);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -414,7 +418,7 @@ ALTER TABLE `dia_diem`
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT cho bảng `ve`
@@ -426,7 +430,7 @@ ALTER TABLE `ve`
 -- AUTO_INCREMENT cho bảng `ve_nguoi_dung`
 --
 ALTER TABLE `ve_nguoi_dung`
-  MODIFY `id_donhang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_donhang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

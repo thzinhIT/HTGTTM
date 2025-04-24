@@ -70,7 +70,7 @@ export const POST = async (req) => {
         }
 
         const { loai_the, phi_kich_hoat, diem_thuong } = theRows[0];
-        const diemConLai = diem_thuong || 0;
+        const so_du_diem = diem_thuong || 0;
 
         const ngayMua = new Date().toISOString().split("T")[0];
         const ngayHetHan = new Date();
@@ -79,7 +79,7 @@ export const POST = async (req) => {
 
         await connection.execute(
             "INSERT INTO the_nguoi_dung (id, ten_nguoi_dung, the_id, loai_the, so_du_diem, diem_da_su_dung, ngay_mua, ngay_het_han) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            [nguoiDungId, tenNguoiDung, theId, loai_the, phi_kich_hoat, 0, ngayMua, formattedNgayHetHan]
+            [nguoiDungId, tenNguoiDung, theId, loai_the, so_du_diem, 0, ngayMua, formattedNgayHetHan]
         );
 
         // ✅ Gửi email sau khi lưu thành công
