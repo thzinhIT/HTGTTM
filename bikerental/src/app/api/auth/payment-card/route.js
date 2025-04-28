@@ -89,7 +89,6 @@ export const POST = async (req) => {
             theId,
             loai_the,
             phi_kich_hoat,
-            diemConLai,
             ngayMua,
             ngayHetHan: formattedNgayHetHan,
         });
@@ -117,7 +116,7 @@ export const POST = async (req) => {
 // =============================
 // ======= sendEmail() ========
 // =============================
-async function sendEmail({ toEmail, username, theId, loai_the, phi_kich_hoat, diemConLai, ngayMua, ngayHetHan }) {
+async function sendEmail({ toEmail, username, theId, loai_the, phi_kich_hoat, ngayMua, ngayHetHan }) {
     const transporter = nodemailer.createTransport({
         service: "zoho",
         host: "smtpro.zoho.in",
@@ -145,7 +144,6 @@ async function sendEmail({ toEmail, username, theId, loai_the, phi_kich_hoat, di
                     <li><strong>📌 Mã thẻ:</strong> ${theId}</li>
                     <li><strong>💳 Loại thẻ:</strong> ${loai_the}</li>
                     <li><strong>💰 Phí kích hoạt:</strong> ${phi_kich_hoat}</li>
-                    <li><strong>🎯 Điểm tặng ban đầu mua thẻ:</strong> ${diemConLai}</li>
                     <li><strong>📅 Ngày mua:</strong> ${ngayMua}</li>
                     <li><strong>⏳ Hạn sử dụng:</strong> ${ngayHetHan}</li>
                 </ul>
