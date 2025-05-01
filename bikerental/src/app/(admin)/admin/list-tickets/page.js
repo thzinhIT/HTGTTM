@@ -27,7 +27,6 @@ const ListTickets = () => {
       setBike(data.veXeDap);
       setTram(data.veXeDien);
     }
-    console.log(data);
   }, [data]);
   const handleOnClickDeleteTicket = (item) => {
     setDataDelete(item);

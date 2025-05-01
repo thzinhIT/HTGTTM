@@ -18,11 +18,9 @@ const ListPrice = () => {
   const { data, error, isLoading, refetch } = useFetchGetData(url);
   useEffect(() => {
     if (data) setPrices(data.price);
-    console.log(prices);
   }, [data]);
   const handleOnClickCreatePrice = () => {
     setIsOpenModalCreate(true);
-    console.log("abc");
   };
   const handleOnClickDeletePrice = (item) => {
     setDataDelete(item);
@@ -30,13 +28,10 @@ const ListPrice = () => {
   };
   const handleOnClickUpdatePrice = (item) => {
     setDataUpdate(item); // Set the user to be updated
-    console.log("dataUpdate", item);
   };
   useEffect(() => {
     if (dataUpdate) {
       setIsOpenModalUpdate(true);
-      console.log("đã mở cổng");
-      console.log("dataUpdate", dataUpdate);
     }
   }, [dataUpdate]);
 

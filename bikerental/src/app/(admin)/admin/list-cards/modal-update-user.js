@@ -83,7 +83,6 @@ export function ModalUpdateCard(props) {
     setIsOpenModalUpdate(false); // Close the modal
   };
   const onSubmit = (data) => {
-    console.log(data);
     const fecthCreatecard = async () => {
       const res = await fetch(
         `http://localhost:3000/api/auth/card/updateCard?the_id=${dataUpdate.the_id}`,

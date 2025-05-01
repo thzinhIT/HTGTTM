@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 
 export function ModalDeleteTicket(props) {
   const { open, setIsOpenModalDelete, refetch, dataDelete } = props;
-  console.log(dataDelete); // Destructure props to get open and onOpenChange
+
   const handleClose = () => {
     setIsOpenModalDelete(false); // Close the modal
   };

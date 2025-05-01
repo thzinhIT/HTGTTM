@@ -78,7 +78,6 @@ export function ModalCreateCard(props) {
     setIsOpenModalCreate(false); // Close the modal
   };
   const onSubmit = (data) => {
-    console.log(data);
     const fecthCreatecard = async () => {
       const res = await fetch(`http://localhost:3000/api/auth/card/addCard`, {
         method: "POST",
