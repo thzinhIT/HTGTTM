@@ -36,7 +36,6 @@ const TransactionTable = () => {
     if (loginSuccess) {
       const storeToken = localStorage.getItem("token");
       setToken(storeToken);
-      console.log("check token", storeToken);
     }
   }, [loginSuccess]);
   const [activeButton, setActiveButton] = useState("mechanic"); // Mặc định là xe đạp điện
@@ -58,9 +57,6 @@ const TransactionTable = () => {
     setName(item.ten_ve);
     setOpen(true);
     setId(item.ve_id);
-    console.log("id", id);
-
-    console.log("item", postUrl);
   };
   useEffect(() => {
     if (id) {
@@ -81,16 +77,11 @@ const TransactionTable = () => {
       setBike(data?.veXeDap);
       setTram(data?.veXeDien);
     }
-    console.log("check data", data);
   }, [data]);
   useEffect(() => {
     if (bike) {
       setCurrentData(bike);
     }
-    console.log("check data", data);
-  }, [bike]);
-  useEffect(() => {
-    console.log("check xe đạp", bike);
   }, [bike]);
 
   return (

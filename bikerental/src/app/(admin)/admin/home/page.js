@@ -56,7 +56,6 @@ const DashboardPage = () => {
     name: user.ten_nguoi_dung,
     value: (Number(user.tong_diem_nap) / totalPoints) * 100, // Tính tỷ lệ phần trăm
   }));
-  console.log("pieData:", pieData);
 
   return (
     <div className="p-6 space-y-6">

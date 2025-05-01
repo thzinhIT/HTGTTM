@@ -15,7 +15,6 @@ const Header = () => {
   const pathName = usePathname();
   const router = useRouter();
 
-  console.log(token);
   useEffect(() => {
     // ✅ Khi component được render bên client, lấy token từ localStorage
     const storedToken = localStorage.getItem("token");

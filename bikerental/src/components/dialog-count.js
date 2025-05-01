@@ -32,7 +32,7 @@ export default function DialogCount(props) {
   const { open, setOpen, name, postUrl, price, point } = props; // lấy props từ cha
   const { postData } = usePostData(); // custom hook để gửi dữ liệu
   const [total, setTotal] = useState(0);
-  console.log("postUrl", postUrl); // log url
+
   const {
     register,
     handleSubmit,
@@ -53,8 +53,6 @@ export default function DialogCount(props) {
   const onSubmit = (formData) => {
     data = { ...data, soLuong: formData.soLuong }; // thêm trường mới
 
-    console.log("formData", formData); // log dữ liệu
-    console.log("data", data); // log dữ liệu
     postData(postUrl, data);
 
     onClose(); // đóng modal sau khi gửi dữ liệu

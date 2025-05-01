@@ -63,13 +63,11 @@ export function ModalUpdateTicket(props) {
     },
   });
   const tenVe = watch("ten_ve");
-  console.log("Tên vé hiện tại:", tenVe);
 
   const handleClose = () => {
     setIsOpenModalCreate(false); // Close the modal
   };
   const onSubmit = (data) => {
-    console.log(data);
     const fecthCreateTicket = async () => {
       const res = await fetch(
         `http://localhost:3000/api/auth/tickets/addTickets`,

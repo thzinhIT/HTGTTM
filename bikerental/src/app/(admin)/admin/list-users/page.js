@@ -60,18 +60,13 @@ const ListUser = () => {
   const handleOnClickDeleteUser = (item) => {
     setDataDelete(item); // Set the user to be deleted
     setIsOpenModalDelete(true);
-
-    console.log("item", dataDelete);
   };
   const handleOnClickUpdateUser = (item) => {
     setDataUpdate(item); // Set the user to be updated
-    console.log("dataUpdate", item);
   };
   useEffect(() => {
     if (dataUpdate) {
       setIsOpenModalUpdate(true);
-      console.log("đã mở cổng");
-      console.log("dataUpdate", dataUpdate);
     }
   }, [dataUpdate]);
 

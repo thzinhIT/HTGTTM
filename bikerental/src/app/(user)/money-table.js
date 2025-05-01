@@ -41,8 +41,6 @@ const MoneyTable = (props) => {
     setId(item.id);
     setPriceItem(item.phi_nap);
     setPoint(item.diem_tngo);
-    console.log("id", id);
-    console.log("item", postUrl);
   };
   useEffect(() => {
     if (id) {

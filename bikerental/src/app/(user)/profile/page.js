@@ -18,7 +18,6 @@ const page = () => {
   const { data: cards, loading, error } = useFetchWithToken(urlCard);
   const { data: users } = useFetchWithToken(urlUser);
   const { data: tickets } = useFetchWithToken(urlTicket);
-  console.log("check card", cards);
 
   useEffect(() => {
     if (users) {
@@ -34,7 +33,6 @@ const page = () => {
     if (tickets) {
       setTicket(tickets.orders);
     }
-    console.log("check ticket123", ticket);
   }, [tickets]);
   return (
     <>

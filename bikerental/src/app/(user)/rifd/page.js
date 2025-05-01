@@ -31,7 +31,6 @@ const Rifd = () => {
 
   const params = useSearchParams();
   const loginSuccess = params.get("loginSuccess");
-  console.log(loginSuccess);
 
   const { data, loading, error } = useFetchGetData(
     "http://localhost:3000/api/auth/card/getCards?page=1"
@@ -47,9 +46,6 @@ const Rifd = () => {
     setName(item.loai_the);
     setOpenAlert(true);
     setId(item.the_id);
-    console.log("id", id);
-
-    console.log("item", postUrl);
   };
   useEffect(() => {
     if (id) {

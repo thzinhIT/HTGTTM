@@ -32,9 +32,7 @@ const Howuse = () => {
     setCurrentImg(img[index]);
     setActiveStep(index);
   };
-  useEffect(() => {
-    console.log("Ảnh hiện tại đã thay đổi:", currentImg);
-  }, [currentImg]);
+
   return (
     <>
       <div className="flex gap-10 items-center">

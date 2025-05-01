@@ -69,7 +69,6 @@ export default function RegisterModal({ open, onClose }) {
       // Reset form data and errors
       setFormData({ email: "", username: "", password: "", phone: "" });
       setErrors({});
-      console.log("Register data:", formData);
     } catch (error) {
       const fieldErrors = {};
       error.errors.forEach((err) => {

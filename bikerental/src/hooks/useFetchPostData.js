@@ -11,10 +11,6 @@ const usePostData = () => {
 
     const token = localStorage.getItem("token"); // Lấy token từ localStorage
 
-    console.log("token", token);
-    console.log("url", url);
-    console.log("data", data);
-
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -29,7 +25,6 @@ const usePostData = () => {
       if (!res.ok) {
         toast.error(result.message);
       } else {
-        console.log("result", result);
         toast.success(result.message);
       }
     } catch (err) {

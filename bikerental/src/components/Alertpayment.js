@@ -20,7 +20,6 @@ export function AlertPayment(props) {
 
   const { postData, loading, error, response } = usePostData();
   const handleClick = () => {
-    console.log("open", url);
     postData(url, data);
   };
   return (

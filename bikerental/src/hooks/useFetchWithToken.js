@@ -30,7 +30,6 @@ const useFetchWithToken = (url) => {
 
         const result = await response.json();
         setData(result);
-        console.log("result", result);
       } catch (err) {
         setError(err.message);
       } finally {

@@ -23,7 +23,6 @@ const Detail = () => {
     router.push(`/newspaper/${item}`);
   };
 
-  console.log("check mảng hiện tại", solution, id);
   return (
     <>
       <div className="min-h-[400px] relative  bg-black">

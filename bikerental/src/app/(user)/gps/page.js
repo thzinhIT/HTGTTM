@@ -70,28 +70,6 @@ export default function ShortestDistancePage() {
     });
   };
 
-  // const fetchRoute = async (start, end) => {
-  //   const response = await fetch(
-  //     "https://api.openrouteservice.org/v2/directions/foot-walking/geojson",
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization:
-  //           "5b3ce3597851110001cf62482db79a5e338e44d3b215892c5edac9ea", // Thay bằng API key của bạn
-  //       },
-  //       body: JSON.stringify({
-  //         coordinates: [
-  //           [start[1], start[0]], // lng, lat
-  //           [end[1], end[0]], // lng, lat
-  //         ],
-  //       }),
-  //     }
-  //   );
-
-  //   const data = await response.json();
-  //   setRouteGeoJSON(data);
-  // };
   const fetchRoute = async (start, end) => {
     const response = await fetch(
       "https://api.openrouteservice.org/v2/directions/foot-walking/geojson",
@@ -112,7 +90,7 @@ export default function ShortestDistancePage() {
     );
 
     const data = await response.json();
-    console.log("vinh đây", data);
+
     setRouteGeoJSON(data);
 
     // Trích xuất thời gian di chuyển và cập nhật state
@@ -130,17 +108,18 @@ export default function ShortestDistancePage() {
     setNearest(null);
     setRouteGeoJSON(null);
 
+    let currentLocation = null;
+
     if (useCurrentLocation) {
-      // Nếu checkbox đã được chọn, lấy vị trí người dùng hiện tại
       try {
         const location = await getCurrentLocation();
-        setUserLocation(location); // Cập nhật vị trí người dùng
+        currentLocation = location; // lưu ra biến tạm
+        setUserLocation(location); // vẫn set vào state để map rerender
       } catch (error) {
         alert(error);
         return;
       }
     } else {
-      // Xử lý khi người dùng nhập địa chỉ
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
           address
@@ -153,18 +132,19 @@ export default function ShortestDistancePage() {
       }
       const lat = parseFloat(data[0].lat);
       const lng = parseFloat(data[0].lon);
+      currentLocation = [lat, lng];
       setUserLocation([lat, lng]);
     }
 
-    // Sau khi có vị trí người dùng, tìm trạm gần nhất và đường đi
+    // Lúc này dùng currentLocation, đừng dùng userLocation nữa
     let minDist = Infinity;
     let nearestStation = null;
 
     City.forEach((cityData) => {
       cityData.stations.forEach((station) => {
         const dist = haversineDistance(
-          userLocation?.[0],
-          userLocation?.[1],
+          currentLocation[0],
+          currentLocation[1],
           parseFloat(station.lat),
           parseFloat(station.lng)
         );
@@ -180,23 +160,19 @@ export default function ShortestDistancePage() {
     });
 
     setNearest(nearestStation);
-    // Log ra kinh độ (longitude) của trạm gần nhất
+
     if (nearestStation) {
       console.log(
         "Kinh độ trạm gần nhất: ",
         nearestStation?.lng,
         nearestStation?.lat
       );
-    }
-
-    if (nearestStation) {
       await fetchRoute(
-        [userLocation[0], userLocation[1]],
+        [currentLocation[0], currentLocation[1]],
         [nearestStation.lat, nearestStation.lng]
       );
     }
   };
-
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold text-center">
@@ -246,14 +222,6 @@ export default function ShortestDistancePage() {
             </Marker>
           )}
 
-          {/* {nearest && (
-            <Marker position={[nearest.lat, nearest.lng]} icon={icon}>
-              <Popup>
-                {nearest.name} <br />
-                Cách bạn: {nearest.distance} km
-              </Popup>
-            </Marker>
-          )} */}
           {nearest && (
             <Marker position={[nearest.lat, nearest.lng]} icon={icon}>
               <Popup>
