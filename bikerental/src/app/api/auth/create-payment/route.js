@@ -1,72 +1,69 @@
+// src/app/api/auth/create-payment/route.js
+import { NextResponse } from "next/server";
 import crypto from "crypto";
+import { console } from "inspector";
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method Not Allowed" });
-  }
-
-  const { amount, orderId } = req.body;
-
-  const partnerCode = process.env.MOMO_PARTNER_CODE;
-  const accessKey = process.env.MOMO_ACCESS_KEY;
-  const secretKey = process.env.MOMO_SECRET_KEY;
-  const requestId = String(Date.now());
-  const orderInfo = "Thanh toán đơn hàng test";
-  const redirectUrl = "http://localhost:3000/payment-success";
-  const ipnUrl = "http://localhost:3000/api/momo_callback";
-  const requestType = "captureWallet";
-  const extraData = "";
-
-  const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
-
-  const signature = crypto
-    .createHmac("sha256", secretKey)
-    .update(rawSignature)
-    .digest("hex");
-
-  const body = JSON.stringify({
-    partnerCode,
-    accessKey,
-    requestId,
-    amount,
-    orderId,
-    orderInfo,
-    redirectUrl,
-    ipnUrl,
-    extraData,
-    requestType,
-    signature,
-    lang: "vi",
-  });
-
+export async function POST(req) {
   try {
-    const response = await fetch(
+    const body = await req.json();
+    const { amount, orderInfo = "pay with MoMo", userId, id, soLuong } = body;
+
+    const partnerCode = process.env.MOMO_PARTNER_CODE || "MOMO";
+    const accessKey = process.env.MOMO_ACCESS_KEY || "F8BBA842ECF85";
+    const secretkey =
+      process.env.MOMO_SECRET_KEY || "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+
+    const requestId = partnerCode + new Date().getTime();
+    const orderId = requestId;
+
+    const redirectUrl = "http://localhost:3000/payment-success";
+    const ipnUrl = "http://localhost:3000/api/auth/momo-callBack";
+
+    const requestType = "captureWallet";
+    const extraData = Buffer.from(
+      JSON.stringify({ userId, id, soLuong })
+    ).toString("base64");
+
+    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
+
+    const signature = crypto
+      .createHmac("sha256", secretkey)
+      .update(rawSignature)
+      .digest("hex");
+
+    const requestBody = {
+      partnerCode,
+      accessKey,
+      requestId,
+      amount,
+      orderId,
+      orderInfo,
+      redirectUrl,
+      ipnUrl,
+      extraData,
+      requestType,
+      signature,
+      lang: "en",
+    };
+
+    const momoResponse = await fetch(
       "https://test-payment.momo.vn/v2/gateway/api/create",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body,
+        body: JSON.stringify(requestBody),
       }
     );
 
-    const result = await response.json();
+    const momoData = await momoResponse.json();
+    console.log("Momo response:", momoData);
 
-    return res.status(200).json({ payUrl: result.payUrl });
+    return NextResponse.json({ payUrl: momoData.payUrl });
   } catch (error) {
-    return res.status(500).json({ message: "Error processing payment" });
+    console.error("Error creating payment:", error);
+    return NextResponse.json(
+      { message: "Error creating payment" },
+      { status: 500 }
+    );
   }
 }
-
-
-
-
-export default function handler(req, res) {
-    if (req.method === 'POST') {
-        console.log('Momo callback: ', req.body);
-
-        // Tại đây bạn có thể lưu trạng thái thanh toán vào database nếu cần
-
-        res.status(200).send('Received');
-    } else {
-        res.status(405).json({ message: 'Method Not Allowed' });
-    }}

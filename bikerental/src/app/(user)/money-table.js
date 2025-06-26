@@ -127,6 +127,7 @@ const MoneyTable = (props) => {
           postUrl={postUrl}
           price={priceItem}
           point={point}
+          id={id}
         />
       )}
     </div>
