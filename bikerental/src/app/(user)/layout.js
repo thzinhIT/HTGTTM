@@ -11,6 +11,7 @@ import "swiper/css/pagination";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import LoadingProvider from "../loading-provider";
 
 export default async function UserLayout({ children }) {
   return (
@@ -23,7 +24,9 @@ export default async function UserLayout({ children }) {
       >
         <Header />
 
-        <main className="flex-1 w-[full] mt-[110px]">{children}</main>
+        <LoadingProvider>
+          <main className="flex-1 w-[full] mt-[110px]">{children}</main>
+        </LoadingProvider>
 
         <Footer />
       </ThemeProvider>

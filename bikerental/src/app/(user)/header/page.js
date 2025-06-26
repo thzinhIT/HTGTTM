@@ -140,17 +140,17 @@ const Header = () => {
                border-blue-400 border-solid border-1
                 rounded-2xl text-center box-border 
                 self-center cursor-pointer hover:bg-blue-500 hover:text-white duration-300"
-                  onClick={() => setIsLoginOpen(true)}
+                  onClick={() => router.push(`/login`)}
                 >
                   Đăng nhập
                 </button>
               )}
             </div>
-            <LoginModal
+            {/* <LoginModal
               open={isLoginOpen}
               onClose={() => setIsLoginOpen(false)}
               addToken={addToken}
-            />
+            /> */}
           </div>
         </div>
       </div>
