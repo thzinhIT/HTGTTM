@@ -22,32 +22,12 @@ import { use, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import formatMoney from "./format-money";
 
-<<<<<<< HEAD
 // Schema validate với Zod
 const formSchema = z.object({
   soLuong: z
     .number({ invalid_type_error: "Vui lòng nhập số hợp lệ" })
     .min(1, { message: "Số lượng phải lớn hơn 0" }),
 });
-
-// export default function DialogCount(props) {
-//   let data = {}; // object rỗng
-//   const [count, setCount] = useState(1);
-//   const { open, setOpen, name, postUrl, price, point } = props; // lấy props từ cha
-//   const { postData } = usePostData(); // custom hook để gửi dữ liệu
-//   const [total, setTotal] = useState(0);
-
-//   const {
-//     register,
-//     handleSubmit,
-//     reset,
-//     setValue,
-//     formState: { errors },
-//   } = useForm({
-//     resolver: zodResolver(formSchema),
-//     defaultValues: {
-//       soLuong: 1,
-//     },
 //   });
 //   const onClose = () => {
 //     setOpen(false); // đóng modal
@@ -127,12 +107,6 @@ const formSchema = z.object({
 //           </DialogFooter>
 //         </form>
 //       </DialogContent>
-//     </Dialog>
-//   );
-// }
-
-=======
->>>>>>> 0dda2e5a54d5d30143e6f3013027b113930fe19c
 export default function DialogCount(props) {
   const [count, setCount] = useState(0);
   const [total, setTotal] = useState(0);
@@ -157,25 +131,16 @@ export default function DialogCount(props) {
     reset(); // reset form
   };
 
-  const onSubmit = (data) => {
+  const  onSubmit = (data) => {
     if (paymentMethod === "momo") {
       console.log("Thanh toán MoMo");
+      handlePaymentMomo(data);
     } else {
       let body = { soLuong: data?.soLuong };
       postData(postUrl, body);
     }
   };
 
-<<<<<<< HEAD
-  // const handleSubmitPayment = (paymentMethod, e) => {
-  //   e.preventDefault(); // Ngăn chặn hành động mặc định của form
-  //   if (paymentMethod === "momo") {
-  //     console.log("Thanh toán MoMo");
-  //   } else {
-  //     postData(postUrl, data);
-  //   }
-  // };
-=======
   const handlePaymentMomo = async (data) => {
     const dataMM = data;
     try {
@@ -221,7 +186,6 @@ export default function DialogCount(props) {
       onClose(); // Đóng modal sau khi xử lý thanh toán
     }
   };
->>>>>>> 0dda2e5a54d5d30143e6f3013027b113930fe19c
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
