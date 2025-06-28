@@ -12,6 +12,7 @@ import LoginModal from "@/components/login-form";
 import DialogCount from "@/components/dialog-count";
 import MoneyTable from "./money-table";
 import formatMoney from "@/components/format-money";
+import { TableSkeleton, ButtonLoader } from "@/components/skeleton-loader";
 
 const TransactionTable = () => {
   const [currentIndex, setCurrentIndex] = useState(2); // Bắt đầu từ index 2
@@ -124,90 +125,96 @@ const TransactionTable = () => {
           </div>
         </div>
 
-        <div className=" flex flex-wrap justify-between px-10 ">
-          {currentData && currentData?.length > 0 ? (
-            currentData.map((item, index) => {
-              return (
-                <div
-                  className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] dark:border-1 dark:border-white flex flex-col justify-between w-[30%] min-h-[430px] mb-5    "
-                  key={index + "vinh"}
-                >
-                  <div className="px-3 py-3  flex flex-col ">
-                    <h3 className="mt-10 mb-2 text-center text-4xl font-semibold text-blue-700">
-                      {item.ten_ve}
-                    </h3>
-                    {item.diem_tngo ? (
-                      <>
-                        {" "}
-                        <div className="my-10  text-center">
-                          <span className="text-blue-700 text-4xl font-semibold">
-                            {formatMoney(item.diem_tngo)}
-                          </span>{" "}
-                          điểm TNGo/lượt
-                        </div>
-                        <div className="flex flex-col gap-2 justify-between">
+        {loading ? (
+          <TableSkeleton />
+        ) : (
+          <div className=" flex flex-wrap justify-between px-10 ">
+            {currentData && currentData?.length > 0 ? (
+              currentData.map((item, index) => {
+                return (
+                  <div
+                    className="shadow-[0px_5px_15px_0px_rgba(0,0,0,0.35)] dark:border-1 dark:border-white flex flex-col justify-between w-[30%] min-h-[430px] mb-5    "
+                    key={index + "vinh"}
+                  >
+                    <div className="px-3 py-3  flex flex-col ">
+                      <h3 className="mt-10 mb-2 text-center text-4xl font-semibold text-blue-700">
+                        {item.ten_ve}
+                      </h3>
+                      {item.diem_tngo ? (
+                        <>
                           {" "}
-                          <div className="flex items-center gap-1">
+                          <div className="my-10  text-center">
+                            <span className="text-blue-700 text-4xl font-semibold">
+                              {formatMoney(item.diem_tngo)}
+                            </span>{" "}
+                            điểm TNGo/lượt
+                          </div>
+                          <div className="flex flex-col gap-2 justify-between">
                             {" "}
-                            <FaRegClock className="text-blue-700 flex-shrink-0" />
-                            <p>Thời lượng: {item.thoi_luong}</p>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <FaRegClock className="text-blue-700 flex-shrink-0" />
-                            <p>Thời hạn: {item.thoi_han}</p>
-                          </div>
-                          {item.phi_phat_sinh && (
                             <div className="flex items-center gap-1">
                               {" "}
-                              <CiMoneyCheck1 className="text-blue-700 text-2xl flex-shrink-0" />{" "}
-                              <p>
-                                Cước phi quá thời lượng: {item.phi_phat_sinh}{" "}
-                              </p>
+                              <FaRegClock className="text-blue-700 flex-shrink-0" />
+                              <p>Thời lượng: {item.thoi_luong}</p>
                             </div>
-                          )}
-                          {item.ghi_chu && (
-                            <div className="flex items-start gap-1 flex-1 ">
-                              {" "}
-                              <CiWarning className="text-yellow-500 text-xl flex-shrink-0" />
-                              <p> Lưu ý: {item.ghi_chu}</p>
+                            <div className="flex items-center gap-1">
+                              <FaRegClock className="text-blue-700 flex-shrink-0" />
+                              <p>Thời hạn: {item.thoi_han}</p>
                             </div>
-                          )}
-                        </div>
-                      </>
-                    ) : (
-                      <p className="text-center text-xl text-red-500 mt-10">
-                        ! chưa được áp dụng
-                      </p>
-                    )}
-                  </div>
+                            {item.phi_phat_sinh && (
+                              <div className="flex items-center gap-1">
+                                {" "}
+                                <CiMoneyCheck1 className="text-blue-700 text-2xl flex-shrink-0" />{" "}
+                                <p>
+                                  Cước phi quá thời lượng: {item.phi_phat_sinh}{" "}
+                                </p>
+                              </div>
+                            )}
+                            {item.ghi_chu && (
+                              <div className="flex items-start gap-1 flex-1 ">
+                                {" "}
+                                <CiWarning className="text-yellow-500 text-xl flex-shrink-0" />
+                                <p> Lưu ý: {item.ghi_chu}</p>
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        <p className="text-center text-xl text-red-500 mt-10">
+                          ! chưa được áp dụng
+                        </p>
+                      )}
+                    </div>
 
-                  <div className={`${checkPathName ? "" : "hidden"}`}>
-                    {item.diem_tngo && !token ? (
-                      <div className="mb-3 w-full mt-3">
-                        <button className="bg-blue-600 text-white mx-auto block  py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900 ">
-                          {" "}
-                          Đăng nhập để mua
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="mb-3 w-full mt-3">
-                        <button
-                          className="bg-blue-600 text-white  mx-auto block py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900"
-                          onClick={() => handleOnClickId(item)}
-                        >
-                          {" "}
-                          Mua đi bạn ui
-                        </button>
-                      </div>
-                    )}
+                    <div className={`${checkPathName ? "" : "hidden"}`}>
+                      {item.diem_tngo && !token ? (
+                        <div className="mb-3 w-full mt-3">
+                          <button className="bg-blue-600 text-white mx-auto block  py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900 ">
+                            {" "}
+                            Đăng nhập để mua
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="mb-3 w-full mt-3">
+                          <button
+                            className="bg-blue-600 text-white  mx-auto block py-2 px-4 rounded-lg text-xl cursor-pointer w-2/3 hover:bg-blue-900"
+                            onClick={() => handleOnClickId(item)}
+                          >
+                            {" "}
+                            Mua đi bạn ơi
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })
-          ) : (
-            <div>Loading...</div>
-          )}
-        </div>
+                );
+              })
+            ) : (
+              <div className="w-full text-center py-10">
+                <p className="text-xl text-gray-500">Không có dữ liệu</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {checkPathName && (

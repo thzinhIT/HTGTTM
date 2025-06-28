@@ -7,6 +7,8 @@ import usePostData from "@/hooks/useFetchPostData";
 import { AlertPayment } from "@/components/Alertpayment";
 import LoadingPage from "@/components/loading-page";
 import formatMoney from "@/components/format-money";
+import usePageLoading from "@/hooks/usePageLoading";
+import { ButtonLoader } from "@/components/skeleton-loader";
 const Rifd = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [cards, setCards] = useState();
@@ -16,6 +18,8 @@ const Rifd = () => {
   const [openAlert, setOpenAlert] = useState(false);
   const [postUrl, setPostUrl] = useState(``);
   const [name, setName] = useState("");
+  const [processingCardId, setProcessingCardId] = useState(null);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
 
   const [image, setImage] = useState([
     {
@@ -38,14 +42,23 @@ const Rifd = () => {
 
   const { postData, response } = usePostData();
   useEffect(() => {
-    if (id) {
+    // Reset button state when alert is closed
+    if (!openAlert) {
+      setIsButtonLoading(false);
+      setProcessingCardId(null);
     }
-  }, []);
+  }, [openAlert]);
 
   const handleOnClickId = (item) => {
     setName(item.loai_the);
-    setOpenAlert(true);
-    setId(item.the_id);
+    setIsButtonLoading(true);
+    setProcessingCardId(item.the_id);
+    
+    // Short delay to show loading state
+    setTimeout(() => {
+      setOpenAlert(true);
+      setId(item.the_id);
+    }, 500);
   };
   useEffect(() => {
     if (id) {
@@ -90,12 +103,28 @@ const Rifd = () => {
           {/* list thẻ */}
           <div className="flex flex-wrap justify-between mb-16 mt-5">
             {" "}
-            {isOpen && cards?.length > 0 ? (
+            {loading ? (
+              // Skeleton loading UI
+              <>
+                {[1, 2, 3].map((item) => (
+                  <div key={item} className="w-[31%] animate-pulse">
+                    <div className="h-8 bg-gray-200 dark:bg-gray-700 mb-3 w-3/4 rounded"></div>
+                    <div className="w-full min-h-[236px] bg-gray-200 dark:bg-gray-700 rounded mb-3"></div>
+                    <div className="space-y-3 mb-4">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                    </div>
+                    <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+                  </div>
+                ))}
+              </>
+            ) : isOpen && cards?.length > 0 ? (
               cards.map((card, index) => {
                 return (
                   <React.Fragment key={index}>
                     {" "}
-                    <div className="w-[31%] flex flex-col gap-3 justify-between">
+                    <div className="w-[31%] flex flex-col gap-3 justify-between animate-fade-in" style={{ animationDelay: `${index * 0.15}s` }}>
                       <h2 className="text-2xl font-semibold">
                         {card.loai_the}
                       </h2>
@@ -138,10 +167,21 @@ const Rifd = () => {
                       <div className="w-full mt-2">
                         {token ? (
                           <button
-                            className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900"
+                            className={`${
+                              processingCardId === card.the_id
+                                ? "bg-blue-700"
+                                : processingCardId !== null
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-blue-600 hover:bg-blue-900"
+                            } text-white w-full py-2 px-4 rounded-lg text-xl transition-all duration-300`}
                             onClick={() => handleOnClickId(card)}
+                            disabled={processingCardId !== null && processingCardId !== card.the_id}
                           >
-                            Mua thẻ đi bạn ui
+                            {processingCardId === card.the_id ? (
+                              <ButtonLoader text="Đang xử lý..." />
+                            ) : (
+                              "Mua thẻ đi bạn ơi"
+                            )}
                           </button>
                         ) : (
                           <button className="bg-blue-600 text-white w-full py-2 px-4 rounded-lg text-xl cursor-pointer hover:bg-blue-900">
@@ -155,7 +195,9 @@ const Rifd = () => {
                 );
               })
             ) : (
-              <p>Loading...</p>
+              <div className="w-full text-center py-10">
+                <p className="text-xl text-gray-500">Không có dữ liệu thẻ</p>
+              </div>
             )}
           </div>
 

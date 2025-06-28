@@ -14,20 +14,20 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FaHandPointDown, FaMoneyBillWave, FaWallet } from "react-icons/fa";
-import jwt from "jsonwebtoken";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import usePostData from "@/hooks/useFetchPostData";
-import { useState } from "react";
-import { toast } from "react-toastify";
+import { use, useState } from "react";
+
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import formatMoney from "./format-money";
 
 // Schema validate với Zod
-// const formSchema = z.object({
-//   soLuong: z
-//     .number({ invalid_type_error: "Vui lòng nhập số hợp lệ" })
-//     .min(1, { message: "Số lượng phải lớn hơn 0" }),
-// });
+const formSchema = z.object({
+  soLuong: z
+    .number({ invalid_type_error: "Vui lòng nhập số hợp lệ" })
+    .min(1, { message: "Số lượng phải lớn hơn 0" }),
+});
 
 // export default function DialogCount(props) {
 //   let data = {}; // object rỗng
@@ -134,7 +134,7 @@ export default function DialogCount(props) {
   const [count, setCount] = useState(0);
   const [total, setTotal] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cash");
-  const { open, setOpen, name, postUrl, price, point, id } = props; // lấy props từ cha
+  const { open, setOpen, name, postUrl, price, point } = props; // lấy props từ cha
 
   const {
     register,
@@ -154,13 +154,6 @@ export default function DialogCount(props) {
     reset(); // reset form
   };
 
-  const getUserId = () => {
-    const token = localStorage.getItem("token");
-
-    const decoded = jwt.decode(token);
-    return decoded?.id ?? "";
-  };
-
   const onSubmit = (data) => {
     // onSubmitProp(data);
     // reset();
@@ -169,7 +162,7 @@ export default function DialogCount(props) {
     // setPaymentMethod("cash");
 
     if (paymentMethod === "momo") {
-      handlePaymentMomo(data);
+      console.log("Thanh toán MoMo");
     } else {
       let body = { soLuong: data?.soLuong };
       console.log("Gửi dữ liệu:", body);
@@ -185,52 +178,6 @@ export default function DialogCount(props) {
   //     postData(postUrl, data);
   //   }
   // };
-
-  const handlePaymentMomo = async (data) => {
-    const dataMM = data;
-    try {
-      const res = await fetch("http://localhost:3000/api/auth/create-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: total,
-          soLuong: dataMM?.soLuong,
-          id: id,
-          userId: getUserId(),
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const text = await res.text();
-
-      if (!text) {
-        throw new Error("Empty response from server.");
-      }
-
-      let data;
-
-      try {
-        data = JSON.parse(text);
-      } catch (error) {
-        console.error("Lỗi parse JSON:", error);
-        throw new Error("Response is not valid JSON.");
-      }
-
-      if (data.payUrl) {
-        window.location.href = data.payUrl;
-      } else {
-        toast.error("Có lỗi khi tạo thanh toán.");
-      }
-    } catch (error) {
-      console.error("Lỗi gọi API:", error);
-      alert("Lỗi hệ thống.");
-    } finally {
-      onClose(); // Đóng modal sau khi xử lý thanh toán
-    }
-  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import useFetchWithToken from "@/hooks/useFetchWithToken";
 import LoadingPage from "@/components/loading-page";
 import formatMoney from "@/components/format-money";
+import { ProfileSkeleton } from "@/components/skeleton-loader";
 const page = () => {
   const [user, setUser] = useState();
   const [card, setCard] = useState();
@@ -45,7 +46,7 @@ const page = () => {
         </div>
 
         {user ? (
-          <div className="flex items-start gap-10  pb-3 border-b bg-border-black ">
+          <div className="flex items-start gap-10 pb-3 border-b bg-border-black staggered-fade">
             {/* Avatar */}
             <div>
               <Avatar className="w-32 h-32">
@@ -59,7 +60,7 @@ const page = () => {
 
             {/* Thông tin cá nhân */}
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
+              <div className="animate-slide-up">
                 <label className="block text-gray-600 font-medium mb-1">
                   Email
                 </label>
@@ -68,7 +69,7 @@ const page = () => {
                 </div>
               </div>
 
-              <div>
+              <div className="animate-slide-up" style={{ animationDelay: "0.1s" }}>
                 <label className="block text-gray-600 font-medium mb-1">
                   Tên người dùng
                 </label>
@@ -77,7 +78,7 @@ const page = () => {
                 </div>
               </div>
 
-              <div>
+              <div className="animate-slide-up" style={{ animationDelay: "0.2s" }}>
                 <label className="block text-gray-600 font-medium mb-1">
                   Số điện thoại
                 </label>
@@ -88,7 +89,9 @@ const page = () => {
             </div>
           </div>
         ) : (
-          <div>loading...</div>
+          <div className="animate-fade-in">
+            <ProfileSkeleton />
+          </div>
         )}
 
         <div className="mt-10 ">
@@ -152,11 +155,36 @@ const page = () => {
                   ))}
                 </div>
               ) : (
-                <div>loading...</div>
+                <div className="animate-pulse grid grid-cols-4 gap-4">
+                  {[1, 2, 3, 4].map((item) => (
+                    <div className="col-span-2" key={item}>
+                      <div className="border rounded-lg p-4 dark:bg-gray-800 bg-gray-100 shadow-sm">
+                        <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-2"></div>
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           ) : (
-            <div> Hiện ko thấy dữ liệu </div>
+            <div className="bg-gray-100 dark:bg-[rgb(10,10,10)] rounded-lg p-6 shadow-sm mb-8 animate-pulse">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                </div>
+                <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg w-1/5"></div>
+                <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg w-1/5"></div>
+              </div>
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/6 mb-4"></div>
+              <div className="text-center p-6">
+                <p className="text-gray-500 dark:text-gray-400">Đang tải dữ liệu...</p>
+              </div>
+            </div>
           )}
           {/* Khối thông tin thẻ */}
         </div>
