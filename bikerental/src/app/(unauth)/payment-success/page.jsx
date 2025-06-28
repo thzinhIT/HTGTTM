@@ -20,9 +20,11 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import jwt from "jsonwebtoken";
 import formatMoney from "@/components/format-money";
+import { get } from "react-hook-form";
 export default function PaymentSuccessPage() {
   const [showContent, setShowContent] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [datauUser, setDataUser] = useState(null);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -46,6 +48,13 @@ export default function PaymentSuccessPage() {
     console.log("Extra Data:", extraData);
   }
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const data = getDataUser();
+      data && setDataUser(data);
+    }
+  }, []);
+
   const getDataUser = () => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -53,7 +62,7 @@ export default function PaymentSuccessPage() {
       return {
         id: decoded.id,
         email: decoded.email,
-        Phone: decoded.phone,
+        phone: decoded.phone,
       };
     }
   };
@@ -70,7 +79,6 @@ export default function PaymentSuccessPage() {
     customerName: "Nguyễn Văn A",
     customerPhone: "0901234567",
   };
-  const datauUser = getDataUser();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 relative overflow-hidden">
@@ -171,7 +179,7 @@ export default function PaymentSuccessPage() {
                     <div>
                       <p className="text-sm text-gray-500">Số điện thoại</p>
                       <p className="font-semibold text-gray-800">
-                        {datauUser?.Phone}
+                        {datauUser?.phone}
                       </p>
                     </div>
                   </div>
@@ -239,7 +247,7 @@ export default function PaymentSuccessPage() {
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white group"
                   onClick={() => router.push("/")}
                 >
-                  <Home className="w-4 h-4 mr-2 group-hover:animate-pulse" />
+                  <Home className="w-4 h-4 mr-2 group-hover:animate-pulse cursor-pointer" />
                   Về trang chủ
                 </Button>
 

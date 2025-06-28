@@ -54,7 +54,6 @@ export default function FormContact() {
 
   // ✅ Xử lý submit form
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
     const FetchPostData = async () => {
       setLoading(true);
       const res = await fetch("http://localhost:3000/api/auth/contract", {
