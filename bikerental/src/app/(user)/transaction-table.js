@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import useFetchGetData from "@/hooks/useFecthGetData";
 import LoginModal from "@/components/login-form";
-import DialogCount from "@/components/dialog-count";
+import DialogCount from "@/components/modal-ticket";
 import MoneyTable from "./money-table";
 import formatMoney from "@/components/format-money";
 import { TableSkeleton, ButtonLoader } from "@/components/skeleton-loader";

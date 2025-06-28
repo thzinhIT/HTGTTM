@@ -52,8 +52,6 @@ export default function RegisterPage() {
       body: JSON.stringify(registerData),
     });
     const data = await res.json();
-    console.log("data", data);
-    console.log("res", res);
     if (res.ok) {
       setIsLoading(false);
       toast.success(data.message);

@@ -22,6 +22,7 @@ import { use, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import formatMoney from "./format-money";
 
+<<<<<<< HEAD
 // Schema validate với Zod
 const formSchema = z.object({
   soLuong: z
@@ -130,6 +131,8 @@ const formSchema = z.object({
 //   );
 // }
 
+=======
+>>>>>>> 0dda2e5a54d5d30143e6f3013027b113930fe19c
 export default function DialogCount(props) {
   const [count, setCount] = useState(0);
   const [total, setTotal] = useState(0);
@@ -155,21 +158,15 @@ export default function DialogCount(props) {
   };
 
   const onSubmit = (data) => {
-    // onSubmitProp(data);
-    // reset();
-    // setCount(0);
-    // setTotal(0);
-    // setPaymentMethod("cash");
-
     if (paymentMethod === "momo") {
       console.log("Thanh toán MoMo");
     } else {
       let body = { soLuong: data?.soLuong };
-      console.log("Gửi dữ liệu:", body);
       postData(postUrl, body);
     }
   };
 
+<<<<<<< HEAD
   // const handleSubmitPayment = (paymentMethod, e) => {
   //   e.preventDefault(); // Ngăn chặn hành động mặc định của form
   //   if (paymentMethod === "momo") {
@@ -178,6 +175,53 @@ export default function DialogCount(props) {
   //     postData(postUrl, data);
   //   }
   // };
+=======
+  const handlePaymentMomo = async (data) => {
+    const dataMM = data;
+    try {
+      const res = await fetch("http://localhost:3000/api/auth/create-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: total,
+          soLuong: dataMM?.soLuong,
+          id: id,
+          userId: getUserId(),
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const text = await res.text();
+
+      if (!text) {
+        throw new Error("Empty response from server.");
+      }
+
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch (error) {
+        console.error("Lỗi parse JSON:", error);
+        throw new Error("Response is not valid JSON.");
+      }
+
+      if (data.payUrl) {
+        window.location.href = data.payUrl;
+      } else {
+        toast.error("Có lỗi khi tạo thanh toán.");
+      }
+    } catch (error) {
+      console.error("Lỗi gọi API:", error);
+      alert("Lỗi hệ thống.");
+    } finally {
+      onClose(); // Đóng modal sau khi xử lý thanh toán
+    }
+  };
+>>>>>>> 0dda2e5a54d5d30143e6f3013027b113930fe19c
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
