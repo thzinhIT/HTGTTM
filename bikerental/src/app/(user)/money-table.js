@@ -53,7 +53,7 @@ const MoneyTable = (props) => {
       <div className="w-[1320px] mx-auto px-10">
         <h2 className=" text-blue-700 text-4xl my-9 font-bold text-center">
           {" "}
-          Bạn đang thiếu điểm đúng ko ?
+          Bạn đang thiếu điểm đúng không ?
         </h2>
 
         <div>
@@ -61,7 +61,7 @@ const MoneyTable = (props) => {
             <TableCaption>A list of your recent invoices.</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">STT</TableHead>
+                <TableHead className="w-[100px]">Số thứ tự</TableHead>
                 <TableHead className={"text-end"}>Số tiền</TableHead>
                 <TableHead></TableHead>
                 <TableHead className={"text-end"}>Điểm TNGO</TableHead>
@@ -127,7 +127,6 @@ const MoneyTable = (props) => {
           postUrl={postUrl}
           price={priceItem}
           point={point}
-          id={id}
         />
       )}
     </div>

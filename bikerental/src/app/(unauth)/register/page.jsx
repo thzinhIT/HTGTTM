@@ -272,7 +272,7 @@ export default function RegisterPage() {
                   >
                     {isLoading ? (
                       <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         <span>Đang tạo tài khoản...</span>
                       </div>
                     ) : (
@@ -297,7 +297,7 @@ export default function RegisterPage() {
                 <p className="text-sm text-gray-600">
                   Đã có tài khoản?{" "}
                   <a
-                    href="#"
+                    href="/login"
                     className="text-blue-600 hover:text-blue-700 font-medium"
                   >
                     Đăng nhập ngay

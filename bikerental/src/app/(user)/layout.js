@@ -3,6 +3,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../../app/globals.css";
+import "../../app/animations.css";
 import Header from "./header/page";
 import Footer from "./footer/page";
 import "swiper/css";
